@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="36dip"
+              android:gravity="center_vertical">
+    <TextView
+        android:id="@+id/filename"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingStart="30dip"
+        android:paddingEnd="30dip"
+        android:textColor="@color/first_text"
+        android:textSize="14sp"
+        tools:text="filename"/>
+    <Button
+        android:id="@+id/open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="6dip"
+        android:paddingEnd="6dip"
+        android:focusable="false"
+        android:text="open"
+        android:textSize="12sp"/>
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="6dip"
+        android:paddingEnd="6dip"
+        android:layout_marginStart="6dip"
+        android:focusable="false"
+        android:text="delete"
+        android:textSize="12sp"/>
+</LinearLayout>

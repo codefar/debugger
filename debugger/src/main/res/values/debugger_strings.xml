@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="set_permission">设置权限</string>
+    <string name="help">帮助</string>
+    <string name="confirm">确定</string>
+    <string name="settings">设置</string>
+    <string name="known">知道了</string>
+    <string name="close">关闭</string>
+    <string name="share">分享</string>
+    <string name="save_failed">保存失败</string>
+    <string name="hint">提示</string>
+    <string name="spec">说明</string>
+    <string name="modify">修改</string>
+    <string name="quit">退出</string>
+    <string name="back">返回</string>
+    <string name="add">添加</string>
+    <string name="current_version">当前版本为
+        <xliff:g id="version">%s</xliff:g>
+    </string>
+    <string name="next_step">下一步</string>
+    <string name="commit">提交</string>
+    <string name="loading">加载中</string>
+    <string name="save">保存</string>
+    <string name="edit">编辑</string>
+    <string name="cancel">取消</string>
+    <string name="verify">验证</string>
+    <string name="already_copy_to_clipboard">已将“%1$s”复制到粘贴板中</string>
+</resources>

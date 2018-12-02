@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:gravity="center_vertical">
+    <TextView
+        android:id="@+id/function_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dip"
+        android:paddingStart="45dip"
+        android:paddingEnd="30dip"
+        android:textColor="@color/second_text"
+        android:textSize="12sp"
+        tools:text="functionName"/>
+    <TextView
+        android:id="@+id/parameters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dip"
+        android:layout_marginBottom="4dip"
+        android:paddingStart="45dip"
+        android:paddingEnd="30dip"
+        android:textColor="@color/third_text"
+        android:textSize="12sp"
+        tools:text="a, b, c"/>
+</LinearLayout>

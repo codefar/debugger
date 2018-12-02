@@ -1,0 +1,68 @@
+package com.su.debugger.widget.recycler;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+
+import com.su.debugger.R;
+
+public class PreferenceItemDecoration extends RecyclerView.ItemDecoration {
+    private Drawable mDivider;
+    private int mStartPadding;
+    private int mEndPadding;
+
+    public PreferenceItemDecoration(Context context) {
+        this(context, 0, 0);
+    }
+
+    public PreferenceItemDecoration(Context context, int startPadding, int endPadding) {
+        this(context, startPadding, endPadding, ContextCompat.getDrawable(context, R.drawable.debugger_recycler_view_linear_divider));
+    }
+
+    public PreferenceItemDecoration(Context context, int startPadding, int endPadding, Drawable drawable) {
+        mStartPadding = startPadding;
+        mEndPadding = endPadding;
+        mDivider = drawable;
+    }
+
+    @Override
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        final int left = parent.getPaddingLeft() + mStartPadding;
+        final int right = parent.getWidth() - parent.getPaddingRight() - mEndPadding;
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = parent.getChildAt(i);
+            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+            final int top = child.getBottom() + params.bottomMargin + Math.round(ViewCompat.getTranslationY(child));
+            final int bottom = top + mDivider.getIntrinsicHeight();
+            mDivider.setBounds(left, top, right, bottom);
+            mDivider.draw(c);
+        }
+    }
+
+    @Override
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        int position = parent.getChildLayoutPosition(view);
+        int nextPosition = position + 1;
+        int type = parent.getAdapter().getItemViewType(position);
+        int nextType = HeaderFooterAdapter.TYPE_INVALID;
+        if (nextPosition < parent.getAdapter().getItemCount()) {
+            nextType = parent.getAdapter().getItemViewType(nextPosition);
+        }
+        if (nextType == HeaderFooterAdapter.TYPE_INVALID
+                || type == HeaderFooterAdapter.TYPE_HEADER
+                || type == HeaderFooterAdapter.TYPE_GROUP
+                || (type == HeaderFooterAdapter.TYPE_CHILD && nextType == HeaderFooterAdapter.TYPE_GROUP)) {
+            //ignore
+            outRect.set(0, 0, 0, 0);
+        } else {
+            //1px height
+            outRect.set(0, 0, 0, 1);
+        }
+    }
+}

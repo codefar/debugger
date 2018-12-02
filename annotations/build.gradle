@@ -1,0 +1,30 @@
+apply plugin: 'java'
+apply plugin: 'com.novoda.bintray-release'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+sourceCompatibility = rootProject.ext.sourceCompatibilityVersion
+targetCompatibility = rootProject.ext.targetCompatibilityVersion
+
+jar {
+    baseName 'debugger-annotations-' + rootProject.ext.version
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+publish {
+    artifactId = 'debugger.annotations'
+    uploadName = 'debugger.annotations'
+    bintrayUser = properties.getProperty("bintray.user")
+    bintrayKey = properties.getProperty("bintray.apikey")
+    dryRun = false
+
+    userOrg = 'su1216'
+    repoName = 'maven'
+    desc = 'debug and mock for android'
+    website = 'https://github.com/su1216/debugger'
+    groupId = 'com.su' // 组名
+    publishVersion = '0.9.2' // 版本号
+}

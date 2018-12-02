@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DebuggerBase" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:buttonStyle">@style/DebuggerButtonWithNoShadow</item>
+    </style>
+
+    <style name="DebuggerButtonWithNoShadow" parent="android:Widget.Material.Button">
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+</resources>

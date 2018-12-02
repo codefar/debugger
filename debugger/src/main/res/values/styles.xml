@@ -1,0 +1,168 @@
+<resources>
+    <style name="DebuggerOverFlow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/debugger_ic_menu_moreoverflow</item>
+    </style>
+    <style name="DebuggerHeadTabLayout" parent="@style/Widget.Design.TabLayout">
+        <item name="tabIndicatorHeight">1dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="tabSelectedTextColor">@color/first_text</item>
+        <item name="tabTextAppearance">@style/DebuggerTabTextAppearance.Design</item>
+    </style>
+    <style name="DebuggerTabTextAppearance.Design" parent="TextAppearance.Design.Tab">
+        <item name="android:textColor">@color/second_text</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="DebuggerBottomButton">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/debugger_button_bottom_main</item>
+    </style>
+    <style name="DebuggerMajorButton">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@drawable/debugger_tab_text_selector</item>
+        <item name="android:background">@drawable/debugger_button_major</item>
+    </style>
+
+    <style name="DebuggerBase" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="DebuggerToolbarThemeBase" parent="DebuggerBase">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="DebuggerToolbarTheme" parent="@style/DebuggerToolbarThemeBase">
+        <item name="actionOverflowMenuStyle">@style/DebuggerOverflowMenuStyle</item>
+        <item name="actionOverflowButtonStyle">@style/DebuggerOverFlow</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="dropDownListViewStyle">@style/DebuggerPopupMenuListView</item>
+        <item name="toolbarStyle">@style/DebuggerToolbarStyle</item>
+        <item name="navigationIcon">@drawable/debugger_ic_ab_back</item>
+        <!--TextView-->
+        <item name="android:textIsSelectable">false</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="actionMenuTextAppearance">@style/DebuggerMenuTextStyle</item>
+    </style>
+
+    <!--溢出菜单样式 -->
+    <style name="DebuggerOverflowMenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="android:dropDownVerticalOffset">4dip</item>
+        <item name="android:dropDownHorizontalOffset">4dip</item>
+    </style>
+
+    <!-- OverFlow menu Styles -->
+    <style name="DebuggerPopupMenuListView" parent="@style/Widget.AppCompat.Light.ListView.DropDown">
+        <item name="android:divider">@color/divider_normal</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+
+    <style name="DebuggerActionBarTitleTextStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="DebuggerToolBarTitleTextStyle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="DebuggerToolbarStyle" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="titleTextAppearance">@style/DebuggerToolBarTitleTextStyle</item>
+    </style>
+
+    <style name="DebuggerMenuTextStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="DebuggerListTheme" parent="@style/DebuggerToolbarTheme">
+        <item name="preferenceTheme">@style/DebuggerPreferenceTheme</item>
+    </style>
+
+    <style name="DebuggerPreferenceTheme" parent="@style/PreferenceThemeOverlay">
+        <item name="preferenceScreenStyle">@style/Preference.PreferenceScreen</item>
+        <item name="preferenceFragmentCompatStyle">@style/DebuggerPreferenceFragmentStyle</item>
+        <item name="preferenceFragmentStyle">@style/DebuggerPreferenceFragmentStyle</item>
+        <item name="preferenceCategoryStyle">@style/DebuggerPreference.DebuggerListPreferenceCategoryStyle</item>
+        <item name="preferenceStyle">@style/DebuggerPreference</item>
+        <item name="checkBoxPreferenceStyle">@style/DebuggerPreference.CheckBoxPreference</item>
+        <item name="switchPreferenceCompatStyle">@style/DebuggerPreference.SwitchPreferenceCompat</item>
+        <item name="switchPreferenceStyle">@style/DebuggerPreference.SwitchPreference</item>
+        <item name="dialogPreferenceStyle">@style/DebuggerPreference.DialogPreference</item>
+        <item name="editTextPreferenceStyle">@style/DebuggerPreference.DialogPreference.EditTextPreference</item>
+        <item name="preferenceFragmentListStyle">@style/DebuggerPreferenceFragmentList</item>
+    </style>
+
+    <style name="DebuggerPreference">
+        <item name="android:layout">@layout/debugger_preference_debug</item>
+    </style>
+
+    <style name="DebuggerPreference.DebuggerListPreferenceCategoryStyle">
+        <item name="android:shouldDisableView">false</item>
+        <item name="android:selectable">false</item>
+        <item name="android:layout">@layout/debugger_preference_category_debug</item>
+    </style>
+
+    <style name="DebuggerPreferenceFragmentStyle">
+        <item name="android:divider">@drawable/debugger_shape_preference_list_divider_debug</item>
+    </style>
+
+    <style name="DebuggerPreference.CheckBoxPreference">
+        <item name="android:widgetLayout">@layout/preference_widget_checkbox</item>
+    </style>
+
+    <style name="DebuggerPreference.SwitchPreferenceCompat">
+        <item name="android:widgetLayout">@layout/preference_widget_switch_compat</item>
+        <item name="android:switchTextOn">@string/v7_preference_on</item>
+        <item name="android:switchTextOff">@string/v7_preference_off</item>
+    </style>
+
+    <style name="DebuggerPreference.SwitchPreference">
+        <item name="android:widgetLayout">@layout/debugger_preference_widget_switch_debug</item>
+        <item name="android:switchTextOn">@string/v7_preference_on</item>
+        <item name="android:switchTextOff">@string/v7_preference_off</item>
+    </style>
+
+    <style name="DebuggerPreference.DialogPreference">
+        <item name="android:positiveButtonText">@android:string/ok</item>
+        <item name="android:negativeButtonText">@android:string/cancel</item>
+    </style>
+
+    <style name="DebuggerPreference.DialogPreference.EditTextPreference">
+        <item name="android:dialogLayout">@layout/preference_dialog_edittext</item>
+    </style>
+
+    <style name="DebuggerPreferenceFragmentList">
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+
+    <style name="DebuggerSearchViewToolbar" parent="DebuggerToolbarTheme">
+        <!--修改SearchView激活时颜色-->
+        <item name="colorControlNormal">@android:color/white</item>
+        <!--修改SearchView的光标颜色-->
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="DebuggerCustomDialog" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowFrame">@null</item>               <!-- 设置边框 -->
+        <item name="android:windowIsTranslucent">false</item>        <!-- 设置半透明 -->
+        <item name="android:windowCloseOnTouchOutside">false</item> <!-- 设置点击区域外不关闭 -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+</resources>
