@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -180,8 +181,8 @@ public class SystemInfoHelper {
         if (externalMemoryAvailable()) {
             File path = Environment.getExternalStorageDirectory();
             StatFs stat = new StatFs(path.getPath());
-            long blockSize = stat.getBlockSize();
-            long availableBlocks = stat.getAvailableBlocks();
+            long blockSize = stat.getBlockSizeLong();
+            long availableBlocks = stat.getAvailableBlocksLong();
             return availableBlocks * blockSize;
         } else {
             return ERROR;
@@ -195,8 +196,8 @@ public class SystemInfoHelper {
         if (externalMemoryAvailable()) {
             File path = Environment.getExternalStorageDirectory();
             StatFs stat = new StatFs(path.getPath());
-            long blockSize = stat.getBlockSize();
-            long totalBlocks = stat.getBlockCount();
+            long blockSize = stat.getBlockSizeLong();
+            long totalBlocks = stat.getBlockCountLong();
             return totalBlocks * blockSize;
         } else {
             return ERROR;
@@ -210,15 +211,19 @@ public class SystemInfoHelper {
      */
     public static long getTotalMemorySize() {
         String dir = "/proc/meminfo";
+        FileReader fr = null;
+        BufferedReader br = null;
         try {
-            FileReader fr = new FileReader(dir);
-            BufferedReader br = new BufferedReader(fr, 2048);
+            fr = new FileReader(dir);
+            br = new BufferedReader(fr, 2048);
             String memoryLine = br.readLine();
             String subMemoryLine = memoryLine.substring(memoryLine.indexOf("MemTotal:"));
-            br.close();
             return Integer.parseInt(subMemoryLine.replaceAll("\\D+", "")) * 1024L;
         } catch (IOException e) {
             Log.w(TAG, e);
+        } finally {
+            IOUtil.closeQuietly(br);
+            IOUtil.closeQuietly(fr);
         }
         return 0L;
     }

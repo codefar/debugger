@@ -225,6 +225,10 @@ public final class UiHelper {
         return size;
     }
 
+    public static double getScreenDiagonalSize(DisplayMetrics displayMetrics, Point point) {
+        return Math.sqrt(Math.pow(point.x / displayMetrics.xdpi, 2.0d) + Math.pow(point.y / displayMetrics.ydpi, 2.0d));
+    }
+
     /**
      * 扩大View的触摸和点击响应范围,最大不超过其父View范围
      *

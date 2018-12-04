@@ -3,6 +3,7 @@ package com.su.debugger.ui.test;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -198,11 +199,13 @@ public class PhoneInfoActivity extends BaseAppCompatActivity {
         }
         desc += "\n\n" + "密度: " + metrics.densityDpi + "dp" + " / " + SystemInfoHelper.getDpiInfo(metrics.densityDpi) + " / " + metrics.density + "x";
         desc += "\n\n" + "精确密度: " + metrics.xdpi + " x " + metrics.ydpi + " dp";
-        float width = metrics.widthPixels / metrics.xdpi;
-        float height = metrics.heightPixels / metrics.ydpi;
-        double diagonal = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
+
+        Point point = UiHelper.getRealScreenSize(this);
+        double screenDiagonalSize = UiHelper.getScreenDiagonalSize(metrics, point);
+        float width = point.x / metrics.xdpi;
+        float height = point.y / metrics.ydpi;
         DecimalFormat format = new DecimalFormat("0.0");
-        desc += "\n\n" + "屏幕尺寸: " + format.format(width) + "''" + " x " + format.format(height) + "''" + " / " + format.format(diagonal) + "英寸";
+        desc += "\n\n" + "屏幕尺寸: " + format.format(width) + "''" + " x " + format.format(height) + "''" + " / " + format.format(screenDiagonalSize) + "英寸";
         info.setDesc(desc);
         return info;
     }
