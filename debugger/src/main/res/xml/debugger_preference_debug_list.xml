@@ -13,7 +13,12 @@
         android:title="应用基本信息" />
     <android.support.v7.preference.Preference
         android:key="app_component_info"
-        android:title="应用组件信息" />
+        android:title="应用组件信息"
+        android:summary="应用四大组件信息以及模拟activity跳转传参"/>
+    <android.support.v7.preference.Preference
+        android:key="apk_export"
+        android:title="导出apk"
+        android:summary="将当前的apk导出到sd卡中"/>
     <android.support.v7.preference.Preference
         android:title="权限列表"
         android:summary="应用所需权限与用户授权情况"

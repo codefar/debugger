@@ -17,17 +17,16 @@ import java.util.List;
 /**
  * Created by su on 17-5-31.
  */
-
 public class ReflectUtil {
     private static final String TAG = ReflectUtil.class.getSimpleName();
 
-    public static Object getFieldValue(@NonNull Object object, @NonNull String fieldName) {
+    public static Object getFieldValue(@NonNull Class<?> clazz, @Nullable Object object, @NonNull String fieldName) {
         try {
-            Field field = object.getClass().getDeclaredField(fieldName);
+            Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
             return field.get(object);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.e(TAG, "object class: " + object.getClass().getName(), e);
+            Log.e(TAG, "object class: " + clazz.getName(), e);
         }
         return null;
     }
@@ -196,9 +195,9 @@ public class ReflectUtil {
     }
 
     @Nullable
-    public static Class<?> forName(@NonNull String parameterClassName) {
+    public static Class<?> forName(@NonNull String className) {
         try {
-            switch (parameterClassName) {
+            switch (className) {
                 case "int":
                     return int.class;
                 case "long":
@@ -216,7 +215,7 @@ public class ReflectUtil {
                 case "byte":
                     return byte.class;
                 default:
-                    return Class.forName(parameterClassName);
+                    return Class.forName(className);
             }
         } catch (ClassNotFoundException e) {
             Log.w("Parameter", e);

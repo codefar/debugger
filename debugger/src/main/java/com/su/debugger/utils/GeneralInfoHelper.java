@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 /**
  * Created by su on 17-2-8.
@@ -48,7 +49,8 @@ public class GeneralInfoHelper {
     private static String sProcessName = "";
     private static int sProcessId = -1;
     private static boolean sDebuggable;
-    private static boolean sFirstTime;
+    private static long sFirstLaunchTime;
+    private static long sLaunchTime;
 
     private static int sActionBarHeight;
     private static int sStatusBarHeight;
@@ -60,6 +62,7 @@ public class GeneralInfoHelper {
     private static long sInstallTime;
     private static long sUpdateTime;
     private static String sSourceDir;
+    private static String[] sSplitSourceDirs;
     private static String sDeviceProtectedDataDir;
     private static String sNativeLibraryDir;
     private static String sDataDir;
@@ -77,8 +80,10 @@ public class GeneralInfoHelper {
         sActionBarHeight = UiHelper.getActionBarHeight(sContext);
         sViewConfiguration = ViewConfiguration.get(context);
         SharedPreferences sharedPreferences = SpHelper.getDebuggerSharedPreferences();
-        sFirstTime = sharedPreferences.getBoolean("first_time", true);
-        sharedPreferences.edit().putBoolean("first_time", false).apply();
+        long now = System.currentTimeMillis();
+        sFirstLaunchTime = sharedPreferences.getLong("first_launch_time", now);
+        sLaunchTime = sharedPreferences.getLong("launch_time", now);
+        sharedPreferences.edit().putLong("first_launch_time", now).apply();
     }
 
     private static void initPackageInfo() {
@@ -98,13 +103,16 @@ public class GeneralInfoHelper {
                     sMinSdkVersion = applicationInfo.minSdkVersion;
                     sDeviceProtectedDataDir = applicationInfo.deviceProtectedDataDir;
                 }
-                Object compileSdkVersion = ReflectUtil.getFieldValue(applicationInfo, "compileSdkVersion");
+                Object compileSdkVersion = ReflectUtil.getFieldValue(applicationInfo.getClass(), applicationInfo, "compileSdkVersion");
                 if (compileSdkVersion != null) {
                     sCompileSdkVersion = (Integer) compileSdkVersion;
                 }
                 sApplicationLabel = pm.getApplicationLabel(applicationInfo).toString();
                 sDebuggable = (applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE;
                 sSourceDir = applicationInfo.sourceDir;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    sSplitSourceDirs = applicationInfo.splitSourceDirs;
+                }
                 sNativeLibraryDir = applicationInfo.nativeLibraryDir;
                 sDataDir = applicationInfo.dataDir;
                 sUpdateTime = new File(sSourceDir).lastModified();
@@ -209,8 +217,12 @@ public class GeneralInfoHelper {
         return sDebuggable;
     }
 
-    public static boolean isFirstTime() {
-        return sFirstTime;
+    public static long getFirstLaunchTime() {
+        return sFirstLaunchTime;
+    }
+
+    public static long getLaunchTime() {
+        return sLaunchTime;
     }
 
     public static int getTargetSdkVersion() {
@@ -245,6 +257,10 @@ public class GeneralInfoHelper {
         return sSourceDir;
     }
 
+    public static String[] getSplitSourceDirs() {
+        return sSplitSourceDirs;
+    }
+
     public static String getDeviceProtectedDataDir() {
         return sDeviceProtectedDataDir;
     }
@@ -265,6 +281,7 @@ public class GeneralInfoHelper {
         return sActionBarHeight;
     }
 
+    @NonNull
     public static String infoToString() {
         return "GeneralInfoHelper{" +
                 "context=" + sContext +
@@ -289,10 +306,12 @@ public class GeneralInfoHelper {
                 ", installTime=" + sInstallTime +
                 ", updateTime=" + sUpdateTime +
                 ", sourceDir=" + sSourceDir +
-                ", sviceProtectedDataDir=" + sSourceDir +
-                ", sataDir=" + sSourceDir +
-                ", nativeLibraryDir=" + sSourceDir +
-                ", firstTime=" + sFirstTime +
+                ", sSplitSourceDirs=" + Arrays.toString(sSplitSourceDirs) +
+                ", nativeLibraryDir=" + sNativeLibraryDir +
+                ", dataDir=" + sDataDir +
+                ", deviceProtectedDataDir=" + sDeviceProtectedDataDir +
+                ", firstLaunchTime=" + sFirstLaunchTime +
+                ", launchTime=" + sLaunchTime +
                 ", targetSdkVersion=" + sTargetSdkVersion +
                 ", minSdkVersion=" + sMinSdkVersion +
                 ", compileSdkVersion=" + sCompileSdkVersion +

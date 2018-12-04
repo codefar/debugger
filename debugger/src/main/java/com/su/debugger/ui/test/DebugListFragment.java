@@ -11,6 +11,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -40,6 +41,7 @@ import com.su.debugger.ui.test.app.SharedPreferenceListActivity;
 import com.su.debugger.ui.test.mock.MockGroupHostActivity;
 import com.su.debugger.ui.test.mock.ParseHelper;
 import com.su.debugger.utils.GeneralInfoHelper;
+import com.su.debugger.utils.IOUtil;
 import com.su.debugger.utils.NetworkUtil;
 import com.su.debugger.utils.ReflectUtil;
 import com.su.debugger.utils.SpHelper;
@@ -61,6 +63,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     public static final String TAG = DebugListFragment.class.getSimpleName();
     private static final int REQUEST_HOST = 1;
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
+    private static final File EXPORTED_APK_FILE = new File(Debugger.getDebuggerSdcardDir(), "exported-" + GeneralInfoHelper.getVersionName() + "-" + GeneralInfoHelper.getAppName() + ".apk");
     com.su.debugger.widget.recycler.DividerDecoration mDividerDecoration;
     private Preference mProxyPreference;
     private Preference mSharedPreferencePreference;
@@ -89,6 +92,13 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                                              + "版本:" + GeneralInfoHelper.getVersionName()
                                              + "(" + GeneralInfoHelper.getVersionCode() + ")");
         findPreference("app_component_info").setOnPreferenceClickListener(this);
+        Preference apkExportPreference = findPreference("apk_export");
+        String[] splitSourceDirs = GeneralInfoHelper.getSplitSourceDirs();
+        if (splitSourceDirs != null && splitSourceDirs.length > 0) {
+            apkExportPreference.setSummary("请关闭instant run后重新编译安装应用");
+            apkExportPreference.setEnabled(false);
+        }
+        apkExportPreference.setOnPreferenceClickListener(this);
 
         Preference softwareInfoPreference = findPreference("software_info");
         softwareInfoPreference.setSummary("Android " + Build.VERSION.RELEASE + "    " + SystemInfoHelper.getSystemVersionName(Build.VERSION.SDK_INT) + "    "
@@ -157,12 +167,34 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             Toast.makeText(mActivity, "没有外存读取权限只能处理" + mockCacheDir.getAbsolutePath() + "下的json文件", Toast.LENGTH_LONG).show();
         }
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        DIALOG_FRAGMENT.show(ft, "collecting");
+        DIALOG_FRAGMENT.show(ft, "收集中...");
         new Thread() {
             @Override
             public void run() {
                 ParseHelper.process(mActivity);
-                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "collection finish.", Toast.LENGTH_LONG).show());
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "收集完成", Toast.LENGTH_LONG).show());
+                DIALOG_FRAGMENT.dismissAllowingStateLoss();
+            }
+        }.start();
+    }
+
+    private void exportApkFile() {
+        if (!AppHelper.checkPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(mActivity, "没有外存写入权限", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(mActivity, PermissionListActivity.class));
+            return;
+        }
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        DIALOG_FRAGMENT.show(ft, "导出中...");
+        new Thread() {
+            @Override
+            public void run() {
+                File dir = EXPORTED_APK_FILE.getParentFile();
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                IOUtil.copyFile(new File(GeneralInfoHelper.getSourceDir()), EXPORTED_APK_FILE);
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将apk导出到" + EXPORTED_APK_FILE.getAbsolutePath(), Toast.LENGTH_LONG).show());
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             }
         }.start();
@@ -330,6 +362,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "permission":
                 startActivity(new Intent(mActivity, PermissionListActivity.class));
+                return true;
+            case "apk_export":
+                exportApkFile();
                 return true;
             case "shared_preference":
                 if (SpHelper.sharedPreferenceCount(mActivity) == 1) {

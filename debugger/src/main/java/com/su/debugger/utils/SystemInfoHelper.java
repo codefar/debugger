@@ -17,11 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.text.DecimalFormat;
-import java.util.Enumeration;
 
 /**
  * Created by mahao on 17-5-31.
@@ -31,6 +27,8 @@ public class SystemInfoHelper {
 
     private static final String TAG = SystemInfoHelper.class.getSimpleName();
     private static final int ERROR = -1;
+    private static DecimalFormat fileIntegerFormat = new DecimalFormat("#0");
+    private static DecimalFormat fileDecimalFormat = new DecimalFormat("#0.##");
 
     private static SparseArray<String> sSystemVersionName;
     private static SparseArray<String> sSystemVersionCode;
@@ -52,8 +50,9 @@ public class SystemInfoHelper {
         }
         if ("MOBILE".equalsIgnoreCase(name)) {
             if (TextUtils.isEmpty(Proxy.getDefaultHost())) {
-                if (is3_4g(context)) {
-                    return "Mobile 4g/3g";
+                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                if (NetworkUtil.is3g4g(NetworkUtil.getNetworkClass(tm.getNetworkType()))) {
+                    return "Mobile 3g/4g";
                 }
                 return "Mobile 2.5g";
             }
@@ -107,72 +106,6 @@ public class SystemInfoHelper {
             Log.w(TAG, e);
         }
         return "";
-    }
-
-    public static String getIpv4Address() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress()) {
-                        return inetAddress.getHostAddress();
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            Log.e(TAG, ex.toString());
-        }
-        return null;
-    }
-
-    public static String getMac() {
-        try {
-            for (Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces(); networkInterfaces.hasMoreElements(); ) {
-                NetworkInterface networkInterface = networkInterfaces.nextElement();
-                if ("wlan0".equals(networkInterface.getName())) {
-                    byte[] hardwareAddress = networkInterface.getHardwareAddress();
-                    if (hardwareAddress == null || hardwareAddress.length == 0) {
-                        continue;
-                    }
-                    StringBuilder buf = new StringBuilder();
-                    for (byte b : hardwareAddress) {
-                        buf.append(String.format("%02X:", b));
-                    }
-                    if (buf.length() > 0) {
-                        buf.deleteCharAt(buf.length() - 1);
-                    }
-                    return buf.toString();
-                }
-            }
-        } catch (SocketException e) {
-            Log.w(TAG, e);
-        }
-        return "";
-    }
-
-    private static boolean is3_4g(Context context) {
-        TelephonyManager mgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        switch (mgr.getNetworkType()) {
-            case ConnectivityManager.TYPE_MOBILE_HIPRI:
-            case ConnectivityManager.TYPE_WIMAX:
-            case ConnectivityManager.TYPE_DUMMY:
-            case NetworkUtil.TYPE_MOBILE_FOTA:
-            case ConnectivityManager.TYPE_ETHERNET:
-            case ConnectivityManager.TYPE_MOBILE_SUPL:
-            case NetworkUtil.TYPE_MOBILE_IA:
-            case NetworkUtil.TYPE_MOBILE_CBS:
-            case NetworkUtil.TYPE_MOBILE_EMERGENCY:
-            case NetworkUtil.TYPE_WIFI_P2P:
-                return true;
-            case ConnectivityManager.TYPE_BLUETOOTH:
-            case ConnectivityManager.TYPE_MOBILE_DUN:
-            case ConnectivityManager.TYPE_MOBILE_MMS:
-            case ConnectivityManager.TYPE_WIFI:
-            case NetworkUtil.TYPE_MOBILE_IMS:
-            default:
-                return false;
-        }
     }
 
     public static String getSystemVersionCode(int sdk) {
@@ -273,7 +206,6 @@ public class SystemInfoHelper {
     /**
      * 获取系统总内存
      *
-     * @param context 可传入应用程序上下文。
      * @return 总内存大单位为B。
      */
     public static long getTotalMemorySize() {
@@ -303,9 +235,6 @@ public class SystemInfoHelper {
         am.getMemoryInfo(memoryInfo);
         return memoryInfo.availMem;
     }
-
-    private static DecimalFormat fileIntegerFormat = new DecimalFormat("#0");
-    private static DecimalFormat fileDecimalFormat = new DecimalFormat("#0.##");
 
     /**
      * 单位换算

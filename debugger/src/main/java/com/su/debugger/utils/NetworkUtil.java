@@ -3,16 +3,18 @@ package com.su.debugger.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.su.debugger.BuildConfig;
+
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.Collections;
-import java.util.List;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 /**
  * Created by su on 14-6-3.
@@ -21,52 +23,98 @@ public final class NetworkUtil {
 
     private static final String TAG = NetworkUtil.class.getSimpleName();
 
-    private NetworkUtil() {
-    }
+    /**
+     * the constants below are all from
+     * @see android.telephony.TelephonyManager
+     * Unknown network class. {@hide}
+     */
+    public static final int NETWORK_CLASS_UNKNOWN = 0;
+    /**
+     * Class of broadly defined "2G" networks. {@hide}
+     */
+    public static final int NETWORK_CLASS_2_G = 1;
+    /**
+     * Class of broadly defined "3G" networks. {@hide}
+     */
+    public static final int NETWORK_CLASS_3_G = 2;
+    /**
+     * Class of broadly defined "4G" networks. {@hide}
+     */
+    public static final int NETWORK_CLASS_4_G = 3;
+    /*
+     * When adding a network type to the list below, make sure to add the correct icon to
+     * MobileSignalController.mapIconSets().
+     * Do not add negative types.
+     */
+    /** Network type is unknown */
+    public static final int NETWORK_TYPE_UNKNOWN = 0;
+    /** Current network is GPRS */
+    public static final int NETWORK_TYPE_GPRS = 1;
+    /** Current network is EDGE */
+    public static final int NETWORK_TYPE_EDGE = 2;
+    /** Current network is UMTS */
+    public static final int NETWORK_TYPE_UMTS = 3;
+    /** Current network is CDMA: Either IS95A or IS95B*/
+    public static final int NETWORK_TYPE_CDMA = 4;
+    /** Current network is EVDO revision 0*/
+    public static final int NETWORK_TYPE_EVDO_0 = 5;
+    /** Current network is EVDO revision A*/
+    public static final int NETWORK_TYPE_EVDO_A = 6;
+    /** Current network is 1xRTT*/
+    public static final int NETWORK_TYPE_1xRTT = 7;
+    /** Current network is HSDPA */
+    public static final int NETWORK_TYPE_HSDPA = 8;
+    /** Current network is HSUPA */
+    public static final int NETWORK_TYPE_HSUPA = 9;
+    /** Current network is HSPA */
+    public static final int NETWORK_TYPE_HSPA = 10;
+    /** Current network is iDen */
+    public static final int NETWORK_TYPE_IDEN= 11;
+    /** Current network is EVDO revision B*/
+    public static final int NETWORK_TYPE_EVDO_B = 12;
+    /** Current network is LTE */
+    public static final int NETWORK_TYPE_LTE = 13;
+    /** Current network is eHRPD */
+    public static final int NETWORK_TYPE_EHRPD = 14;
+    /** Current network is HSPA+ */
+    public static final int NETWORK_TYPE_HSPAP = 15;
+    /** Current network is GSM */
+    public static final int NETWORK_TYPE_GSM = 16;
+    /** Current network is TD_SCDMA */
+    public static final int NETWORK_TYPE_TD_SCDMA = 17;
+    /** Current network is IWLAN */
+    public static final int NETWORK_TYPE_IWLAN = 18;
+    /** Current network is LTE_CA {@hide} */
+    public static final int NETWORK_TYPE_LTE_CA = 19;
 
-    private static void log(String fieldName, String content) {
-        Log.w(TAG, fieldName + ": " + content);
+    private NetworkUtil() {
     }
 
     /*
     * 获取mac地址
     * */
-    public static String getMacAddress() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            WifiManager wifi = (WifiManager) GeneralInfoHelper.getContext().getSystemService(Context.WIFI_SERVICE);
-            WifiInfo info = wifi.getConnectionInfo();
-            return info.getMacAddress();
-        } else {
-            return getMacMacAddress23();
-        }
-    }
-
     @NonNull
-    private static String getMacMacAddress23() {
+    public static String getMacAddress() {
         try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!"wlan0".equalsIgnoreCase(nif.getName())) {
-                    continue;
+            for (Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces(); networkInterfaces.hasMoreElements(); ) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+                if ("wlan0".equals(networkInterface.getName())) {
+                    byte[] hardwareAddress = networkInterface.getHardwareAddress();
+                    if (hardwareAddress == null || hardwareAddress.length == 0) {
+                        continue;
+                    }
+                    StringBuilder buf = new StringBuilder();
+                    for (byte b : hardwareAddress) {
+                        buf.append(String.format("%02X:", b));
+                    }
+                    if (buf.length() > 0) {
+                        buf.deleteCharAt(buf.length() - 1);
+                    }
+                    return buf.toString();
                 }
-
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return "";
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(Integer.toHexString(b & 0xFF) + ":");
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
             }
-        } catch (Exception e) {
-            Log.i(TAG, e.getMessage(), e);
+        } catch (SocketException e) {
+            Log.w(TAG, e);
         }
         return "";
     }
@@ -115,62 +163,34 @@ public final class NetworkUtil {
     }
 
     /**
-     * Unknown network class. {@hide}
-     */
-    public static final int NETWORK_CLASS_UNKNOWN = 0;
-    /**
-     * Class of broadly defined "2G" networks. {@hide}
-     */
-    public static final int NETWORK_CLASS_2_G = 1;
-    /**
-     * Class of broadly defined "3G" networks. {@hide}
-     */
-    public static final int NETWORK_CLASS_3_G = 2;
-    /**
-     * Class of broadly defined "4G" networks. {@hide}
-     */
-    public static final int NETWORK_CLASS_4_G = 3;
-    /**
-     * Current network is GSM {@hide}
-     */
-    public static final int NETWORK_TYPE_GSM = 16;
-    /**
-     * Current network is TD_SCDMA {@hide}
-     */
-    public static final int NETWORK_TYPE_TD_SCDMA = 17;
-    /**
-     * Current network is IWLAN {@hide}
-     */
-    public static final int NETWORK_TYPE_IWLAN = 18;
-
-    /**
-     * from level api 23
+     * from level api 28
      * same as TelephonyManager.getNetworkClass(networkType) (hide)<br/>
      * Return general class of network type, such as "3G" or "4G". In cases
      * where classification is contentious, this method is conservative.
      */
     public static int getNetworkClass(int networkType) {
         switch (networkType) {
-            case TelephonyManager.NETWORK_TYPE_GPRS:
+            case NETWORK_TYPE_GPRS:
             case NETWORK_TYPE_GSM:
-            case TelephonyManager.NETWORK_TYPE_EDGE:
-            case TelephonyManager.NETWORK_TYPE_CDMA:
-            case TelephonyManager.NETWORK_TYPE_1xRTT:
-            case TelephonyManager.NETWORK_TYPE_IDEN:
+            case NETWORK_TYPE_EDGE:
+            case NETWORK_TYPE_CDMA:
+            case NETWORK_TYPE_1xRTT:
+            case NETWORK_TYPE_IDEN:
                 return NETWORK_CLASS_2_G;
-            case TelephonyManager.NETWORK_TYPE_UMTS:
-            case TelephonyManager.NETWORK_TYPE_EVDO_0:
-            case TelephonyManager.NETWORK_TYPE_EVDO_A:
-            case TelephonyManager.NETWORK_TYPE_HSDPA:
-            case TelephonyManager.NETWORK_TYPE_HSUPA:
-            case TelephonyManager.NETWORK_TYPE_HSPA:
-            case TelephonyManager.NETWORK_TYPE_EVDO_B:
-            case TelephonyManager.NETWORK_TYPE_EHRPD:
-            case TelephonyManager.NETWORK_TYPE_HSPAP:
+            case NETWORK_TYPE_UMTS:
+            case NETWORK_TYPE_EVDO_0:
+            case NETWORK_TYPE_EVDO_A:
+            case NETWORK_TYPE_HSDPA:
+            case NETWORK_TYPE_HSUPA:
+            case NETWORK_TYPE_HSPA:
+            case NETWORK_TYPE_EVDO_B:
+            case NETWORK_TYPE_EHRPD:
+            case NETWORK_TYPE_HSPAP:
             case NETWORK_TYPE_TD_SCDMA:
                 return NETWORK_CLASS_3_G;
-            case TelephonyManager.NETWORK_TYPE_LTE:
+            case NETWORK_TYPE_LTE:
             case NETWORK_TYPE_IWLAN:
+            case NETWORK_TYPE_LTE_CA:
                 return NETWORK_CLASS_4_G;
             default:
                 return NETWORK_CLASS_UNKNOWN;
@@ -197,51 +217,7 @@ public final class NetworkUtil {
     }
 
     /**
-     * Over the air Administration.
-     * {@hide}
-     */
-    public static final int TYPE_MOBILE_FOTA = 10;
-
-    /**
-     * IP Multimedia Subsystem.
-     * {@hide}
-     */
-    public static final int TYPE_MOBILE_IMS = 11;
-
-    /**
-     * Carrier Branded Services.
-     * {@hide}
-     */
-    public static final int TYPE_MOBILE_CBS = 12;
-
-    /**
-     * A Wi-Fi p2p connection. Only requesting processes will have access to
-     * the peers connected.
-     * {@hide}
-     */
-    public static final int TYPE_WIFI_P2P = 13;
-
-    /**
-     * The network to use for initially attaching to the network
-     * {@hide}
-     */
-    public static final int TYPE_MOBILE_IA = 14;
-
-    /**
-     * Emergency PDN connection for emergency services.  This
-     * may include IMS and MMS in emergency situations.
-     * {@hide}
-     */
-    public static final int TYPE_MOBILE_EMERGENCY = 15;
-
-    /**
-     * The network that uses proxy to achieve connectivity.
-     * {@hide}
-     */
-    public static final int TYPE_PROXY = 16;
-
-    /**
-     * level api 23
+     * level api 28
      * Returns a non-localized string representing a given network type.
      * ONLY used for debugging output.
      *
@@ -252,44 +228,46 @@ public final class NetworkUtil {
      */
     public static String getNetworkTypeName(int type) {
         switch (type) {
-            case ConnectivityManager.TYPE_MOBILE:
-                return "MOBILE";
-            case ConnectivityManager.TYPE_WIFI:
-                return "WIFI";
-            case ConnectivityManager.TYPE_MOBILE_MMS:
-                return "MOBILE_MMS";
-            case ConnectivityManager.TYPE_MOBILE_SUPL:
-                return "MOBILE_SUPL";
-            case ConnectivityManager.TYPE_MOBILE_DUN:
-                return "MOBILE_DUN";
-            case ConnectivityManager.TYPE_MOBILE_HIPRI:
-                return "MOBILE_HIPRI";
-            case ConnectivityManager.TYPE_WIMAX:
-                return "WIMAX";
-            case ConnectivityManager.TYPE_BLUETOOTH:
-                return "BLUETOOTH";
-            case ConnectivityManager.TYPE_DUMMY:
-                return "DUMMY";
-            case ConnectivityManager.TYPE_ETHERNET:
-                return "ETHERNET";
-            case TYPE_MOBILE_FOTA:
-                return "MOBILE_FOTA";
-            case TYPE_MOBILE_IMS:
-                return "MOBILE_IMS";
-            case TYPE_MOBILE_CBS:
-                return "MOBILE_CBS";
-            case TYPE_WIFI_P2P:
-                return "WIFI_P2P";
-            case TYPE_MOBILE_IA:
-                return "MOBILE_IA";
-            case TYPE_MOBILE_EMERGENCY:
-                return "MOBILE_EMERGENCY";
-            case TYPE_PROXY:
-                return "PROXY";
-            case ConnectivityManager.TYPE_VPN:
-                return "VPN";
+            case NETWORK_TYPE_GPRS:
+                return "GPRS";
+            case NETWORK_TYPE_EDGE:
+                return "EDGE";
+            case NETWORK_TYPE_UMTS:
+                return "UMTS";
+            case NETWORK_TYPE_HSDPA:
+                return "HSDPA";
+            case NETWORK_TYPE_HSUPA:
+                return "HSUPA";
+            case NETWORK_TYPE_HSPA:
+                return "HSPA";
+            case NETWORK_TYPE_CDMA:
+                return "CDMA";
+            case NETWORK_TYPE_EVDO_0:
+                return "CDMA - EvDo rev. 0";
+            case NETWORK_TYPE_EVDO_A:
+                return "CDMA - EvDo rev. A";
+            case NETWORK_TYPE_EVDO_B:
+                return "CDMA - EvDo rev. B";
+            case NETWORK_TYPE_1xRTT:
+                return "CDMA - 1xRTT";
+            case NETWORK_TYPE_LTE:
+                return "LTE";
+            case NETWORK_TYPE_EHRPD:
+                return "CDMA - eHRPD";
+            case NETWORK_TYPE_IDEN:
+                return "iDEN";
+            case NETWORK_TYPE_HSPAP:
+                return "HSPA+";
+            case NETWORK_TYPE_GSM:
+                return "GSM";
+            case NETWORK_TYPE_TD_SCDMA:
+                return "TD_SCDMA";
+            case NETWORK_TYPE_IWLAN:
+                return "IWLAN";
+            case NETWORK_TYPE_LTE_CA:
+                return "LTE_CA";
             default:
-                return Integer.toString(type);
+                return "UNKNOWN";
         }
     }
 
@@ -309,45 +287,52 @@ public final class NetworkUtil {
         return "unknown";
     }
 
-    /**
-     * 获取当前网络类型
-     * same as TelephonyManager.getNetworkTypeName(int)<br/>
-     * we can not call TelephonyManager.getNetworkTypeName(int) directly, it's a hidden method.
-     */
-    public static String getMobileNetworkTypeName(int type) {
-        switch (type) {
-            case TelephonyManager.NETWORK_TYPE_GPRS:
-                return "GPRS";
-            case TelephonyManager.NETWORK_TYPE_EDGE:
-                return "EDGE";
-            case TelephonyManager.NETWORK_TYPE_UMTS:
-                return "UMTS";
-            case TelephonyManager.NETWORK_TYPE_HSDPA:
-                return "HSDPA";
-            case TelephonyManager.NETWORK_TYPE_HSUPA:
-                return "HSUPA";
-            case TelephonyManager.NETWORK_TYPE_HSPA:
-                return "HSPA";
-            case TelephonyManager.NETWORK_TYPE_CDMA:
-                return "CDMA";
-            case TelephonyManager.NETWORK_TYPE_EVDO_0:
-                return "CDMA - EvDo rev. 0";
-            case TelephonyManager.NETWORK_TYPE_EVDO_A:
-                return "CDMA - EvDo rev. A";
-            case TelephonyManager.NETWORK_TYPE_EVDO_B:
-                return "CDMA - EvDo rev. B";
-            case TelephonyManager.NETWORK_TYPE_1xRTT:
-                return "CDMA - 1xRTT";
-            case TelephonyManager.NETWORK_TYPE_LTE:
-                return "LTE";
-            case TelephonyManager.NETWORK_TYPE_EHRPD:
-                return "CDMA - eHRPD";
-            case TelephonyManager.NETWORK_TYPE_IDEN:
-                return "iDEN";
-            case TelephonyManager.NETWORK_TYPE_HSPAP:
-                return "HSPA+";
-            default:
-                return "UNKNOWN";
+    public static String getIpv4Address() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        String hostAddress = inetAddress.getHostAddress();
+                        if (BuildConfig.DEBUG) {
+                            Log.d(TAG, "getIpv4Address:" + hostAddress);
+                        }
+                        return hostAddress;
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            Log.e(TAG, ex.toString());
         }
+        return null;
+    }
+
+    public static String getIpv6Address() {
+        try {
+            String address = null;
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet6Address) {
+                        String hostAddress = inetAddress.getHostAddress();
+                        if (BuildConfig.DEBUG) {
+                            Log.d(TAG, "getIpv6Address:" + hostAddress);
+                        }
+                        int index = hostAddress.indexOf("%");
+                        if (index >= 0 && "wlan0".equalsIgnoreCase((hostAddress).substring(index + 1).trim())) {
+                            return inetAddress.getHostAddress().substring(0, index).toUpperCase();
+                        } else if (index < 0) {
+                            address = inetAddress.getHostAddress();
+                        }
+                    }
+                }
+            }
+            return address;
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
+        return null;
     }
 }

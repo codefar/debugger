@@ -262,6 +262,33 @@ public final class IOUtil {
         return null;
     }
 
+    public static void copyFile(@NonNull File sourceFile, @NonNull File destinationFile) {
+        InputStream source = null;
+        OutputStream destination = null;
+        try {
+            source = new FileInputStream(sourceFile);
+            destination = new FileOutputStream(destinationFile);
+            byte[] buffer = new byte[1024];
+            int nread;
+
+            while ((nread = source.read(buffer)) != -1) {
+                if (nread == 0) {
+                    nread = source.read();
+                    if (nread < 0)
+                        break;
+                    destination.write(nread);
+                    continue;
+                }
+                destination.write(buffer, 0, nread);
+            }
+        } catch (IOException e) {
+            Log.w(TAG, "sourceFile: " + sourceFile.getAbsolutePath(), e);
+        } finally {
+            close(destination);
+            close(source);
+        }
+    }
+
     public static void processAllFiles(@NonNull File file, @NonNull FileProcessor fileProcessor) {
         File[] files = file.listFiles();
         if (files == null) {

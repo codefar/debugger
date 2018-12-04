@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.su.debugger.R;
 import com.su.debugger.entity.SystemInfo;
 import com.su.debugger.utils.GeneralInfoHelper;
+import com.su.debugger.utils.NetworkUtil;
 import com.su.debugger.utils.SystemInfoHelper;
 import com.su.debugger.utils.UiHelper;
 import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
@@ -164,8 +165,9 @@ public class PhoneInfoActivity extends BaseAppCompatActivity {
             }
         }
         desc += "\n\n" + "Wifi SSID: " + ssid;
-        desc += "\n\n" + "IPv4: " + SystemInfoHelper.getIpv4Address(); //TODO ipv6
-        desc += "\n\n" + "Mac地址: " + SystemInfoHelper.getMac();
+        desc += "\n\n" + "IPv4: " + NetworkUtil.getIpv4Address();
+        desc += "\n\n" + "IPv6: " + NetworkUtil.getIpv6Address();
+        desc += "\n\n" + "Mac地址: " + NetworkUtil.getMacAddress();
         info.setDesc(desc);
         return info;
     }

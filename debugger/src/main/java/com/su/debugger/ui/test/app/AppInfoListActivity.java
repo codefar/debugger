@@ -69,7 +69,7 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
         group1.add(new Pair<>("应用名称", GeneralInfoHelper.getAppName()));
         group1.add(new Pair<>("版本名称", GeneralInfoHelper.getVersionName()));
         group1.add(new Pair<>("版本号", String.valueOf(GeneralInfoHelper.getVersionCode())));
-        group1.add(new Pair<>("包名", GeneralInfoHelper.getPackageName()));
+        group1.add(new Pair<>("应用包名", GeneralInfoHelper.getPackageName()));
 
         int compileSdkVersion = GeneralInfoHelper.getCompileSdkVersion();
         int minSdkVersion = GeneralInfoHelper.getMinSdkVersion();
@@ -84,7 +84,6 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
             group1.add(new Pair<>("targetSdkVersion", targetSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(targetSdkVersion)+ ", " + SystemInfoHelper.getSystemVersionName(targetSdkVersion)+ ")"));
         }
         group1.add(new Pair<>("debuggable", String.valueOf(GeneralInfoHelper.isDebuggable())));
-        group1.add(new Pair<>("首次打开应用", String.valueOf(GeneralInfoHelper.isFirstTime())));
         group1.add(new Pair<>("Uid", String.valueOf(GeneralInfoHelper.getUid())));
         group1.add(new Pair<>("Application类名", String.valueOf(GeneralInfoHelper.getApplicationClassName())));
         return group1;
@@ -94,6 +93,8 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
         List<Pair<String, String>> group2 = new ArrayList<>();
         group2.add(new Pair<>("应用安装时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getInstallTime()))));
         group2.add(new Pair<>("应用最近更新时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getUpdateTime()))));
+        group2.add(new Pair<>("首次打开应用时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getFirstLaunchTime()))));
+        group2.add(new Pair<>("本次打开应用时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getLaunchTime()))));
         return group2;
     }
 
@@ -116,6 +117,7 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
         if (!TextUtils.isEmpty(sha256)) {
             group3.add(new Pair<>("Apk SHA256", sha256.replaceFirst("\\s.+$", "")));
         }
+        group3.add(new Pair<>("Apk路径", apkFilePath));
         group3.add(new Pair<>("Native路径", GeneralInfoHelper.getNativeLibraryDir()));
         group3.add(new Pair<>("应用私有数据路径", GeneralInfoHelper.getDataDir()));
         return group3;
