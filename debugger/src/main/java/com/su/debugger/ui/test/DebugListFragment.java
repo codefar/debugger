@@ -35,6 +35,7 @@ import com.su.debugger.R;
 import com.su.debugger.ui.test.app.AppComponentActivity;
 import com.su.debugger.ui.test.app.AppInfoListActivity;
 import com.su.debugger.ui.test.app.DataExportActivity;
+import com.su.debugger.ui.test.app.FeatureListActivity;
 import com.su.debugger.ui.test.app.PermissionListActivity;
 import com.su.debugger.ui.test.app.SharedPreferenceDetailActivity;
 import com.su.debugger.ui.test.app.SharedPreferenceListActivity;
@@ -104,6 +105,11 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                                                   + "CPU 位数: " + SystemInfoHelper.getCpuBit());
         findPreference("app_component_info").setOnPreferenceClickListener(this);
         findPreference("permission").setOnPreferenceClickListener(this);
+        Preference featurePreference = findPreference("feature");
+        featurePreference.setOnPreferenceClickListener(this);
+        if (AppHelper.getRequiredFeatures(mActivity).isEmpty()) {
+            featurePreference.setVisible(false);
+        }
         mSharedPreferencePreference = findPreference("shared_preference");
         mSharedPreferencePreference.setOnPreferenceClickListener(this);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
@@ -333,8 +339,10 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             case "permission":
                 startActivity(new Intent(mActivity, PermissionListActivity.class));
                 return true;
+            case "feature":
+                startActivity(new Intent(mActivity, FeatureListActivity.class));
+                return true;
             case "data_export":
-                //exportApkFile();
                 startActivity(new Intent(mActivity, DataExportActivity.class));
                 return true;
             case "shared_preference":

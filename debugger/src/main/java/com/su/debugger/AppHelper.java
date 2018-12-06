@@ -8,6 +8,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.FeatureInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -32,6 +34,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,6 +59,18 @@ public final class AppHelper {
     public static boolean isPhone(Context context) {
         PackageManager pm = context.getPackageManager();
         return pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
+    }
+
+    public static List<FeatureInfo> getRequiredFeatures(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
+            if (packageInfo.reqFeatures != null) {
+                return Arrays.asList(packageInfo.reqFeatures);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, e);
+        }
+        return new ArrayList<>();
     }
 
     public static String encodeString(String str) {

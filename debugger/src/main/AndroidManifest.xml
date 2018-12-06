@@ -83,6 +83,12 @@
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:screenOrientation="portrait"/>
+        <!-- Feature列表 -->
+        <activity
+            android:name=".ui.test.app.FeatureListActivity"
+            android:exported="false"
+            android:theme="@style/DebuggerListTheme"
+            android:screenOrientation="portrait"/>
         <!-- SharedPreference列表 -->
         <activity
             android:name=".ui.test.app.SharedPreferenceListActivity"
