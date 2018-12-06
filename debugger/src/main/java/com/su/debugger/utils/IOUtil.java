@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -122,6 +123,20 @@ public final class IOUtil {
             Log.e(TAG, "filepath: " + filepath, e);
         }
         return null;
+    }
+
+    public static boolean hasFilesInDir(@NonNull File dir) {
+        if (dir.exists() && dir.isDirectory()) {
+            return dir.list().length > 0;
+        }
+        return false;
+    }
+
+    public static boolean hasFilesInDir(@NonNull File dir, @NonNull FilenameFilter filenameFilter) {
+        if (dir.exists() && dir.isDirectory()) {
+            return dir.listFiles(filenameFilter).length > 0;
+        }
+        return false;
     }
 
     public static boolean isSameFile(@NonNull File file1, @NonNull File file2) throws IOException {
@@ -244,7 +259,7 @@ public final class IOUtil {
     public static void writeExtractedFileToDisk(InputStream in, OutputStream outs) throws IOException {
         byte[] buffer = new byte[1024];
         int length;
-        while ((length = in.read(buffer)) > 0){
+        while ((length = in.read(buffer)) > 0) {
             outs.write(buffer, 0, length);
         }
         outs.flush();
@@ -286,6 +301,37 @@ public final class IOUtil {
         } finally {
             close(destination);
             close(source);
+        }
+    }
+
+    public static void copyDirectory(File sourceLocation, File targetLocation) {
+        if (sourceLocation.isDirectory()) {
+            if (!targetLocation.exists()) {
+                targetLocation.mkdirs();
+            }
+
+            String[] children = sourceLocation.list();
+            for (int i = 0; i < children.length; i++) {
+                copyDirectory(new File(sourceLocation, children[i]), new File(targetLocation, children[i]));
+            }
+        } else {
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                in = new FileInputStream(sourceLocation);
+                out = new FileOutputStream(targetLocation);
+                // Copy the bits from instream to outstream
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+            } catch (IOException e) {
+                Log.w(TAG, e);
+            } finally {
+                close(in);
+                close(out);
+            }
         }
     }
 

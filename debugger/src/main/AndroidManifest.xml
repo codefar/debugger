@@ -36,6 +36,11 @@
             android:name=".ui.test.app.AppInfoListActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"/>
+        <!--应用数据导出-->
+        <activity
+            android:name=".ui.test.app.DataExportActivity"
+            android:exported="false"
+            android:theme="@style/DebuggerListTheme"/>
         <!--切换host弹窗-->
         <activity
             android:name=".ui.test.HostsActivity"
