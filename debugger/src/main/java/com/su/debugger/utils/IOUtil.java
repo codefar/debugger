@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,11 +50,11 @@ public final class IOUtil {
      *
      * @param closeable closeable object
      */
-    public static void close(Closeable closeable) {
+    public static void close(AutoCloseable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.w(TAG, e);
             }
         }
@@ -66,11 +65,11 @@ public final class IOUtil {
      *
      * @param closeable closeable object
      */
-    public static void closeQuietly(Closeable closeable) {
+    public static void closeQuietly(AutoCloseable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // Ignored
             }
         }
