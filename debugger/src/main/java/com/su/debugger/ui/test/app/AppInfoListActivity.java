@@ -22,6 +22,7 @@ import com.su.debugger.AppHelper;
 import com.su.debugger.R;
 import com.su.debugger.ui.test.BaseAppCompatActivity;
 import com.su.debugger.utils.GeneralInfoHelper;
+import com.su.debugger.utils.ManifestParser;
 import com.su.debugger.utils.SystemInfoHelper;
 import com.su.debugger.utils.UiHelper;
 
@@ -74,6 +75,17 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
         int compileSdkVersion = GeneralInfoHelper.getCompileSdkVersion();
         int minSdkVersion = GeneralInfoHelper.getMinSdkVersion();
         int targetSdkVersion = GeneralInfoHelper.getTargetSdkVersion();
+        ManifestParser parser = new ManifestParser(this);
+        int[] sdkVersions = parser.getSdkVersions();
+        if (compileSdkVersion == 0 && sdkVersions[0] > 0) {
+            compileSdkVersion = sdkVersions[0];
+        }
+        if (minSdkVersion == 0 && sdkVersions[1] > 0) {
+            minSdkVersion = sdkVersions[1];
+        }
+        if (targetSdkVersion == 0 && sdkVersions[2] > 0) {
+            targetSdkVersion = sdkVersions[2];
+        }
         if (compileSdkVersion > 0) {
             group1.add(new Pair<>("compileSdkVersion", compileSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(compileSdkVersion)+ ", " + SystemInfoHelper.getSystemVersionName(compileSdkVersion)+ ")"));
         }

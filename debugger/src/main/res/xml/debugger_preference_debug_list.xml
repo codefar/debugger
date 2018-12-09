@@ -16,7 +16,7 @@
         <android.support.v7.preference.Preference
             android:key="app_component_info"
             android:title="组件信息"
-            android:summary="应用四大组件信息以及模拟activity跳转传参"/>
+            android:summary="应用四大组件信息以及模拟activity跳转传参，manifest文件查看"/>
         <android.support.v7.preference.Preference
             android:key="data_export"
             android:title="数据导出"

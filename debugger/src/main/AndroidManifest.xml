@@ -153,6 +153,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"
             android:windowSoftInputMode="stateHidden"/>
+        <!-- 文本浏览 -->
+        <activity
+            android:name=".ui.test.XmlViewerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/DebuggerListTheme"
+            android:windowSoftInputMode="stateHidden"/>
         <!--android 7.0+ status bar快速入口-->
         <service
             android:name=".service.QuickSettingService"

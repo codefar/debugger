@@ -15,6 +15,7 @@ import com.su.debugger.R;
 import com.su.debugger.ui.test.BaseAppCompatActivity;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.IOUtil;
+import com.su.debugger.utils.ManifestParser;
 import com.su.debugger.widget.SimpleBlockedDialogFragment;
 
 import java.io.File;
@@ -23,10 +24,11 @@ import java.io.FilenameFilter;
 public class DataExportActivity extends BaseAppCompatActivity {
     private static final String TAG = DataExportActivity.class.getSimpleName();
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
-    private static final File EXPORTED_APK_FILE = new File(Debugger.getDebuggerSdcardDir(), "exported-" + GeneralInfoHelper.getVersionName() + "-" + GeneralInfoHelper.getAppName() + ".apk");
-    private static final File EXPORTED_SO_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), "native");
-    private static final File EXPORTED_DATABASE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), "databases");
-    private static final File EXPORTED_SHARED_PREFERENCE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), "shared_prefs");
+    private static final File EXPORTED_APK_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-" + GeneralInfoHelper.getAppName() + ".apk");
+    private static final File EXPORTED_MANIFEST_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-manifest.xml");
+    private static final File EXPORTED_SO_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-native");
+    private static final File EXPORTED_DATABASE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-databases");
+    private static final File EXPORTED_SHARED_PREFERENCE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-shared_prefs");
     private static File EXPORTED_SHARED_PRIVATE_DIR_FILE;
 
     @Override
@@ -82,6 +84,24 @@ public class DataExportActivity extends BaseAppCompatActivity {
                         IOUtil.copyFile(so, new File(EXPORTED_SO_DIR_FILE, so.getName()));
                     }
                     mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将so导出到" + EXPORTED_SO_DIR_FILE.getAbsolutePath(), Toast.LENGTH_LONG).show());
+                    DIALOG_FRAGMENT.dismissAllowingStateLoss();
+                }
+            }.start();
+        }
+
+        private void exportManifestFile() {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            DIALOG_FRAGMENT.show(ft, "导出中...");
+            new Thread() {
+                @Override
+                public void run() {
+                    File dir = EXPORTED_MANIFEST_FILE.getParentFile();
+                    if (!dir.exists()) {
+                        dir.mkdirs();
+                    }
+                    ManifestParser parser = new ManifestParser(mActivity);
+                    IOUtil.writeFile(EXPORTED_MANIFEST_FILE.getAbsolutePath(), parser.getManifest());
+                    mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "已将apk导出到" + EXPORTED_MANIFEST_FILE.getAbsolutePath(), Toast.LENGTH_LONG).show());
                     DIALOG_FRAGMENT.dismissAllowingStateLoss();
                 }
             }.start();
@@ -167,6 +187,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
                 soPreference.setEnabled(false);
                 soPreference.setSummary("暂无So文件");
             }
+            findPreference("manifest").setOnPreferenceClickListener(this);
 
             Preference databasePreference = findPreference("database");
             databasePreference.setOnPreferenceClickListener(this);
@@ -206,6 +227,9 @@ public class DataExportActivity extends BaseAppCompatActivity {
                     break;
                 case "so":
                     exportSoFile();
+                    break;
+                case "manifest":
+                    exportManifestFile();
                     break;
                 case "database":
                     exportDatabaseFile();

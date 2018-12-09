@@ -8,6 +8,8 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.su.debugger.R;
 import com.su.debugger.ui.test.BaseAppCompatActivity;
+import com.su.debugger.ui.test.XmlViewerActivity;
+import com.su.debugger.utils.ManifestParser;
 
 /**
  * Created by su on 17-5-27.
@@ -41,6 +43,7 @@ public class AppComponentActivity extends BaseAppCompatActivity {
             findPreference("service").setOnPreferenceClickListener(this);
             findPreference("receiver").setOnPreferenceClickListener(this);
             findPreference("provider").setOnPreferenceClickListener(this);
+            findPreference("manifest").setOnPreferenceClickListener(this);
         }
 
         @Override
@@ -60,11 +63,22 @@ public class AppComponentActivity extends BaseAppCompatActivity {
                 case "provider":
                     intent.putExtra("type", "provider");
                     break;
+                case "manifest":
+                    startTextViewerActivity();
+                    return true;
                 default:
                     break;
             }
             startActivity(intent);
             return true;
+        }
+
+        private void startTextViewerActivity() {
+            ManifestParser parser = new ManifestParser(mActivity);
+            Intent intent = new Intent(mActivity, XmlViewerActivity.class);
+            intent.putExtra("title", "Manifest文件");
+            intent.putExtra("content", parser.getManifest());
+            startActivity(intent);
         }
     }
 

@@ -45,8 +45,8 @@ public class ManifestParser {
         return manifest;
     }
 
-    public String[] getSdkVersions() {
-        String[] sdkVersions = new String[3];
+    public int[] getSdkVersions() {
+        int[] sdkVersions = new int[3];
         XmlResourceParser parser = null;
         try {
             AssetManager assetManager = mContext.createPackageContext(mPackageName, 0).getAssets();
@@ -61,7 +61,7 @@ public class ManifestParser {
         return sdkVersions;
     }
 
-    private void getSdkVersions(@NonNull XmlResourceParser parser, @NonNull String[] sdkVersions) {
+    private void getSdkVersions(@NonNull XmlResourceParser parser, @NonNull int[] sdkVersions) {
         String compileSdkVersion = "";
         String minSdkVersion = "";
         String targetSdkVersion = "";
@@ -83,15 +83,23 @@ public class ManifestParser {
                     count++;
                 }
                 if (count == 2) {
-                    sdkVersions[0] = compileSdkVersion;
-                    sdkVersions[1] = minSdkVersion;
-                    sdkVersions[2] = targetSdkVersion;
+                    sdkVersions[0] = parseInt(compileSdkVersion);
+                    sdkVersions[1] = parseInt(minSdkVersion);
+                    sdkVersions[2] = parseInt(targetSdkVersion);
                     break;
                 }
                 eventType = parser.next();
             }
         } catch (IOException | XmlPullParserException e) {
             Log.w(TAG, e);
+        }
+    }
+
+    private static int parseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 
