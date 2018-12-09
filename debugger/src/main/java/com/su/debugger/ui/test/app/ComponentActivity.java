@@ -98,7 +98,7 @@ public class ComponentActivity extends BaseAppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
                 mPager.setCurrentItem(position);
-                if (!"activity".equalsIgnoreCase(mType)) {
+                if (!"activity".equalsIgnoreCase(mType) && !"service".equalsIgnoreCase(mType)) {
                     return;
                 }
                 Menu menu = mToolbar.getMenu();
@@ -155,7 +155,7 @@ public class ComponentActivity extends BaseAppCompatActivity {
     @MenuRes
     @Override
     public int menuRes() {
-        if ("activity".equalsIgnoreCase(mType)) {
+        if ("activity".equalsIgnoreCase(mType) || "service".equalsIgnoreCase(mType)) {
             return R.menu.debugger_activity_parameters_menu;
         }
         return 0;
@@ -185,7 +185,11 @@ public class ComponentActivity extends BaseAppCompatActivity {
             }
         }
         intent.setComponent(mComponentName);
-        startActivity(intent);
+        if ("activity".equalsIgnoreCase(mType)) {
+            startActivity(intent);
+        } else if ("service".equalsIgnoreCase(mType)) {
+            startService(intent);
+        }
     }
 
     @Override
