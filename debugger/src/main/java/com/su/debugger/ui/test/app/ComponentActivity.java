@@ -30,11 +30,15 @@ import java.util.List;
 public class ComponentActivity extends BaseAppCompatActivity {
 
     private static final String TAG = ComponentActivity.class.getSimpleName();
+    private int mTabSize = 1;
+    private int mExtrasTabIndex = -1;
+    private int mFlagsTabIndex = -1;
     private String mType;
     private ComponentInfo mComponentInfo;
     private NoteComponentEntity mNoteComponent;
     private ComponentName mComponentName;
-    private ComponentParametersFragment mComponentParametersFragment;
+    private ComponentExtrasFragment mComponentExtrasFragment;
+    private ComponentFlagsFragment mComponentFlagsFragment;
     private ViewPager mPager;
     private TabLayout mTabLayout;
 
@@ -57,10 +61,8 @@ public class ComponentActivity extends BaseAppCompatActivity {
             mNoteComponent = new NoteComponentEntity();
         }
 
-        mPager = findViewById(R.id.pager);
-        mPager.setAdapter(new InfoPagerAdapter(getSupportFragmentManager()));
         mTabLayout = findViewById(R.id.tab_layout);
-        if (mNoteComponent.getParameters().isEmpty()) {
+        if (mNoteComponent.getParameters().isEmpty() && !"activity".equalsIgnoreCase(mType)) {
             mTabLayout.setVisibility(View.GONE);
         } else {
             mTabLayout.setVisibility(View.VISIBLE);
@@ -76,6 +78,69 @@ public class ComponentActivity extends BaseAppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        setTitle();
+
+        mPager = findViewById(R.id.pager);
+        mTabLayout.addOnTabSelectedListener(new SimpleOnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                mPager.setCurrentItem(position);
+                if (!"activity".equalsIgnoreCase(mType) && !"service".equalsIgnoreCase(mType)) {
+                    return;
+                }
+                Menu menu = mToolbar.getMenu();
+                MenuItem format = menu.findItem(R.id.format);
+                if (position == 1) {
+                    format.setVisible(!mNoteComponent.getParameters().isEmpty());
+                } else if (mNoteComponent.getParameters().isEmpty()) {
+                    format.setVisible(false);
+                } else {
+                    format.setVisible(false);
+                }
+            }
+        });
+
+        mTabLayout.addTab(makeTab("Info"));
+        if (!mNoteComponent.getParameters().isEmpty()) {
+            mTabLayout.addTab(makeTab("Extras"));
+            mExtrasTabIndex = 1;
+            mTabSize += 1;
+        }
+        if ("activity".equalsIgnoreCase(mType)) {
+            mTabLayout.addTab(makeTab("Flags"));
+            mFlagsTabIndex = mExtrasTabIndex + 1;
+            mTabSize += 1;
+        }
+        mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mPager.setAdapter(new InfoPagerAdapter(getSupportFragmentManager()));
+    }
+
+    private class InfoPagerAdapter extends FragmentPagerAdapter {
+        InfoPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            if (i == 0) {
+                return ComponentInfoFragment.newInstance(mType, mNoteComponent, mComponentInfo);
+            } else if (i == mExtrasTabIndex) {
+                mComponentExtrasFragment = ComponentExtrasFragment.newInstance(mNoteComponent);
+                return mComponentExtrasFragment;
+            } else {
+                mComponentFlagsFragment = ComponentFlagsFragment.newInstance(mNoteComponent);
+                return mComponentFlagsFragment;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return mTabSize;
+        }
+    }
+
+    private void setTitle() {
         switch (mType) {
             case "activity":
                 setTitle("Activity详情");
@@ -92,64 +157,6 @@ public class ComponentActivity extends BaseAppCompatActivity {
             default:
                 break;
         }
-        mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
-        mTabLayout.addOnTabSelectedListener(new SimpleOnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
-                mPager.setCurrentItem(position);
-                if (!"activity".equalsIgnoreCase(mType) && !"service".equalsIgnoreCase(mType)) {
-                    return;
-                }
-                Menu menu = mToolbar.getMenu();
-                MenuItem format = menu.findItem(R.id.format);
-                MenuItem go = menu.findItem(R.id.go);
-                if (position == 1) {
-                    format.setVisible(!mNoteComponent.getParameters().isEmpty());
-                    go.setVisible(true);
-                } else if (mNoteComponent.getParameters().isEmpty()) {
-                    format.setVisible(false);
-                    go.setVisible(true);
-                } else {
-                    format.setVisible(false);
-                    go.setVisible(false);
-                }
-            }
-        });
-        mTabLayout.addTab(makeTab("组件信息"));
-        if (!mNoteComponent.getParameters().isEmpty()) {
-            mTabLayout.addTab(makeTab("参数列表"));
-        }
-    }
-
-    private class InfoPagerAdapter extends FragmentPagerAdapter {
-        InfoPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int i) {
-            if (i == 0) {
-                return ComponentInfoFragment.newInstance(mType, mNoteComponent, mComponentInfo);
-            } else {
-                mComponentParametersFragment = ComponentParametersFragment.newInstance(mNoteComponent);
-                return mComponentParametersFragment;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return mNoteComponent.getParameters().isEmpty() ? 1 : 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if (position == 0) {
-                return "组件信息";
-            } else {
-                return "参数列表";
-            }
-        }
     }
 
     @MenuRes
@@ -163,7 +170,7 @@ public class ComponentActivity extends BaseAppCompatActivity {
 
     //格式化当前EditText中的参数
     public void format(MenuItem item) {
-        mComponentParametersFragment.format();
+        mComponentExtrasFragment.format();
         if (mPager.getCurrentItem() != 1) {
             mPager.setCurrentItem(1);
         }
@@ -175,8 +182,8 @@ public class ComponentActivity extends BaseAppCompatActivity {
         if (parameters.isEmpty()) {
             intent = new Intent();
         } else {
-            if (mComponentParametersFragment.checkRequired()) {
-                intent = mComponentParametersFragment.makeIntent();
+            if (mComponentExtrasFragment.checkRequired()) {
+                intent = mComponentExtrasFragment.makeIntent();
             } else {
                 if (mPager.getCurrentItem() != 1) {
                     mPager.setCurrentItem(1);
@@ -185,6 +192,12 @@ public class ComponentActivity extends BaseAppCompatActivity {
             }
         }
         intent.setComponent(mComponentName);
+        //flags
+        if (mComponentFlagsFragment != null) {
+            int flags = mComponentFlagsFragment.getFlags();
+            intent.setFlags(flags);
+        }
+        //start
         if ("activity".equalsIgnoreCase(mType)) {
             startActivity(intent);
         } else if ("service".equalsIgnoreCase(mType)) {

@@ -16,6 +16,8 @@ public @interface NoteComponent {
 
     String action() default "";
 
+    int flags() default 0;
+
     String buildType() default "release";
 
     String type();

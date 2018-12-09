@@ -225,6 +225,7 @@ public class NoteProcessor extends AbstractProcessor {
             entity.setDescription(noteComponent.description());
             entity.setClassName(e.getQualifiedName().toString());
             entity.setAction(noteComponent.action());
+            entity.setFlags(noteComponent.flags());
             entity.setBuildType(noteComponent.buildType());
             entity.setType(noteComponent.type());
             com.su.annotations.Parameter[] parameters = noteComponent.parameters();

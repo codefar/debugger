@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -17,6 +18,7 @@ public class NoteComponentEntity implements Parcelable {
     private String action;
     private String buildType;
     private String type;
+    private int flags;
     private ArrayList<Parameter> parameters = new ArrayList<>();
 
     public NoteComponentEntity() {}
@@ -25,20 +27,21 @@ public class NoteComponentEntity implements Parcelable {
         description = src.description;
         className = src.className;
         action = src.action;
+        flags = src.flags;
         buildType = src.buildType;
         type = src.type;
-
         for (Parameter p : src.parameters) {
             parameters.add(p.clone());
         }
     }
 
-    protected NoteComponentEntity(Parcel in) {
+    public NoteComponentEntity(Parcel in) {
         description = in.readString();
         className = in.readString();
         action = in.readString();
         buildType = in.readString();
         type = in.readString();
+        flags = in.readInt();
         parameters = in.createTypedArrayList(Parameter.CREATOR);
     }
 
@@ -49,6 +52,7 @@ public class NoteComponentEntity implements Parcelable {
         dest.writeString(action);
         dest.writeString(buildType);
         dest.writeString(type);
+        dest.writeInt(this.flags);
         dest.writeTypedList(parameters);
     }
 
@@ -109,6 +113,14 @@ public class NoteComponentEntity implements Parcelable {
         this.description = description;
     }
 
+    public int getFlags() {
+        return flags;
+    }
+
+    public void setFlags(int flags) {
+        this.flags = flags;
+    }
+
     public ArrayList<Parameter> getParameters() {
         return parameters;
     }
@@ -147,7 +159,8 @@ public class NoteComponentEntity implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NoteComponentEntity that = (NoteComponentEntity) o;
-        return Objects.equals(description, that.description) &&
+        return flags == that.flags &&
+                Objects.equals(description, that.description) &&
                 Objects.equals(className, that.className) &&
                 Objects.equals(action, that.action) &&
                 Objects.equals(buildType, that.buildType) &&
@@ -157,8 +170,7 @@ public class NoteComponentEntity implements Parcelable {
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(description, className, action, buildType, type, parameters);
+        return Objects.hash(description, className, action, buildType, type, flags, parameters);
     }
 
     @NonNull
@@ -170,6 +182,7 @@ public class NoteComponentEntity implements Parcelable {
                 ", action='" + action + '\'' +
                 ", buildType='" + buildType + '\'' +
                 ", type='" + type + '\'' +
+                ", flags=" + flags +
                 ", parameters=" + parameters +
                 '}';
     }

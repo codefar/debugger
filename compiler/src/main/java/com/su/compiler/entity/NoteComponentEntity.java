@@ -10,6 +10,7 @@ public class NoteComponentEntity {
     private String description;
     private String className;
     private String action;
+    private int flags;
     private String buildType;
     private String type;
     private Parameter[] parameters;
@@ -28,6 +29,14 @@ public class NoteComponentEntity {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public int getFlags() {
+        return flags;
+    }
+
+    public void setFlags(int flags) {
+        this.flags = flags;
     }
 
     public String getBuildType() {
@@ -68,9 +77,10 @@ public class NoteComponentEntity {
                 "description='" + description + '\'' +
                 ", className='" + className + '\'' +
                 ", action='" + action + '\'' +
+                ", flags=" + flags +
                 ", buildType='" + buildType + '\'' +
                 ", type='" + type + '\'' +
-                ", requestBody=" + Arrays.toString(parameters) +
+                ", parameters=" + Arrays.toString(parameters) +
                 '}';
     }
 }

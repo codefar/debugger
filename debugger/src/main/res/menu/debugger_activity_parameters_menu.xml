@@ -12,6 +12,5 @@
         android:icon="@drawable/debugger_menu_go"
         android:onClick="go"
         android:title="go"
-        app:showAsAction="always"
-        android:visible="false"/>
+        app:showAsAction="always"/>
 </menu>

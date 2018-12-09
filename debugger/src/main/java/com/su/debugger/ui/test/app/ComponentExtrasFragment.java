@@ -47,9 +47,9 @@ import java.util.List;
  * Created by su on 17-12-25.
  */
 
-public class ComponentParametersFragment extends Fragment {
+public class ComponentExtrasFragment extends Fragment {
 
-    private static final String TAG = ComponentParametersFragment.class.getSimpleName();
+    private static final String TAG = ComponentExtrasFragment.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private ParameterViewAdapter mParameterAdapter;
     private FragmentActivity mActivity;
@@ -57,8 +57,8 @@ public class ComponentParametersFragment extends Fragment {
     private NoteComponentEntity mFinalComponent;
     private static final int DEFAULT_ARRAY_SIZE = 2;
 
-    static ComponentParametersFragment newInstance(NoteComponentEntity noteComponent) {
-        ComponentParametersFragment fragment = new ComponentParametersFragment();
+    static ComponentExtrasFragment newInstance(NoteComponentEntity noteComponent) {
+        ComponentExtrasFragment fragment = new ComponentExtrasFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("note", noteComponent);
         fragment.setArguments(bundle);
