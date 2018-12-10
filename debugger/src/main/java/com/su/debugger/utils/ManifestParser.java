@@ -11,6 +11,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.su.debugger.ui.test.app.PermissionListActivity;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -23,11 +25,17 @@ public class ManifestParser {
     private Context mContext;
     private Resources mResources;
     private String mPackageName;
+    private boolean mFilter; //过滤debugger自身组件输出
 
     public ManifestParser(@NonNull Context context) {
+        this(context, true);
+    }
+
+    public ManifestParser(@NonNull Context context, boolean filter) {
         mContext = context;
         mResources = context.getResources();
         mPackageName = context.getPackageName();
+        mFilter = filter;
     }
 
     public String getManifest() {
@@ -109,15 +117,26 @@ public class ManifestParser {
         try {
             int eventType = parser.next();
             int lastEventType = -1;
+            String breakingTag = null;
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 switch (eventType) {
                     case XmlPullParser.START_DOCUMENT:
                         sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                         break;
                     case XmlPullParser.START_TAG:
+                        String name = parser.getName();
+                        if (mFilter) {
+                            if (TextUtils.isEmpty(breakingTag) && isComponent(name) && isDebuggerComponent(parser)) {
+                                breakingTag = name;
+                                eventType = parser.next();
+                                continue;
+                            } else if (!TextUtils.isEmpty(breakingTag)) {
+                                eventType = parser.next();
+                                continue;
+                            }
+                        }
                         sb.append("\n");
                         insertSpaces(sb, indent);
-                        String name = parser.getName();
                         if (TextUtils.equals(name, "manifest")) {
                             sb.append("<manifest\n xmlns:android=\"http://schemas.android.com/apk/res/android\"");
                         } else {
@@ -128,6 +147,15 @@ public class ManifestParser {
                         indent += 1;
                         break;
                     case XmlPullParser.END_TAG:
+                        String endTag = parser.getName();
+                        if (!TextUtils.isEmpty(breakingTag) && !TextUtils.equals(breakingTag, endTag)) {
+                            eventType = parser.next();
+                            continue;
+                        } else if (!TextUtils.isEmpty(breakingTag) && TextUtils.equals(breakingTag, endTag)) {
+                            breakingTag = null;
+                            eventType = parser.next();
+                            continue;
+                        }
                         indent -= 1;
                         if (lastEventType == XmlPullParser.START_TAG) {
                             sb.deleteCharAt(sb.length() - 1);
@@ -139,6 +167,10 @@ public class ManifestParser {
                         }
                         break;
                     case XmlPullParser.TEXT:
+                        if (!TextUtils.isEmpty(breakingTag)) {
+                            eventType = parser.next();
+                            continue;
+                        }
                         sb.append(parser.getText());
                         break;
                     default:
@@ -153,6 +185,29 @@ public class ManifestParser {
             Log.w(TAG, e);
         }
         return sb.toString();
+    }
+
+    private boolean isComponent(String tagName) {
+        return TextUtils.equals("activity", tagName)
+                || TextUtils.equals("activity-alias", tagName)
+                || TextUtils.equals("service", tagName)
+                || TextUtils.equals("receiver", tagName)
+                || TextUtils.equals("provider", tagName);
+    }
+
+    private boolean isDebuggerComponent(XmlResourceParser parser) {
+        int count = parser.getAttributeCount();
+        for (int i = 0; i < count; i++) {
+            String attributeName = parser.getAttributeName(i);
+            if (!TextUtils.equals(attributeName, "name")) {
+                continue;
+            }
+            String attributeValue = parser.getAttributeValue(i);
+            if (attributeValue != null && attributeValue.startsWith("com.su.debugger.")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @NonNull
@@ -185,6 +240,11 @@ public class ManifestParser {
                     attributeValue = attributeValue.substring(2);
                 }
                 value = softInputModeToString(Integer.parseInt(attributeValue, 16));
+            } else if (TextUtils.equals(attributeName, "protectionLevel")) {
+                if (attributeValue.startsWith("0x")) {
+                    attributeValue = attributeValue.substring(2);
+                }
+                value = getProtectionLevel(Integer.parseInt(attributeValue, 16));
             } else {
                 value = resolveValue(attributeValue);
             }
@@ -194,10 +254,9 @@ public class ManifestParser {
     }
 
     private void insertSpaces(@NonNull StringBuilder sb, int number) {
-        if (sb == null)
-            return;
-        for (int i = 0; i < number; i++)
+        for (int i = 0; i < number; i++) {
             sb.append(" ");
+        }
     }
 
     private String resolveValue(String value) {
@@ -264,6 +323,10 @@ public class ManifestParser {
             default:
                 return "standard";
         }
+    }
+
+    private static String getProtectionLevel(int level) {
+        return PermissionListActivity.protectionToString(level);
     }
 
     /**

@@ -245,6 +245,9 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
         }
     }
 
+    /**
+     * @see android.content.pm.PermissionInfo
+     * */
     public static String protectionToString(int level) {
         String protectLevel = "????";
         switch (level & PermissionInfo.PROTECTION_MASK_BASE) {
