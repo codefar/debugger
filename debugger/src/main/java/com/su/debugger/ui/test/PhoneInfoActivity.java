@@ -2,6 +2,7 @@ package com.su.debugger.ui.test;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.wifi.WifiInfo;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
@@ -30,6 +32,7 @@ import com.su.debugger.widget.recycler.GridItemSpaceDecoration;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -103,6 +106,7 @@ public class PhoneInfoActivity extends BaseAppCompatActivity {
         mData.add(getNetWorkInfo());
         mData.add(getHardwareInfo());
         mData.add(getPhoneId());
+        mData.add(getFeatureList());
     }
 
     private SystemInfo getPhoneId() {
@@ -207,6 +211,50 @@ public class PhoneInfoActivity extends BaseAppCompatActivity {
         DecimalFormat format = new DecimalFormat("0.0");
         desc += "\n\n" + "屏幕尺寸: " + format.format(width) + "''" + " x " + format.format(height) + "''" + " / " + format.format(screenDiagonalSize) + "英寸";
         info.setDesc(desc);
+        return info;
+    }
+
+    public SystemInfo getFeatureList() {
+        String openGlEsName = "OpenGL ES";
+        SystemInfo info = new SystemInfo();
+        info.setTitle("Feature列表");
+
+        //array -> list -> sort -> display
+        FeatureInfo[] featureInfoArray = getPackageManager().getSystemAvailableFeatures();
+        List<Pair<String, String>> list = new ArrayList<>(featureInfoArray.length);
+        for (FeatureInfo featureInfo : featureInfoArray) {
+            String name = featureInfo.name;
+            if (TextUtils.isEmpty(name)) {
+                list.add(new Pair<>(openGlEsName, featureInfo.getGlEsVersion()));
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && featureInfo.version > 0) {
+                    list.add(new Pair<>(featureInfo.name, String.valueOf(featureInfo.version)));
+                } else {
+                    list.add(new Pair<>(featureInfo.name, ""));
+                }
+            }
+        }
+
+        Collections.sort(list, (o1, o2) -> {
+            if (TextUtils.equals(o1.first, o2.first)) {
+                return 0;
+            }
+            return o1.first.compareTo(o2.first);
+        });
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Pair<String, String> pair : list) {
+            String name = pair.first;
+            stringBuilder.append(name);
+            if (TextUtils.equals(openGlEsName, name) || !TextUtils.isEmpty(pair.second)) {
+                stringBuilder.append(": " + pair.second);
+            }
+            stringBuilder.append("\n");
+        }
+        if (!list.isEmpty()) {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        info.setDesc(stringBuilder.toString());
         return info;
     }
 
