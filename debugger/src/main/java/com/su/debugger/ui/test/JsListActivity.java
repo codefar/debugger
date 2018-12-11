@@ -1,6 +1,7 @@
 package com.su.debugger.ui.test;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -256,34 +257,42 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
 
             final String filepath = groupList.get(groupPosition);
             viewHolder.filenameView.setText(new File(filepath).getName());
-            viewHolder.openView.setOnClickListener(v -> {
-                Toast.makeText(mContext, "filepath: " + filepath, Toast.LENGTH_SHORT).show();
-                mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                try {
-                    String content = "";
-                    if (URLUtil.isAssetUrl(filepath)) {
-                        String realFilePath = IOUtil.getAssetFilePath(filepath);
-                        content = IOUtil.readAssetsFile(mContext, realFilePath);
-                        mJsContentView.setEnabled(false);
-                    } else if (URLUtil.isFileUrl(filepath)) {
-                        try {
-                            File file = new File(new URI(filepath));
-                            content = IOUtil.readFile(file);
-                            mJsContentView.setEnabled(true);
-                        } catch (URISyntaxException e) {
-                            Log.w(TAG, e);
+            viewHolder.openView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext, "filepath: " + filepath, Toast.LENGTH_SHORT).show();
+                    mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    try {
+                        String content = "";
+                        if (URLUtil.isAssetUrl(filepath)) {
+                            String realFilePath = IOUtil.getAssetFilePath(filepath);
+                            content = IOUtil.readAssetsFile(mContext, realFilePath);
+                            mJsContentView.setEnabled(false);
+                        } else if (URLUtil.isFileUrl(filepath)) {
+                            try {
+                                File file = new File(new URI(filepath));
+                                content = IOUtil.readFile(file);
+                                mJsContentView.setEnabled(true);
+                            } catch (URISyntaxException e) {
+                                Log.w(TAG, e);
+                            }
                         }
+                        File file = new File(new URI(filepath));
+                        mJsFileNameView.setText(file.getName());
+                        mJsFileNameView.setTag(file.getAbsolutePath());
+                        mJsContentView.setText(content);
+                    } catch (URISyntaxException e) {
+                        Log.w(TAG, e);
                     }
-                    File file = new File(new URI(filepath));
-                    mJsFileNameView.setText(file.getName());
-                    mJsFileNameView.setTag(file.getAbsolutePath());
-                    mJsContentView.setText(content);
-                } catch (URISyntaxException e) {
-                    Log.w(TAG, e);
                 }
             });
             viewHolder.deleteView.setVisibility(URLUtil.isAssetUrl(filepath) ? View.GONE : View.VISIBLE);
-            viewHolder.deleteView.setOnClickListener(v -> showDeleteFileDialog(groupPosition, filepath));
+            viewHolder.deleteView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDeleteFileDialog(groupPosition, filepath);
+                }
+            });
             return convertView;
         }
 
@@ -431,14 +440,17 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
         new AlertDialog.Builder(this)
                 .setMessage("确定要将" + file.getName() + "删除吗")
                 .setNegativeButton("取消", null)
-                .setPositiveButton("删除", (dialog, which) -> {
-                    if (file.delete()) {
-                        groupList.remove(groupPosition);
-                        itemLists.remove(groupPosition);
-                        mJsAdapter.notifyDataSetChanged();
-                        Toast.makeText(JsListActivity.this, file.getName() + "删除成功", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(JsListActivity.this, file.getName() + "删除失败", Toast.LENGTH_SHORT).show();
+                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (file.delete()) {
+                            groupList.remove(groupPosition);
+                            itemLists.remove(groupPosition);
+                            mJsAdapter.notifyDataSetChanged();
+                            Toast.makeText(JsListActivity.this, file.getName() + "删除成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(JsListActivity.this, file.getName() + "删除失败", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .show();
@@ -452,7 +464,12 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
                 .setTitle("创建js文件")
                 .setView(v)
                 .setNegativeButton("取消", null)
-                .setPositiveButton("确认", (dialog, which) -> tryCreateJsFile(titleView, contentView))
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tryCreateJsFile(titleView, contentView);
+                    }
+                })
                 .show();
     }
 
@@ -465,10 +482,13 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
         if (file.exists()) {
             new AlertDialog.Builder(JsListActivity.this)
                     .setMessage("同名js文件已存在，是否要覆盖现有js文件？")
-                    .setPositiveButton("覆盖", (overrideDialog, overrideWhich) -> {
-                        createOrUpdateJs(file.getAbsolutePath(), contentView.getText().toString());
-                        loadFiles();
-                        mJsAdapter.notifyDataSetChanged();
+                    .setPositiveButton("覆盖", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            createOrUpdateJs(file.getAbsolutePath(), contentView.getText().toString());
+                            loadFiles();
+                            mJsAdapter.notifyDataSetChanged();
+                        }
                     })
                     .setNegativeButton("", null)
                     .show();
