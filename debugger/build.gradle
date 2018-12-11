@@ -28,13 +28,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [MODULE_NAME: project.getName()]
-            }
-        }
-    }
 }
 
 dependencies {

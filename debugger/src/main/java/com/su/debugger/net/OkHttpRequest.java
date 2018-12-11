@@ -41,7 +41,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
     private static final String TAG = OkHttpRequest.class.getSimpleName();
     private static final HttpLoggingInterceptor.Level LOG_LEVEL = HttpLoggingInterceptor.Level.BODY;
 
-    static OkHttpClient sClient;
+    private static OkHttpClient sClient;
     private Call mCall;
     private FormBody.Builder mFormBodyBuilder = new FormBody.Builder();
 
@@ -229,9 +229,9 @@ class OkHttpRequest<T> extends NetRequest<T> {
         Log.d(TAG, "response: " + response);
         try {
             T result = parseNetworkResponse(response.body().string());
-            sHandler.post(new OnResponse(new NetResponse(result, response.request().url().toString(), response.code(), makeErrorResponseMessage(response))));
+            sHandler.post(new OnResponse(new NetResponse<>(result, response.request().url().toString(), response.code(), makeErrorResponseMessage(response))));
         } catch (ParseException e) {
-            sHandler.post(new OnResponse(new NetResponse(null, false, response.request().url().toString(), response.code(), makeErrorResponseMessage(response))));
+            sHandler.post(new OnResponse(new NetResponse<>(null, false, response.request().url().toString(), response.code(), makeErrorResponseMessage(response))));
         }
     }
 

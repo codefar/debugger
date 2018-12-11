@@ -78,7 +78,7 @@ public abstract class NetRequest<T> {
         return this;
     }
 
-    T parseNetworkResponse(String json) throws ParseException {
+    T parseNetworkResponse(String json) {
         try {
             Type type = mType.getType();
             if (type.equals(String.class)) {
@@ -131,9 +131,9 @@ public abstract class NetRequest<T> {
     }
 
     class OnResponse implements Runnable {
-        private NetResponse mResponse;
+        private NetResponse<T> mResponse;
 
-        OnResponse(NetResponse response) {
+        OnResponse(NetResponse<T> response) {
             mResponse = response;
         }
 
