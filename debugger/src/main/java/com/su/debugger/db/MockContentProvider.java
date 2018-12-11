@@ -13,7 +13,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.su.debugger.entity.MockResponseEntity;
-import com.su.debugger.ui.test.mock.ParseHelper;
+import com.su.debugger.ui.test.mock.MockUtil;
 import com.su.debugger.utils.GeneralInfoHelper;
 
 /**
@@ -176,7 +176,7 @@ public class MockContentProvider extends ContentProvider {
         values.put("responseHeaders", entity.getResponseHeaders());
         values.put("response", entity.getResponse());
         values.put("inUse", false);
-        String md5 = ParseHelper.makeMd5(entity.getUrl(), entity.getMethod(), entity.getContentType(), entity.getRequestHeaders(), entity.getRequestBody(), entity.isAuto());
+        String md5 = MockUtil.makeMd5(entity.getUrl(), entity.getMethod(), entity.getContentType(), entity.getRequestHeaders(), entity.getRequestBody(), entity.isAuto());
         values.put("md5", md5);
         ContentResolver resolver = GeneralInfoHelper.getContext().getContentResolver();
         return resolver.insert(MockContentProvider.CONTENT_URI, values);

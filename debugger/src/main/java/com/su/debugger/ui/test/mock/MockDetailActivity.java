@@ -83,16 +83,16 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         Item response = new Item("Response: ", "", MockResponseEntity.TYPE_RESPONSE, true);
 
         mGroupList.add(requestHeaders);
-        mItemList.add(ParseHelper.makeParametersList(mEntity.getRequestHeaders(), MockResponseEntity.TYPE_REQUEST_HEADERS));
+        mItemList.add(MockUtil.makeParametersList(mEntity.getRequestHeaders(), MockResponseEntity.TYPE_REQUEST_HEADERS));
 
         mGroupList.add(query);
-        mItemList.add(ParseHelper.makeQueryList(uri, MockResponseEntity.TYPE_REQUEST_QUERY));
+        mItemList.add(MockUtil.makeQueryList(uri, MockResponseEntity.TYPE_REQUEST_QUERY));
 
         mGroupList.add(requestBody);
-        mItemList.add(ParseHelper.makeParametersList(mEntity.getRequestBody(), MockResponseEntity.TYPE_REQUEST_BODY));
+        mItemList.add(MockUtil.makeParametersList(mEntity.getRequestBody(), MockResponseEntity.TYPE_REQUEST_BODY));
 
         mGroupList.add(responseHeaders);
-        mItemList.add(ParseHelper.makeParametersList(mEntity.getResponseHeaders(), MockResponseEntity.TYPE_RESPONSE_HEADERS));
+        mItemList.add(MockUtil.makeParametersList(mEntity.getResponseHeaders(), MockResponseEntity.TYPE_RESPONSE_HEADERS));
 
         mGroupList.add(response);
         List<Item> responseList = new ArrayList<>();
@@ -165,7 +165,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         if (id == R.id.desc) {
             descriptionDialog(mEntity.getDescription());
         } else if (id == R.id.auto) {
-            int success = ParseHelper.updateAuto(MockDetailActivity.this, mEntity, mAutoSwitchView.isChecked());
+            int success = MockUtil.updateAuto(MockDetailActivity.this, mEntity, mAutoSwitchView.isChecked());
             if (success <= 0) {
                 mAutoSwitchView.setChecked(!mAutoSwitchView.isChecked());
             }
@@ -189,7 +189,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         Item childItem = mItemList.get(groupPosition).get(childPosition);
-        showInputDialog(groupPosition, childItem.itemKey, childItem.key, !ParseHelper.singleElement(childItem.itemKey), childItem);
+        showInputDialog(groupPosition, childItem.itemKey, childItem.key, !MockUtil.singleElement(childItem.itemKey), childItem);
         return false;
     }
 
@@ -201,7 +201,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
                 .setView(inputView)
                 .setPositiveButton(R.string.confirm, (dialog, which) -> {
                     String newDescription = inputView.getText().toString();
-                    ParseHelper.updateDescription(MockDetailActivity.this, mEntity, newDescription);
+                    MockUtil.updateDescription(MockDetailActivity.this, mEntity, newDescription);
                     mEntity.setDescription(newDescription);
                     mDescView.setText(newDescription);
                 })
@@ -222,12 +222,12 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         new AlertDialog.Builder(this)
                 .setTitle("Method")
                 .setSingleChoiceItems(methodNames, currentIndex, (dialog, which) -> {
-                    ParseHelper.updateMethod(MockDetailActivity.this, mEntity, methodNames[which]);
+                    MockUtil.updateMethod(MockDetailActivity.this, mEntity, methodNames[which]);
                     mEntity.setMethod(methodNames[which]);
                     mMethodView.setText(methodNames[which]);
                     //get请求下无需content type
                     if (Method.GET == Method.valueOf(methodNames[which])) {
-                        ParseHelper.updateContentType(MockDetailActivity.this, mEntity, null);
+                        MockUtil.updateContentType(MockDetailActivity.this, mEntity, null);
                         mEntity.setContentType(null);
                         mContentTypeView.setText(null);
                         mContentTypeLayout.setVisibility(View.GONE);
@@ -247,7 +247,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
                 .setView(inputView)
                 .setPositiveButton(R.string.confirm, (dialog, which) -> {
                     String newContentType = inputView.getText().toString();
-                    ParseHelper.updateContentType(MockDetailActivity.this, mEntity, newContentType);
+                    MockUtil.updateContentType(MockDetailActivity.this, mEntity, newContentType);
                     mEntity.setContentType(newContentType);
                     mContentTypeView.setText(newContentType);
                 })
@@ -323,14 +323,14 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
             holder.actionView.setText("A");
             //检查是否为单一元素类型
             //如果为单一元素类型，此时是否已经存在
-            if (!ParseHelper.singleElement(item.itemKey) || mItemList.get(groupPosition).isEmpty()) {
+            if (!MockUtil.singleElement(item.itemKey) || mItemList.get(groupPosition).isEmpty()) {
                 holder.actionView.setVisibility(View.VISIBLE);
             } else {
                 holder.actionView.setVisibility(View.GONE);
             }
 
             holder.actionView.setOnClickListener(v -> {
-                if (ParseHelper.singleElement(item.itemKey)) {
+                if (MockUtil.singleElement(item.itemKey)) {
                     showInputDialog(groupPosition, item.itemKey, null, false, item);
                 } else {
                     showInputDialog(groupPosition, item.itemKey, null, true, item);
@@ -365,19 +365,19 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
                 int rowsUpdated = 0;
                 switch (item.itemKey) {
                     case MockResponseEntity.TYPE_REQUEST_HEADERS:
-                        rowsUpdated = ParseHelper.updateRequestHeader(MockDetailActivity.this, mEntity, item.key, "", action);
+                        rowsUpdated = MockUtil.updateRequestHeader(MockDetailActivity.this, mEntity, item.key, "", action);
                         break;
                     case MockResponseEntity.TYPE_REQUEST_QUERY:
-                        rowsUpdated = ParseHelper.updateQueryKey(MockDetailActivity.this, mEntity, item.key, "", action);
+                        rowsUpdated = MockUtil.updateQueryKey(MockDetailActivity.this, mEntity, item.key, "", action);
                         break;
                     case MockResponseEntity.TYPE_REQUEST_BODY:
-                        rowsUpdated = ParseHelper.updateParameter(MockDetailActivity.this, mEntity, item.key, "", action);
+                        rowsUpdated = MockUtil.updateParameter(MockDetailActivity.this, mEntity, item.key, "", action);
                         break;
                     case MockResponseEntity.TYPE_RESPONSE_HEADERS:
-                        rowsUpdated = ParseHelper.updateResponseHeader(MockDetailActivity.this, mEntity, item.key, "", action);
+                        rowsUpdated = MockUtil.updateResponseHeader(MockDetailActivity.this, mEntity, item.key, "", action);
                         break;
                     case MockResponseEntity.TYPE_RESPONSE:
-                        rowsUpdated = ParseHelper.updateResponse(MockDetailActivity.this, mEntity, null);
+                        rowsUpdated = MockUtil.updateResponse(MockDetailActivity.this, mEntity, null);
                         break;
                     default:
                         break;
@@ -500,21 +500,21 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         String action = "add";
         List<Item> groupList = mItemList.get(groupPosition);
         if (TextUtils.equals(type, MockResponseEntity.TYPE_REQUEST_QUERY)) {
-            ParseHelper.updateQueryKey(this, mEntity, key, "", action);
+            MockUtil.updateQueryKey(this, mEntity, key, "", action);
             groupList.clear();
-            groupList.addAll(ParseHelper.makeQueryList(Uri.parse(mEntity.getUrl()), type));
+            groupList.addAll(MockUtil.makeQueryList(Uri.parse(mEntity.getUrl()), type));
         } else if (TextUtils.equals(type, MockResponseEntity.TYPE_REQUEST_BODY)) {
-            ParseHelper.updateParameter(this, mEntity, key, "", action);
+            MockUtil.updateParameter(this, mEntity, key, "", action);
             groupList.clear();
-            groupList.addAll(ParseHelper.makeParametersList(mEntity.getRequestBody(), type));
+            groupList.addAll(MockUtil.makeParametersList(mEntity.getRequestBody(), type));
         } else if (TextUtils.equals(type, MockResponseEntity.TYPE_REQUEST_HEADERS)) {
-            ParseHelper.updateRequestHeader(this, mEntity, key, "", action);
+            MockUtil.updateRequestHeader(this, mEntity, key, "", action);
             groupList.clear();
-            groupList.addAll(ParseHelper.makeParametersList(mEntity.getRequestBody(), type));
+            groupList.addAll(MockUtil.makeParametersList(mEntity.getRequestBody(), type));
         } else if (TextUtils.equals(type, MockResponseEntity.TYPE_RESPONSE_HEADERS)) {
-            ParseHelper.updateResponseHeader(this, mEntity, key, "", action);
+            MockUtil.updateResponseHeader(this, mEntity, key, "", action);
             groupList.clear();
-            groupList.addAll(ParseHelper.makeParametersList(mEntity.getRequestBody(), type));
+            groupList.addAll(MockUtil.makeParametersList(mEntity.getRequestBody(), type));
         }
         mAdapter.notifyDataSetChanged();
         item.key = key;
@@ -525,23 +525,23 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         List<Item> groupList = mItemList.get(groupPosition);
         String action = "update";
         if (TextUtils.equals(type, MockResponseEntity.TYPE_REQUEST_QUERY)) {
-            ParseHelper.updateQueryKey(this, mEntity, key, value, action);
+            MockUtil.updateQueryKey(this, mEntity, key, value, action);
             groupList.clear();
-            groupList.addAll(ParseHelper.makeQueryList(Uri.parse(mEntity.getUrl()), type));
+            groupList.addAll(MockUtil.makeQueryList(Uri.parse(mEntity.getUrl()), type));
         } else if (TextUtils.equals(type, MockResponseEntity.TYPE_REQUEST_BODY)) {
-            ParseHelper.updateParameter(this, mEntity, key, value, action);
+            MockUtil.updateParameter(this, mEntity, key, value, action);
             groupList.clear();
-            groupList.addAll(ParseHelper.makeParametersList(mEntity.getRequestBody(), type));
+            groupList.addAll(MockUtil.makeParametersList(mEntity.getRequestBody(), type));
         } else if (TextUtils.equals(type, MockResponseEntity.TYPE_REQUEST_HEADERS)) {
-            ParseHelper.updateRequestHeader(this, mEntity, key, value, action);
+            MockUtil.updateRequestHeader(this, mEntity, key, value, action);
             groupList.clear();
-            groupList.addAll(ParseHelper.makeParametersList(mEntity.getRequestHeaders(), type));
+            groupList.addAll(MockUtil.makeParametersList(mEntity.getRequestHeaders(), type));
         } else if (TextUtils.equals(type, MockResponseEntity.TYPE_RESPONSE_HEADERS)) {
-            ParseHelper.updateResponseHeader(this, mEntity, key, value, action);
+            MockUtil.updateResponseHeader(this, mEntity, key, value, action);
             groupList.clear();
-            groupList.addAll(ParseHelper.makeParametersList(mEntity.getResponseHeaders(), type));
+            groupList.addAll(MockUtil.makeParametersList(mEntity.getResponseHeaders(), type));
         } else if (TextUtils.equals(type, MockResponseEntity.TYPE_RESPONSE)) {
-            ParseHelper.updateResponse(this, mEntity, value);
+            MockUtil.updateResponse(this, mEntity, value);
             groupList.clear();
             if (!TextUtils.isEmpty(mEntity.getResponse())) {
                 groupList.add(new Item(mEntity.getResponse(), "", type, false));
@@ -608,7 +608,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     }
 
     private void delete() {
-        int rowsUpdated = ParseHelper.deleteById(this, mEntity.getId());
+        int rowsUpdated = MockUtil.deleteById(this, mEntity.getId());
         if (rowsUpdated > 0) {
             finish();
         } else {

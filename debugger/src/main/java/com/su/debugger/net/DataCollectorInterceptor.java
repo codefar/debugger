@@ -13,7 +13,7 @@ import com.su.debugger.AppHelper;
 import com.su.debugger.db.MockContentProvider;
 import com.su.debugger.entity.MockResponseEntity;
 import com.su.debugger.ui.test.mock.Md5Util;
-import com.su.debugger.ui.test.mock.ParseHelper;
+import com.su.debugger.ui.test.mock.MockUtil;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.IOUtil;
 
@@ -101,7 +101,7 @@ public class DataCollectorInterceptor implements Interceptor {
             requestBody.writeTo(buffer);
             if (isPlaintext(buffer)) {
                 JSONObject jsonObject = JSON.parseObject(buffer.readString(UTF8));
-                ParseHelper.removeKeysFromJson(jsonObject);
+                MockUtil.removeKeysFromJson(jsonObject);
                 bodyString = JSON.toJSONString(jsonObject,
                         SerializerFeature.DisableCircularReferenceDetect,
                         SerializerFeature.PrettyFormat);
@@ -136,7 +136,7 @@ public class DataCollectorInterceptor implements Interceptor {
         Response response = chain.proceed(request);
         synchronized (MockContentProvider.LOCK) {
             //如果已经收集过并且存在于数据库中，则不再收集
-            if (ParseHelper.recorded(entity)) {
+            if (MockUtil.recorded(entity)) {
                 return response;
             }
 

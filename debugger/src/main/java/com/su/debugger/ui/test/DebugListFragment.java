@@ -40,7 +40,7 @@ import com.su.debugger.ui.test.app.PermissionListActivity;
 import com.su.debugger.ui.test.app.SharedPreferenceDetailActivity;
 import com.su.debugger.ui.test.app.SharedPreferenceListActivity;
 import com.su.debugger.ui.test.mock.MockGroupHostActivity;
-import com.su.debugger.ui.test.mock.ParseHelper;
+import com.su.debugger.ui.test.mock.MockUtil;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.NetworkUtil;
 import com.su.debugger.utils.ReflectUtil;
@@ -169,7 +169,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         new Thread() {
             @Override
             public void run() {
-                ParseHelper.process(mActivity);
+                MockUtil.process(mActivity);
                 mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "收集完成", Toast.LENGTH_LONG).show());
                 DIALOG_FRAGMENT.dismissAllowingStateLoss();
             }

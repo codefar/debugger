@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.su.debugger.DebuggerSupplier;
 import com.su.debugger.db.MockContentProvider;
 import com.su.debugger.entity.MockResponseEntity;
-import com.su.debugger.ui.test.mock.ParseHelper;
+import com.su.debugger.ui.test.mock.MockUtil;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.SpHelper;
 
@@ -232,7 +232,7 @@ public class MockInterceptor implements Interceptor {
 
     private static String parseApplicationJsonContent(String content) {
         JSONObject jsonObject = JSON.parseObject(content);
-        ParseHelper.removeKeysFromJson(jsonObject);
+        MockUtil.removeKeysFromJson(jsonObject);
         return JSON.toJSONString(jsonObject, true);
     }
 

@@ -71,7 +71,7 @@ public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClic
 
         Uri uri = Uri.parse(url);
         Set<String> set = uri.getQueryParameterNames();
-        String queryContent = ParseHelper.makeQueryContent(uri, " ");
+        String queryContent = MockUtil.makeQueryContent(uri, " ");
         if (set.isEmpty()) {
             holder.queryLayout.setVisibility(View.GONE);
         } else {
@@ -79,7 +79,7 @@ public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClic
             holder.queryLayout.setVisibility(View.VISIBLE);
         }
 
-        String parametersContent = ParseHelper.makeParametersContent(parameters, " ");
+        String parametersContent = MockUtil.makeParametersContent(parameters, " ");
         if (TextUtils.isEmpty(parameters)) {
             holder.requestBodyLayout.setVisibility(View.GONE);
         } else {
@@ -116,7 +116,7 @@ public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClic
             MockResponseEntity mockResponseEntity = entity.clone();
             boolean flag = mockResponseEntity.isAuto();
             mockResponseEntity.setAuto(!flag);
-            boolean recorded = ParseHelper.recorded(mockResponseEntity);
+            boolean recorded = MockUtil.recorded(mockResponseEntity);
             if (recorded) {
                 Toast.makeText(v.getContext(), "已存在同样条件的request", Toast.LENGTH_LONG).show();
             }

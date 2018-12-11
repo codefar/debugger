@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ParseHelper {
-    private static final String TAG = ParseHelper.class.getSimpleName();
+public class MockUtil {
+    private static final String TAG = MockUtil.class.getSimpleName();
 
     static String makeQueryContent(Uri uri, @NonNull String separator) {
         Set<String> set = uri.getQueryParameterNames();
@@ -533,7 +533,7 @@ public class ParseHelper {
 
         if (!TextUtils.isEmpty(requestBody)) {
             JSONObject jsonObject = JSON.parseObject(requestBody);
-            ParseHelper.removeKeysFromJson(jsonObject);
+            MockUtil.removeKeysFromJson(jsonObject);
             requestBody = JSON.toJSONString(jsonObject,
                                             SerializerFeature.DisableCircularReferenceDetect,
                                             SerializerFeature.PrettyFormat);
