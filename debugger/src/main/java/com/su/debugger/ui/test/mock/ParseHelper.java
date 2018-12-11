@@ -578,13 +578,13 @@ public class ParseHelper {
             JSONObject temp = jsonObject;
             int size = key.size();
             if (size == 1) {
-                temp.put(key.get(0), null);
+                temp.remove(key.get(0));
             } else {
                 for (int i = 0; i < size - 1; i++) {
                     temp = temp.getJSONObject(key.get(i));
                 }
                 if (size > 0) {
-                    temp.put(key.get(size - 1), null);
+                    temp.remove(key.get(size - 1));
                 }
             }
         }
