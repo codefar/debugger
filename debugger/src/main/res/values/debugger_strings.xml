@@ -11,6 +11,7 @@
     <string name="hint">提示</string>
     <string name="spec">说明</string>
     <string name="modify">修改</string>
+    <string name="delete">删除</string>
     <string name="quit">退出</string>
     <string name="back">返回</string>
     <string name="add">添加</string>

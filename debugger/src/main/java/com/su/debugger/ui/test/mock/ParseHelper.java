@@ -397,6 +397,16 @@ public class ParseHelper {
         return rowsUpdated;
     }
 
+    static int deleteById(@NonNull Context context, long id) {
+        ContentResolver resolver = context.getContentResolver();
+        try {
+            return resolver.delete(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(id)), null, null);
+        } catch (SQLiteConstraintException e) {
+            Log.w(TAG, e);
+        }
+        return 0;
+    }
+
     public static String makeMd5(String url, String method, String contentType, String requestHeaders, String requestBody, boolean auto) {
         String key = MockResponseEntity.COLUMN_URL + "=" + url
                 + "&" + MockResponseEntity.COLUMN_METHOD + "=" + method

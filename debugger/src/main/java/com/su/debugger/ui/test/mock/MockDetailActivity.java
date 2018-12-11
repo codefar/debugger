@@ -16,6 +16,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -598,6 +599,23 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         }
     }
 
+    public void delete(MenuItem item) {
+        new AlertDialog.Builder(this)
+                .setMessage("确认删除此条数据？")
+                .setPositiveButton(R.string.delete, (dialog, which) -> delete())
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void delete() {
+        int rowsUpdated = ParseHelper.deleteById(this, mEntity.getId());
+        if (rowsUpdated > 0) {
+            finish();
+        } else {
+            Toast.makeText(this, "删除失败", Toast.LENGTH_LONG).show();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(Gravity.END)) {
@@ -649,7 +667,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
     @Override
     public int menuRes() {
-        return R.menu.debugger_search_menu;
+        return R.menu.debugger_mock_detail_menu;
     }
 
     @Override
