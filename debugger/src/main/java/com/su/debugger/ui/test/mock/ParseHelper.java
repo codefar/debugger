@@ -583,7 +583,9 @@ public class ParseHelper {
                 for (int i = 0; i < size - 1; i++) {
                     temp = temp.getJSONObject(key.get(i));
                 }
-                temp.put(key.get(size - 1), null);
+                if (size > 0) {
+                    temp.put(key.get(size - 1), null);
+                }
             }
         }
         Log.d(TAG, "jsonObject: " + jsonObject);
