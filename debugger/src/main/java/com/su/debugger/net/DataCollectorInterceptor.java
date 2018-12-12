@@ -108,11 +108,12 @@ public class DataCollectorInterceptor implements Interceptor {
             }
         }
 
-        String key = "url=" + newUrl
-                + "&method=" + method
-                + "&contentType=" + contentType
-                + "&requestHeaders=" + AppHelper.encodeString(headers)
-                + "&requestBody=" + (TextUtils.isEmpty(bodyString) ? bodyString : AppHelper.encodeString(bodyString));
+        String key = MockResponseEntity.COLUMN_URL + "=" + newUrl
+                + "&" + MockResponseEntity.COLUMN_METHOD + "=" + method
+                + "&" + MockResponseEntity.COLUMN_CONTENT_TYPE + "=" + contentType
+                + "&" + MockResponseEntity.COLUMN_REQUEST_HEADERS + "=" + AppHelper.encodeString(headers)
+                + "&" + MockResponseEntity.COLUMN_REQUEST_BODY + "=" + (TextUtils.isEmpty(bodyString) ? bodyString : AppHelper.encodeString(bodyString))
+                + "&" + MockResponseEntity.COLUMN_AUTO + "=false";
         String md5Key = Md5Util.md5Hex(key);
         if (sDebug) {
             Log.d(TAG, "url: " + url);
