@@ -1,6 +1,7 @@
 package com.su.debugger.ui.test;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.su.debugger.R;
 
@@ -12,7 +13,7 @@ public class DebuggerMainActivity extends BaseAppCompatActivity {
     private static final String TAG = DebuggerMainActivity.class.getSimpleName();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_activity_debug_list);
         getSupportFragmentManager().beginTransaction()
@@ -21,7 +22,7 @@ public class DebuggerMainActivity extends BaseAppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("调式功能列表");
     }

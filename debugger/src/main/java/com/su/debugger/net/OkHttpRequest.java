@@ -1,6 +1,7 @@
 package com.su.debugger.net;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -92,7 +93,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
         return mFormBodyBuilder.build();
     }
 
-    private RequestBody createBody(MediaType type) {
+    private RequestBody createBody(@Nullable MediaType type) {
         if (!mMultipartMap.isEmpty()) {
             return createMultipartBody(type);
         }
@@ -122,9 +123,11 @@ class OkHttpRequest<T> extends NetRequest<T> {
         }
     }
 
-    private RequestBody createMultipartBody(@NonNull MediaType type) {
+    private RequestBody createMultipartBody(@Nullable MediaType type) {
         MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(type);
+        if (type != null) {
+            builder.setType(type);
+        }
         Set<Map.Entry<String, Object>> entrySet = mFormBodyMap.entrySet();
         for (Map.Entry<String, Object> entry : entrySet) {
             Object value = entry.getValue();
@@ -225,7 +228,7 @@ class OkHttpRequest<T> extends NetRequest<T> {
         }
     }
 
-    private void onResponse(Response response) throws IOException {
+    private void onResponse(@NonNull Response response) throws IOException {
         Log.d(TAG, "response: " + response);
         try {
             T result = parseNetworkResponse(response.body().string());

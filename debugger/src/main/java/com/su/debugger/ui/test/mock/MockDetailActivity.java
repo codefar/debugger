@@ -179,7 +179,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("mock详情");
         mSearchableHelper.initSearchToolbar(mToolbar, "在response中搜索", this);
@@ -599,7 +599,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         }
     }
 
-    public void delete(MenuItem item) {
+    public void delete(@NonNull MenuItem item) {
         new AlertDialog.Builder(this)
                 .setMessage("确认删除此条数据？")
                 .setPositiveButton(R.string.delete, (dialog, which) -> delete())

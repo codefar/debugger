@@ -41,7 +41,7 @@ public class MockGroupHostActivity extends BaseAppCompatActivity implements Load
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("Mock数据分组");
     }

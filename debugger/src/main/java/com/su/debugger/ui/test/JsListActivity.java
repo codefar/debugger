@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -64,7 +65,7 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
     private JsAdapter mJsAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_activity_js_list);
         if (!mJsDIr.exists()) {
@@ -101,7 +102,7 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("Js函数列表");
     }
@@ -456,7 +457,7 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
                 .show();
     }
 
-    public void add(MenuItem item) {
+    public void add(@NonNull MenuItem item) {
         final View v = LayoutInflater.from(this).inflate(R.layout.debugger_dialog_new_js_file, null);
         final EditText titleView = v.findViewById(R.id.title);
         final EditText contentView = v.findViewById(R.id.content);

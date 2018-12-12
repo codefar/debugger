@@ -453,6 +453,25 @@ public class MockUtil {
         return uri != null;
     }
 
+    public static Uri saveResponseEntity(MockResponseEntity entity) {
+        ContentValues values = new ContentValues();
+        values.put("url", entity.getUrl());
+        values.put("host", entity.getHost());
+        values.put("path", entity.getPath());
+        values.put("method", entity.getMethod());
+        values.put("contentType", entity.getContentType());
+        values.put("requestHeaders", entity.getRequestHeaders());
+        values.put("requestBody", entity.getRequestBody());
+        values.put("auto", entity.isAuto());
+        values.put("responseHeaders", entity.getResponseHeaders());
+        values.put("response", entity.getResponse());
+        values.put("inUse", false);
+        String md5 = MockUtil.makeMd5(entity.getUrl(), entity.getMethod(), entity.getContentType(), entity.getRequestHeaders(), entity.getRequestBody(), entity.isAuto());
+        values.put("md5", md5);
+        ContentResolver resolver = GeneralInfoHelper.getContext().getContentResolver();
+        return resolver.insert(MockContentProvider.CONTENT_URI, values);
+    }
+
     public static boolean recorded(@NonNull MockResponseEntity entity) {
         ContentResolver resolver = GeneralInfoHelper.getContext().getContentResolver();
         ContentValues values = new ContentValues();
@@ -572,7 +591,7 @@ public class MockUtil {
                 values.put(MockResponseEntity.COLUMN_IN_USE, entity.isInUse());
                 resolver.update(ContentUris.withAppendedId(MockContentProvider.CONTENT_URI, id), values, null, null);
             } else {
-                MockContentProvider.saveResponseEntity(entity);
+                saveResponseEntity(entity);
             }
         }
     }

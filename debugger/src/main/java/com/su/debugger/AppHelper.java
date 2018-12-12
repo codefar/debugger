@@ -1,8 +1,10 @@
 package com.su.debugger;
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -46,22 +48,21 @@ public final class AppHelper {
 
     private static final String TAG = AppHelper.class.getSimpleName();
 
-    private AppHelper() {
-    }
+    private AppHelper() {}
 
-    public static void startLauncher(Context context) {
+    public static void startLauncher(@NonNull Context context) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         context.startActivity(intent);
     }
 
-    public static boolean isPhone(Context context) {
+    public static boolean isPhone(@NonNull Context context) {
         PackageManager pm = context.getPackageManager();
         return pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
     }
 
-    public static List<FeatureInfo> getRequiredFeatures(Context context) {
+    public static List<FeatureInfo> getRequiredFeatures(@NonNull Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
             if (packageInfo.reqFeatures != null) {
@@ -73,7 +74,7 @@ public final class AppHelper {
         return new ArrayList<>();
     }
 
-    public static String encodeString(String str) {
+    public static String encodeString(@Nullable String str) {
         if (TextUtils.isEmpty(str)) {
             return str;
         }
@@ -91,14 +92,14 @@ public final class AppHelper {
     }
 
     //https://stackoverflow.com/questions/4737841/urlencoder-not-able-to-translate-space-character?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-    public static String encodeUrlString(String str) {
+    public static String encodeUrlString(@Nullable String str) {
         if (TextUtils.isEmpty(str)) {
             return str;
         }
         return encodeString(str).replace("+", "%20");
     }
 
-    public static boolean checkPermission(Context context, String permission) {
+    public static boolean checkPermission(@NonNull Context context, @NonNull String permission) {
         int permissionCheck = ContextCompat.checkSelfPermission(context, permission);
         return permissionCheck == PackageManager.PERMISSION_GRANTED;
     }
@@ -112,7 +113,7 @@ public final class AppHelper {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    public static boolean isNotificationChannelEnabled(Context context, @NonNull String channelId) {
+    public static boolean isNotificationChannelEnabled(@NonNull Context context, @NonNull String channelId) {
         boolean enabled = NotificationManagerCompat.from(context).areNotificationsEnabled();
         if (enabled && !TextUtils.isEmpty(channelId)) {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -122,11 +123,11 @@ public final class AppHelper {
         return false;
     }
 
-    public static boolean isNotificationEnabled(Context context) {
+    public static boolean isNotificationEnabled(@NonNull Context context) {
         return NotificationManagerCompat.from(context).areNotificationsEnabled();
     }
 
-    public static void goNotificationSettings(Context context) {
+    public static void goNotificationSettings(@NonNull Context context) {
         Intent intent = new Intent();
         if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
             intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
@@ -143,19 +144,7 @@ public final class AppHelper {
         context.startActivity(intent);
     }
 
-    public static boolean isAppInstalled(Context context, String packageName) {
-        try {
-            context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.w(TAG, "packageName: " + packageName, e);
-            return false;
-        } catch (RuntimeException e) {
-            return true; //samsung n9100 部分机器会崩溃 java.lang.RuntimeException: Package manager has died
-        }
-    }
-
-    public static void startActivity(Context context, Intent intent) {
+    public static void startActivity(@NonNull Context context, @Nullable Intent intent) {
         if (intent != null) {
             try {
                 context.startActivity(intent);
@@ -166,7 +155,7 @@ public final class AppHelper {
         }
     }
 
-    public static void startWebView(Context context, String title, String url, boolean sharable) {
+    public static void startWebView(@NonNull Context context, String title, String url, boolean sharable) {
         Intent intent = new Intent(context, WebViewActivity.class);
         intent.putExtra("title", title);
         intent.putExtra("url", url);
@@ -174,7 +163,7 @@ public final class AppHelper {
         context.startActivity(intent);
     }
 
-    public static void startWebView(Context context, NoteWebViewEntity entity) {
+    public static void startWebView(@NonNull Context context, @Nullable NoteWebViewEntity entity) {
         Intent intent = new Intent(context, WebViewActivity.class);
         intent.putExtra("entity", entity);
         intent.putExtra("sharable", true);
@@ -202,7 +191,7 @@ public final class AppHelper {
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder stringBuilder = new StringBuilder();
             char[] buff = new char[1024];
-            int ch = 0;
+            int ch;
             while ((ch = reader.read(buff)) != -1) {
                 stringBuilder.append(buff, 0, ch);
             }
@@ -215,7 +204,7 @@ public final class AppHelper {
         return null;
     }
 
-    public static void copyToClipboard(Context context, String label, String text) {
+    public static void copyToClipboard(@NonNull Context context, String label, String text) {
         ClipboardManager cmb = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         cmb.setPrimaryClip(ClipData.newPlainText(label, text));
     }
@@ -233,5 +222,14 @@ public final class AppHelper {
         } catch (final Exception e) {
             return false;
         }
+    }
+
+    public static void restartApp(@NonNull Context context) {
+        PackageManager pm = context.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(context.getPackageName());
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 600L, pendingIntent);
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 }

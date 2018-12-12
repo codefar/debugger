@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.FeatureInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +32,7 @@ public class FeatureListActivity extends BaseAppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("Feature需求列表");
     }
@@ -39,7 +40,7 @@ public class FeatureListActivity extends BaseAppCompatActivity {
 
     private static class RecyclerViewAdapter extends BaseRecyclerAdapter<FeatureInfo> {
 
-        private RecyclerViewAdapter(Context context) {
+        private RecyclerViewAdapter(@NonNull Context context) {
             super(AppHelper.getRequiredFeatures(context));
         }
 
@@ -49,7 +50,7 @@ public class FeatureListActivity extends BaseAppCompatActivity {
         }
 
         @Override
-        protected void bindData(BaseViewHolder holder, int position, int itemType) {
+        protected void bindData(@NonNull BaseViewHolder holder, int position, int itemType) {
             FeatureInfo featureInfo = getData().get(position);
             TextView nameView = (TextView) holder.getView(R.id.key);
             TextView versionView = (TextView) holder.getView(R.id.value);

@@ -138,7 +138,7 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
     private static class RecyclerViewAdapter extends BaseRecyclerAdapter<Pair<String, String>> {
         private int mLastCheckedPos = -1;
 
-        private RecyclerViewAdapter(List<Pair<String, String>> data) {
+        private RecyclerViewAdapter(@NonNull List<Pair<String, String>> data) {
             super(data);
         }
 
@@ -148,7 +148,7 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
         }
 
         @Override
-        protected void bindData(final BaseRecyclerAdapter.BaseViewHolder holder, final int position, int itemType) {
+        protected void bindData(@NonNull final BaseRecyclerAdapter.BaseViewHolder holder, final int position, int itemType) {
             ((TextView) holder.getView(R.id.host)).setText(getData().get(position).second);
             ((TextView) holder.getView(R.id.name)).setText(getData().get(position).first);
             RadioButton radioButton = (RadioButton) holder.getView(R.id.radio);

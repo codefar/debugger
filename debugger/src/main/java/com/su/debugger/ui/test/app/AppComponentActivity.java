@@ -2,6 +2,7 @@ package com.su.debugger.ui.test.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -19,7 +20,7 @@ public class AppComponentActivity extends BaseAppCompatActivity {
     private static final String TAG = AppComponentActivity.class.getSimpleName();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_activity_debug_list);
         getSupportFragmentManager().beginTransaction()
@@ -27,7 +28,7 @@ public class AppComponentActivity extends BaseAppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("App信息");
     }

@@ -13,8 +13,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.su.debugger.entity.MockResponseEntity;
-import com.su.debugger.ui.test.mock.MockUtil;
-import com.su.debugger.utils.GeneralInfoHelper;
 
 /**
  * Created by su on 2018/5/28.
@@ -161,24 +159,5 @@ public class MockContentProvider extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsUpdated;
-    }
-
-    public static Uri saveResponseEntity(MockResponseEntity entity) {
-        ContentValues values = new ContentValues();
-        values.put("url", entity.getUrl());
-        values.put("host", entity.getHost());
-        values.put("path", entity.getPath());
-        values.put("method", entity.getMethod());
-        values.put("contentType", entity.getContentType());
-        values.put("requestHeaders", entity.getRequestHeaders());
-        values.put("requestBody", entity.getRequestBody());
-        values.put("auto", entity.isAuto());
-        values.put("responseHeaders", entity.getResponseHeaders());
-        values.put("response", entity.getResponse());
-        values.put("inUse", false);
-        String md5 = MockUtil.makeMd5(entity.getUrl(), entity.getMethod(), entity.getContentType(), entity.getRequestHeaders(), entity.getRequestBody(), entity.isAuto());
-        values.put("md5", md5);
-        ContentResolver resolver = GeneralInfoHelper.getContext().getContentResolver();
-        return resolver.insert(MockContentProvider.CONTENT_URI, values);
     }
 }

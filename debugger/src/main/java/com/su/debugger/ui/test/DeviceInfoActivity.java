@@ -9,6 +9,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
+import com.su.debugger.AppHelper;
 import com.su.debugger.R;
 import com.su.debugger.entity.SystemInfo;
 import com.su.debugger.utils.GeneralInfoHelper;
@@ -39,19 +42,19 @@ import java.util.List;
  * Created by mahao on 17-5-27.
  * 调试功能列表 - 手机信息
  */
-public class PhoneInfoActivity extends BaseAppCompatActivity {
+public class DeviceInfoActivity extends BaseAppCompatActivity {
 
-    private static final String TAG = PhoneInfoActivity.class.getSimpleName();
+    private static final String TAG = DeviceInfoActivity.class.getSimpleName();
     private List<SystemInfo> mData = new ArrayList<>();
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        setTitle("手机信息");
+        setTitle("设备信息");
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_activity_system_info);
         RecyclerView recyclerView = findViewById(R.id.recycler);
@@ -82,10 +85,10 @@ public class PhoneInfoActivity extends BaseAppCompatActivity {
         }
 
         @Override
-        protected void bindData(BaseViewHolder holder, final int position, int itemType) {
+        protected void bindData(@NonNull BaseViewHolder holder, final int position, int itemType) {
             ((TextView) holder.itemView).setText(getData().get(position).getTitle());
             holder.itemView.setOnClickListener(v ->
-                    new AlertDialog.Builder(PhoneInfoActivity.this)
+                    new AlertDialog.Builder(DeviceInfoActivity.this)
                             .setTitle(getData().get(position).getTitle())
                             .setMessage(getData().get(position).getDesc())
                             .setNegativeButton(R.string.close, null)
@@ -134,7 +137,8 @@ public class PhoneInfoActivity extends BaseAppCompatActivity {
         SystemInfo info = new SystemInfo();
         info.setTitle("硬件");
         String desc = "";
-        desc += "型号: " + Build.MODEL;
+        desc += "手机: " + (AppHelper.isPhone(this) ? "是" : "否");
+        desc += "\n\n" + "型号: " + Build.MODEL;
         desc += "\n\n" + "制造商: " + Build.MANUFACTURER;
         desc += "\n\n" + "主板: " + Build.BOARD;
         desc += "\n\n" + "设备: " + Build.DEVICE;

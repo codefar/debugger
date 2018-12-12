@@ -46,7 +46,6 @@ import com.su.debugger.utils.NetworkUtil;
 import com.su.debugger.utils.ReflectUtil;
 import com.su.debugger.utils.SpHelper;
 import com.su.debugger.utils.SystemInfoHelper;
-import com.su.debugger.utils.Utils;
 import com.su.debugger.widget.SimpleBlockedDialogFragment;
 
 import java.io.File;
@@ -316,7 +315,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                                     .edit()
                                     .putString("host", value)
                                     .apply();
-                            Utils.restartApp(mActivity);
+                            AppHelper.restartApp(mActivity);
                         })
                         .setNegativeButton(R.string.cancel, null)
                         .show();
@@ -361,7 +360,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 startActivity(new Intent(mActivity, AppComponentActivity.class));
                 return true;
             case "more_phone_info":
-                startActivity(new Intent(mActivity, PhoneInfoActivity.class));
+                startActivity(new Intent(mActivity, DeviceInfoActivity.class));
                 return true;
             case "import_mock_data":
                 startCollection();

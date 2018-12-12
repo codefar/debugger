@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -53,7 +54,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
     private RecyclerViewAdapter mAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_template_recycler_list);
         mPm = getPackageManager();
@@ -69,7 +70,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("Permission列表");
     }
@@ -197,7 +198,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
 
         private Resources mResources;
         private PackageManager mPm;
-        private RecyclerViewAdapter(Context context, List<PermissionInfoWrapper> data) {
+        private RecyclerViewAdapter(@NonNull Context context, @NonNull List<PermissionInfoWrapper> data) {
             super(data);
             mPm = context.getPackageManager();
             mResources = context.getResources();
@@ -209,7 +210,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
         }
 
         @Override
-        protected void bindData(final BaseViewHolder holder, final int position, int itemType) {
+        protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
             final PermissionInfoWrapper info = getData().get(position);
             TextView nameTextView = (TextView) holder.getView(R.id.name);
             if (info.isHasPermission()) {
@@ -275,7 +276,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
         return R.menu.debugger_setting_menu;
     }
 
-    public void goSetting(MenuItem item) {
+    public void goSetting(@NonNull MenuItem item) {
         startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", getPackageName(), null)));
     }
 

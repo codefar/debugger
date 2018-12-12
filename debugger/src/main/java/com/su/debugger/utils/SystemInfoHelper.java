@@ -10,7 +10,6 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -95,8 +94,9 @@ public class SystemInfoHelper {
     }
 
     public static String getCpuName() {
+        BufferedReader br = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"));
+            br = new BufferedReader(new FileReader("/proc/cpuinfo"));
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.contains("Hardware")) {
@@ -105,6 +105,8 @@ public class SystemInfoHelper {
             }
         } catch (IOException e) {
             Log.w(TAG, e);
+        } finally {
+            IOUtil.close(br);
         }
         return "";
     }

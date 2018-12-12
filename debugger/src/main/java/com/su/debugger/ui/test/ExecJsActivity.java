@@ -67,7 +67,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
     private TextView mResultView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_activity_js_debug);
         mInflater = getLayoutInflater();
@@ -90,7 +90,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
                 String filepath = file.getAbsolutePath();
                 mScript = IOUtil.readFile(filepath);
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                Log.w(TAG, e);
             }
         }
         if (TextUtils.isEmpty(mScript)) {
@@ -136,7 +136,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("方法" + mFunction.getName());
     }
@@ -238,7 +238,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
     }
 
     //格式化当前EditText中的参数
-    public void format(MenuItem item) {
+    public void format(@NonNull MenuItem item) {
         EditText currentParameterView = getCurrentParameterView();
         String origin = currentParameterView.getText().toString();
         String formatParameter = prettyFormat(origin);
@@ -250,7 +250,7 @@ public class ExecJsActivity extends BaseAppCompatActivity implements View.OnClic
     }
 
     //重置当前EditText中的参数
-    public void reset(MenuItem item) {
+    public void reset(@NonNull MenuItem item) {
         int current = mPager.getCurrentItem();
         EditText currentParameterView = getCurrentParameterView();
         Parameter parameter = mNoteJsFunction.getParameters().get(current);

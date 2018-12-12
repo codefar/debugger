@@ -68,7 +68,7 @@ public class ComponentInfoFragment extends Fragment {
         }
     }
 
-    @Nullable
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.debugger_template_recycler_view, container, false);
@@ -260,7 +260,7 @@ public class ComponentInfoFragment extends Fragment {
         }
 
         @Override
-        protected void bindData(final BaseViewHolder holder, final int position, int itemType) {
+        protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
             Pair<String, String> pair = getData().get(position);
             ((TextView) holder.getView(R.id.name)).setText(pair.first);
             ((TextView) holder.getView(R.id.value)).setText(pair.second);

@@ -52,7 +52,7 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle(mSharedPreferenceName + ".xml");
     }
@@ -255,7 +255,7 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
         }
     }
 
-    public void add(MenuItem item) {
+    public void add(@NonNull MenuItem item) {
         classDialog();
     }
 

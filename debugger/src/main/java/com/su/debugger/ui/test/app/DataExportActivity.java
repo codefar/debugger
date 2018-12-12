@@ -3,6 +3,7 @@ package com.su.debugger.ui.test.app;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.Preference;
@@ -16,6 +17,7 @@ import com.su.debugger.ui.test.BaseAppCompatActivity;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.IOUtil;
 import com.su.debugger.utils.ManifestParser;
+import com.su.debugger.utils.SpHelper;
 import com.su.debugger.widget.SimpleBlockedDialogFragment;
 
 import java.io.File;
@@ -28,11 +30,11 @@ public class DataExportActivity extends BaseAppCompatActivity {
     private static final File EXPORTED_MANIFEST_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-manifest.xml");
     private static final File EXPORTED_SO_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-native");
     private static final File EXPORTED_DATABASE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-databases");
-    private static final File EXPORTED_SHARED_PREFERENCE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-shared_prefs");
+    private static final File EXPORTED_SHARED_PREFERENCE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-" + SpHelper.SHARED_PREFERENCE_BASE_DIRNAME);
     private static File EXPORTED_SHARED_PRIVATE_DIR_FILE;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_data_export);
         EXPORTED_SHARED_PRIVATE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), getPackageName());
@@ -41,7 +43,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("应用数据导出");
     }
@@ -200,7 +202,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
                 databasePreference.setSummary("暂无数据库文件");
             }
 
-            File sharedPreferenceDir = new File(mDataDirPath, "shared_prefs");
+            File sharedPreferenceDir = new File(mDataDirPath, SpHelper.SHARED_PREFERENCE_BASE_DIRNAME);
             Preference sharedPreferencePreference = findPreference("shared_preference");
             sharedPreferencePreference.setOnPreferenceClickListener(this);
             if (IOUtil.hasFilesInDir(sharedPreferenceDir, mSpFilenameFilter)) {

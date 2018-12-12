@@ -25,7 +25,7 @@ public class XmlViewerActivity extends BaseAppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         Intent intent = getIntent();
         setTitle(intent.getStringExtra("title"));

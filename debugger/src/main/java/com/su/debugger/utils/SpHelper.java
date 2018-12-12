@@ -17,6 +17,7 @@ public class SpHelper {
     public static final String NAME = "debugger";
     public static final String COLUMN_DEBUG_DOWNTIME = "debug_downtime";
     public static final String COLUMN_HOST = "host";
+    public static final String SHARED_PREFERENCE_BASE_DIRNAME = "shared_prefs";
 
     private static SharedPreferences sDefaultSharedPreferences;
 
@@ -32,7 +33,7 @@ public class SpHelper {
     }
 
     public static int sharedPreferenceCount(@NonNull Context context) {
-        File sharedPreferenceDir = new File(context.getApplicationInfo().dataDir, "shared_prefs");
+        File sharedPreferenceDir = new File(context.getApplicationInfo().dataDir, SHARED_PREFERENCE_BASE_DIRNAME);
         if(sharedPreferenceDir.exists() && sharedPreferenceDir.isDirectory()){
             return  sharedPreferenceDir.list().length;
         }
@@ -41,7 +42,7 @@ public class SpHelper {
 
     @NonNull
     public static String getOnlySharedPreferenceFileName(@NonNull Context context) {
-        File sharedPreferenceDir = new File(context.getApplicationInfo().dataDir, "shared_prefs");
+        File sharedPreferenceDir = new File(context.getApplicationInfo().dataDir, SHARED_PREFERENCE_BASE_DIRNAME);
         if(sharedPreferenceDir.exists() && sharedPreferenceDir.isDirectory()){
             return IOUtil.getFileNameWithoutExtension(sharedPreferenceDir.listFiles((dir, name) -> name.endsWith(".xml"))[0]);
         }
@@ -49,7 +50,7 @@ public class SpHelper {
     }
 
     public static List<File> getAllSharedPreferenceFiles(@NonNull Context context) {
-        File sharedPreferenceDir = new File(context.getApplicationInfo().dataDir, "shared_prefs");
+        File sharedPreferenceDir = new File(context.getApplicationInfo().dataDir, SHARED_PREFERENCE_BASE_DIRNAME);
         if(sharedPreferenceDir.exists() && sharedPreferenceDir.isDirectory()){
             return Arrays.asList(sharedPreferenceDir.listFiles((dir, name) -> name.endsWith(".xml")));
         }

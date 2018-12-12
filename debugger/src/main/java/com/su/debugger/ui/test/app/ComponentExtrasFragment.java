@@ -88,7 +88,7 @@ public class ComponentExtrasFragment extends Fragment {
         outState.putParcelable("note", mNoteComponent);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.debugger_template_recycler_view, container, false);
@@ -183,7 +183,7 @@ public class ComponentExtrasFragment extends Fragment {
     }
 
     @SuppressWarnings("unchecked")
-    private void makeParameter(Intent intent, Class clazz, Parameter parameter) {
+    private void makeParameter(@NonNull Intent intent, @NonNull Class clazz, @NonNull Parameter parameter) {
         String parameterName = parameter.getParameterName();
         String parameterValue = parameter.getParameter();
         if (TextUtils.isEmpty(parameterValue)) {
@@ -256,7 +256,7 @@ public class ComponentExtrasFragment extends Fragment {
         private int mRequiredColor;
         private List<Parameter> mOrigin;
 
-        private ParameterViewAdapter(Context context, List<Parameter> origin, List<Parameter> data) {
+        private ParameterViewAdapter(@NonNull Context context, @NonNull List<Parameter> origin, @NonNull List<Parameter> data) {
             super(data);
             mContext = context;
             Resources resources = context.getResources();
@@ -271,7 +271,7 @@ public class ComponentExtrasFragment extends Fragment {
         }
 
         @Override
-        protected void bindData(final BaseViewHolder holder, final int position, int itemType) {
+        protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
             Parameter parameter = getData().get(position);
             Log.w(TAG, "parameter: " + parameter);
             TextView classNameView = (TextView) holder.getView(R.id.class_name);
@@ -323,7 +323,7 @@ public class ComponentExtrasFragment extends Fragment {
             });
         }
 
-        private void setNewInstanceView(final BaseViewHolder holder, Parameter parameter) {
+        private void setNewInstanceView(@NonNull final BaseViewHolder holder, @NonNull Parameter parameter) {
             final Class<?> clazz = parameter.getParameterClass();
             TextView newInstanceView = (TextView) holder.getView(R.id.new_instance);
             final EditText valueView = (EditText) holder.getView(R.id.value);

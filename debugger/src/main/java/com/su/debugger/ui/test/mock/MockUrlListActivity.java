@@ -48,7 +48,7 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Loader
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle(mTitle);
         mSearchableHelper.initSearchToolbar(mToolbar, this);

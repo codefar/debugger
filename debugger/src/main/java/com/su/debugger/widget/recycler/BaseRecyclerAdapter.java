@@ -1,5 +1,6 @@
 package com.su.debugger.widget.recycler;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +47,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     }
 
     @Override
-    public void onBindViewHolder(BaseRecyclerAdapter.BaseViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
         int type = getItemViewType(position);
         if (type == ITEM_TYPE_HEADER || getItemViewType(position) == ITEM_TYPE_FOOTER) {
             // 不做处理
@@ -159,7 +160,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
      * @param position 对应的索引
      * @param itemType 当前条目对应类型
      */
-    protected abstract void bindData(BaseViewHolder holder, int position, int itemType);
+    protected abstract void bindData(@NonNull BaseViewHolder holder, int position, int itemType);
 
     @Override
     public int getItemCount() {

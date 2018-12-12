@@ -51,7 +51,7 @@ public class SimpleTextWatcher implements TextWatcher {
      * (You are not told where the change took place because other
      * afterTextChanged() methods may already have made other changes
      * and invalidated the offsets.  But if you need to know here,
-     * you can use {@link Spannable#setSpan} in {@link #onTextChanged}
+     * you can use {@link android.text.Spannable#setSpan} in {@link #onTextChanged}
      * to mark your place and then look up from here where the span
      * ended up.
      *

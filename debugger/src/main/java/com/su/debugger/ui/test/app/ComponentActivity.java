@@ -6,6 +6,8 @@ import android.content.pm.ComponentInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.MenuRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,7 +45,7 @@ public class ComponentActivity extends BaseAppCompatActivity {
     private TabLayout mTabLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_activity_component_info);
         if (savedInstanceState == null) {
@@ -76,7 +78,7 @@ public class ComponentActivity extends BaseAppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle();
 
@@ -169,14 +171,14 @@ public class ComponentActivity extends BaseAppCompatActivity {
     }
 
     //格式化当前EditText中的参数
-    public void format(MenuItem item) {
+    public void format(@NonNull MenuItem item) {
         mComponentExtrasFragment.format();
         if (mPager.getCurrentItem() != 1) {
             mPager.setCurrentItem(1);
         }
     }
 
-    public void go(MenuItem item) {
+    public void go(@NonNull MenuItem item) {
         List<Parameter> parameters = mNoteComponent.getParameters();
         Intent intent;
         if (parameters.isEmpty()) {

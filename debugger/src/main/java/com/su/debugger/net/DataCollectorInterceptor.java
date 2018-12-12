@@ -142,7 +142,7 @@ public class DataCollectorInterceptor implements Interceptor {
 
             try {
                 responseCollection(entity, response);
-                MockContentProvider.saveResponseEntity(entity);
+                MockUtil.saveResponseEntity(entity);
                 IOUtil.writeFile(new File(COLLECTOR_DIR, md5Key + ".txt").getAbsolutePath(), entity.toString());
             } catch (JSONException e) {
                 Log.w(TAG, "data error: " + e.getMessage());
@@ -205,7 +205,7 @@ public class DataCollectorInterceptor implements Interceptor {
         }
     }
 
-    private static String toJSONString(@NonNull String input) throws JSONException {
+    private static String toJSONString(@NonNull String input) {
         return JSON.toJSONString(JSON.parse(input),
                 SerializerFeature.DisableCircularReferenceDetect,
                 SerializerFeature.PrettyFormat);

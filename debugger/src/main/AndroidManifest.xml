@@ -103,7 +103,7 @@
             android:screenOrientation="portrait"/>
         <!-- 系统信息 -->
         <activity
-            android:name=".ui.test.PhoneInfoActivity"
+            android:name=".ui.test.DeviceInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"

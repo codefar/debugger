@@ -148,18 +148,12 @@ public final class UiHelper {
     //获取魅族smartbar高度
     public static int getSmartBarHeight(Context context) {
         try {
-            Class clazz = Class.forName("com.android.internal.R$dimen");
+            Class<?> clazz = Class.forName("com.android.internal.R$dimen");
             Object obj = clazz.newInstance();
             Field field = clazz.getField("mz_action_button_min_height");
             int height = Integer.parseInt(field.get(obj).toString());
             return context.getResources().getDimensionPixelSize(height);
-        } catch (ClassNotFoundException e) {
-            Log.w(TAG, e);
-        } catch (InstantiationException e) {
-            Log.w(TAG, e);
-        } catch (IllegalAccessException e) {
-            Log.w(TAG, e);
-        } catch (NoSuchFieldException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchFieldException e) {
             Log.w(TAG, e);
         }
         return 0;
@@ -231,29 +225,20 @@ public final class UiHelper {
 
     /**
      * 扩大View的触摸和点击响应范围,最大不超过其父View范围
-     *
-     * @param view
-     * @param top
-     * @param bottom
-     * @param left
-     * @param right
      */
     public static void expandViewTouchDelegate(final View view, final int top,
                                                final int bottom, final int left, final int right) {
-        ((View) view.getParent()).post(new Runnable() {
-            @Override
-            public void run() {
-                Rect bounds = new Rect();
-                view.setEnabled(true);
-                view.getHitRect(bounds);
-                bounds.top -= top;
-                bounds.bottom += bottom;
-                bounds.left -= left;
-                bounds.right += right;
-                TouchDelegate touchDelegate = new TouchDelegate(bounds, view);
-                if (View.class.isInstance(view.getParent())) {
-                    ((View) view.getParent()).setTouchDelegate(touchDelegate);
-                }
+        ((View) view.getParent()).post(() -> {
+            Rect bounds = new Rect();
+            view.setEnabled(true);
+            view.getHitRect(bounds);
+            bounds.top -= top;
+            bounds.bottom += bottom;
+            bounds.left -= left;
+            bounds.right += right;
+            TouchDelegate touchDelegate = new TouchDelegate(bounds, view);
+            if (View.class.isInstance(view.getParent())) {
+                ((View) view.getParent()).setTouchDelegate(touchDelegate);
             }
         });
     }
@@ -288,7 +273,7 @@ public final class UiHelper {
                 ViewGroup decorView = (ViewGroup) window.getDecorView();
                 decorView.addView(statusBarView);
             }
-            ViewGroup contentView = (ViewGroup) window.findViewById(android.R.id.content);
+            ViewGroup contentView = window.findViewById(android.R.id.content);
             View rootView = contentView.getChildAt(0);
             if (rootView instanceof ViewGroup) {
                 rootView.setFitsSystemWindows(true);

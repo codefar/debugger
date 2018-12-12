@@ -2,7 +2,6 @@ package com.su.debugger.utils;
 
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -219,7 +218,7 @@ public class SearchableHelper {
 
     public void initSearchToolbar(Toolbar toolbar, String queryHint, SearchView.OnQueryTextListener listener) {
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);//加载searchview
+        SearchView searchView = (SearchView) menuItem.getActionView();//加载searchview
         EditText searchEdit = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchView.findViewById(android.support.v7.appcompat.R.id.search_plate)
                 .setBackgroundResource(android.R.color.transparent);

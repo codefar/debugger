@@ -136,7 +136,7 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("应用信息");
     }

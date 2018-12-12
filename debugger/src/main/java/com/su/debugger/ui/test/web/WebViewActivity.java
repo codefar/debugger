@@ -3,6 +3,7 @@ package com.su.debugger.ui.test.web;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -30,7 +31,7 @@ public class WebViewActivity extends BaseAppCompatActivity {
     private NoteWebViewEntity mEntity;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (savedInstanceState == null) {
             mUrl = intent.getStringExtra("url");
@@ -70,7 +71,7 @@ public class WebViewActivity extends BaseAppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle(mTitle);
         Menu menu = mToolbar.getMenu();

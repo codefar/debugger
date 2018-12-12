@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -93,7 +94,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = (BaseAppCompatActivity) getActivity();
         Bundle b = getArguments();
@@ -113,8 +114,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
         }
     }
 
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.debugger_fragment_webview, container, false);
         mSwipeRefreshLayout = v.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setColorSchemeResources(

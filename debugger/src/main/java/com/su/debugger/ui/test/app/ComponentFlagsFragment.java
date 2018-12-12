@@ -67,7 +67,7 @@ public class ComponentFlagsFragment extends Fragment {
         outState.putParcelable("note", mNoteComponent);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.debugger_template_recycler_view, container, false);

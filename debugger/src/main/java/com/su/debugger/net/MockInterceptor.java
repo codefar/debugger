@@ -189,11 +189,10 @@ public class MockInterceptor implements Interceptor {
             }
             try {
                 long contentLength = requestBody.contentLength();
-                Charset charset = UTF8;
                 Buffer buffer = new Buffer();
                 requestBody.writeTo(buffer);
                 if (contentLength != 0) {
-                    String content = buffer.clone().readString(charset);
+                    String content = buffer.clone().readString(UTF8);
                     if (!TextUtils.isEmpty(contentType) && contentType.contains("application/json")) {
                         newRequestBody = parseApplicationJsonContent(content);
                     } else {
@@ -250,6 +249,9 @@ public class MockInterceptor implements Interceptor {
         Buffer buffer = null;
         try {
             String body = supplier.downtimeResponse(request.url().toString());
+            if (body == null) {
+                body = "";
+            }
             buffer = new Buffer().writeUtf8(body);
             Headers.Builder builder = new Headers.Builder()
                     .add("content-type", "application/json; charset=UTF-8")

@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -65,7 +66,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
     private int mNormalColor;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_template_recycler_list);
         if (savedInstanceState == null) {
@@ -201,7 +202,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle(mTitle);
         mSearchableHelper.initSearchToolbar(mToolbar, this);
@@ -338,7 +339,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
         }
 
         @Override
-        protected void bindData(final BaseViewHolder holder, final int position, int itemType) {
+        protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
             final ComponentInfo info = getData().get(position);
             String displayName = info.name;
             NoteComponentEntity noteComponent = mNoteComponentMap.get(displayName);

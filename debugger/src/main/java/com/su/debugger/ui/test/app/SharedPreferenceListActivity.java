@@ -37,7 +37,7 @@ public class SharedPreferenceListActivity extends BaseAppCompatActivity implemen
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setTitle("SharedPreference文件列表");
     }
