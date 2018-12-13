@@ -19,6 +19,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class ManifestParser {
     public static final String TAG = ManifestParser.class.getSimpleName();
@@ -242,6 +243,9 @@ public class ManifestParser {
                 value = getProtectionLevel(parseInt16(attributeValue));
             } else if (TextUtils.equals(attributeName, "glEsVersion")) {
                 value = getGlEsVersion(parseInt16(attributeValue));
+            } else if (TextUtils.equals(attributeName, "configChanges")
+                    || TextUtils.equals(attributeName, "recreateOnConfigChanges")) {
+                value = getConfigChanges(parseInt16(attributeValue));
             } else {
                 value = resolveValue(attributeValue);
             }
@@ -279,6 +283,37 @@ public class ManifestParser {
         }
     }
 
+    private static String getConfigChanges(int configChanges) {
+        StringBuilder configChangeDesc = new StringBuilder();
+        Class<ActivityInfo> clazz = ActivityInfo.class;
+        Field[] fields = clazz.getDeclaredFields();
+        String prefix = "CONFIG_";
+        int prefixLength = prefix.length();
+        try {
+            for (Field field : fields) {
+                if (!field.getName().startsWith(prefix)) {
+                    continue;
+                }
+                if (!Modifier.isFinal(field.getModifiers())) {
+                    continue;
+                }
+                Integer value = (Integer) field.get(null);
+                if (value == null || (configChanges & value) != value) {
+                    continue;
+                }
+                configChangeDesc.append(toCamelCase(field.getName().substring(prefixLength)));
+                configChangeDesc.append("|");
+            }
+            if (fields.length > 0) {
+                configChangeDesc.delete(configChangeDesc.length() - 1, configChangeDesc.length());
+            }
+            return configChangeDesc.toString();
+        } catch (IllegalAccessException e) {
+            Log.w(TAG, e);
+        }
+        return "unknown";
+    }
+
     private static String getGlEsVersion(int glEsVersion) {
         FeatureInfo featureInfo = new FeatureInfo();
         featureInfo.reqGlEsVersion = glEsVersion;
@@ -288,38 +323,44 @@ public class ManifestParser {
     private static String getScreenOrientation(int orientation) {
         Class<ActivityInfo> clazz = ActivityInfo.class;
         Field[] fields = clazz.getDeclaredFields();
+        String prefix = "SCREEN_ORIENTATION_";
+        int prefixLength = prefix.length();
         try {
             for (Field field : fields) {
-                if (!field.getName().startsWith("SCREEN_ORIENTATION_")) {
+                if (!field.getName().startsWith(prefix)) {
                     continue;
                 }
                 Integer value = (Integer) field.get(null);
                 if (value == null || orientation != value) {
                     continue;
                 }
-                //去掉下划线，驼峰式命名
-                char[] chars = field.getName().substring(19).toCharArray();
-                char[] newChars = new char[chars.length];
-                int pointer = 0;
-                int length = chars.length;
-                int count = 0;
-                for (int i = 0; i < length; i++) {
-                    if (chars[i] == 95) { //下划线
-                        newChars[pointer] = chars[i + 1]; //大写变小写
-                        count++;
-                        i++; //略过下划线
-                    } else {
-                        chars[i] += 32;
-                        newChars[pointer] = chars[i];
-                    }
-                    pointer++;
-                }
-                return new String(newChars, 0, length - count);
+                return toCamelCase(field.getName().substring(prefixLength));
             }
         } catch (IllegalAccessException e) {
             Log.w(TAG, e);
         }
         return "unknown";
+    }
+
+    private static String toCamelCase(@NonNull String fieldName) {
+        //去掉下划线，驼峰式命名
+        char[] chars = fieldName.toCharArray();
+        char[] newChars = new char[chars.length];
+        int pointer = 0;
+        int length = chars.length;
+        int count = 0;
+        for (int i = 0; i < length; i++) {
+            if (chars[i] == 95) { //下划线
+                newChars[pointer] = chars[i + 1]; //大写变小写
+                count++;
+                i++; //略过下划线
+            } else {
+                chars[i] += 32;
+                newChars[pointer] = chars[i];
+            }
+            pointer++;
+        }
+        return new String(newChars, 0, length - count);
     }
 
     private static String getLaunchMode(int mode) {
