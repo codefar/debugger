@@ -2,6 +2,7 @@ package com.su.debugger.utils;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -236,21 +237,24 @@ public class ManifestParser {
             } else if (TextUtils.equals(attributeName, "launchMode")) {
                 value = getLaunchMode(Integer.parseInt(attributeValue));
             } else if (TextUtils.equals(attributeName, "windowSoftInputMode")) {
-                if (attributeValue.startsWith("0x")) {
-                    attributeValue = attributeValue.substring(2);
-                }
-                value = softInputModeToString(Integer.parseInt(attributeValue, 16));
+                value = softInputModeToString(parseInt16(attributeValue));
             } else if (TextUtils.equals(attributeName, "protectionLevel")) {
-                if (attributeValue.startsWith("0x")) {
-                    attributeValue = attributeValue.substring(2);
-                }
-                value = getProtectionLevel(Integer.parseInt(attributeValue, 16));
+                value = getProtectionLevel(parseInt16(attributeValue));
+            } else if (TextUtils.equals(attributeName, "glEsVersion")) {
+                value = getGlEsVersion(parseInt16(attributeValue));
             } else {
                 value = resolveValue(attributeValue);
             }
             sb.append("android:" + attributeName + "=\"" + value + "\"");
         }
         return sb.toString();
+    }
+
+    private static int parseInt16(@NonNull String number) {
+        if (number.startsWith("0x")) {
+            number = number.substring(2);
+        }
+        return Integer.parseInt(number, 16);
     }
 
     private void insertSpaces(@NonNull StringBuilder sb, int number) {
@@ -273,6 +277,12 @@ public class ManifestParser {
             Log.w(TAG, e);
             return value;
         }
+    }
+
+    private static String getGlEsVersion(int glEsVersion) {
+        FeatureInfo featureInfo = new FeatureInfo();
+        featureInfo.reqGlEsVersion = glEsVersion;
+        return featureInfo.getGlEsVersion();
     }
 
     private static String getScreenOrientation(int orientation) {
