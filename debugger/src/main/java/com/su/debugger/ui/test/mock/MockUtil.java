@@ -122,7 +122,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_DESCRIPTION, description);
         int rowsUpdated = 0;
         try {
-            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(entity.getId())), values, null, null);
+            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(entity.getId())), values, null, null);
             if (rowsUpdated > 0) {
                 entity.setDescription(description);
             }
@@ -141,7 +141,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_IN_USE, true);
         int rowsUpdated = 0;
         try {
-            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(entity.getId())), values, null, null);
+            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(entity.getId())), values, null, null);
             entity.setAuto(rowsUpdated > 0 == auto);
         } catch (SQLiteConstraintException e) {
             Toast.makeText(context, "已存在同样条件的request", Toast.LENGTH_LONG).show();
@@ -182,7 +182,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_IN_USE, true);
         int rowsUpdated = 0;
         try {
-            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(entity.getId())), values, null, null);
+            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(entity.getId())), values, null, null);
             if (rowsUpdated > 0) {
                 entity.setRequestHeaders(newHeaders);
                 entity.setMd5(md5);
@@ -205,7 +205,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_IN_USE, true);
         int rowsUpdated = 0;
         try {
-            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(entity.getId())), values, null, null);
+            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(entity.getId())), values, null, null);
             if (rowsUpdated > 0) {
                 entity.setMethod(value);
                 entity.setMd5(md5);
@@ -228,7 +228,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_IN_USE, true);
         int rowsUpdated = 0;
         try {
-            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(entity.getId())), values, null, null);
+            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(entity.getId())), values, null, null);
             if (rowsUpdated > 0) {
                 entity.setMethod(value);
                 entity.setMd5(md5);
@@ -275,7 +275,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_IN_USE, true);
         int rowsUpdated = 0;
         try {
-            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(entity.getId())), values, null, null);
+            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(entity.getId())), values, null, null);
             if (rowsUpdated > 0) {
                 entity.setUrl(newUrl);
                 entity.setMd5(md5);
@@ -325,7 +325,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_IN_USE, true);
         int rowsUpdated = 0;
         try {
-            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(entity.getId())), values, null, null);
+            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(entity.getId())), values, null, null);
             if (rowsUpdated > 0) {
                 entity.setRequestBody(newParameters);
                 entity.setMd5(md5);
@@ -367,7 +367,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_IN_USE, true);
         int rowsUpdated = 0;
         try {
-            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(entity.getId())), values, null, null);
+            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(entity.getId())), values, null, null);
             if (rowsUpdated > 0) {
                 entity.setResponseHeaders(newHeaders);
             }
@@ -386,7 +386,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_IN_USE, true);
         int rowsUpdated = 0;
         try {
-            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(entity.getId())), values, null, null);
+            rowsUpdated = resolver.update(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(entity.getId())), values, null, null);
             if (rowsUpdated > 0) {
                 entity.setResponse(value);
             }
@@ -400,7 +400,7 @@ public class MockUtil {
     static int deleteById(@NonNull Context context, long id) {
         ContentResolver resolver = context.getContentResolver();
         try {
-            return resolver.delete(Uri.withAppendedPath(MockContentProvider.CONTENT_URI, String.valueOf(id)), null, null);
+            return resolver.delete(Uri.withAppendedPath(MockContentProvider.getContentUri(), String.valueOf(id)), null, null);
         } catch (SQLiteConstraintException e) {
             Log.w(TAG, e);
         }
@@ -449,7 +449,7 @@ public class MockUtil {
         values.put(MockResponseEntity.COLUMN_AUTO, false);
         values.put(MockResponseEntity.COLUMN_IN_USE, entity.isInUse());
         values.put(MockResponseEntity.COLUMN_DESCRIPTION, entity.getDescription());
-        Uri uri = resolver.insert(MockContentProvider.CONTENT_URI, values);
+        Uri uri = resolver.insert(MockContentProvider.getContentUri(), values);
         return uri != null;
     }
 
@@ -466,10 +466,11 @@ public class MockUtil {
         values.put("responseHeaders", entity.getResponseHeaders());
         values.put("response", entity.getResponse());
         values.put("inUse", false);
-        String md5 = MockUtil.makeMd5(entity.getUrl(), entity.getMethod(), entity.getContentType(), entity.getRequestHeaders(), entity.getRequestBody(), entity.isAuto());
+        String md5 = MockUtil.makeMd5(entity.getUrl(), entity.getMethod(), entity.getContentType(), entity.getRequestHeaders(), entity.getRequestBody(),
+                                      entity.isAuto());
         values.put("md5", md5);
         ContentResolver resolver = GeneralInfoHelper.getContext().getContentResolver();
-        return resolver.insert(MockContentProvider.CONTENT_URI, values);
+        return resolver.insert(MockContentProvider.getContentUri(), values);
     }
 
     public static boolean recorded(@NonNull MockResponseEntity entity) {
@@ -484,7 +485,7 @@ public class MockUtil {
         return !MockContentProvider.isUnique(resolver, values);
     }
 
-//    /storage/emulated/0/Android/data/packageName/files/mock
+    //    /storage/emulated/0/Android/data/packageName/files/mock
 //    /storage/emulated/0/mock
     public static void process(Activity activity) {
         File mockCacheDir = activity.getExternalFilesDir("mock");
@@ -561,15 +562,16 @@ public class MockUtil {
 
         synchronized (MockContentProvider.LOCK) {
             ContentResolver resolver = GeneralInfoHelper.getContext().getContentResolver();
-            Cursor cursor = resolver.query(MockContentProvider.CONTENT_URI, null,
-                    MockResponseEntity.COLUMN_URL + "=?" +
-                            " AND " + MockResponseEntity.COLUMN_METHOD + "=?" +
-                            " AND " + MockResponseEntity.COLUMN_CONTENT_TYPE + "=?" +
-                            " AND " + MockResponseEntity.COLUMN_REQUEST_HEADERS + "=?" +
-                            " AND " + MockResponseEntity.COLUMN_REQUEST_BODY + "=?" +
-                            " AND " + MockResponseEntity.COLUMN_AUTO + "=?",
-                            new String[]{url, method, contentType, requestHeaders, requestBody, auto ? "1" : "0"},
-                    null);
+            Cursor cursor = resolver.query(MockContentProvider.getContentUri(),
+                                           null,
+                                           MockResponseEntity.COLUMN_URL + "=?" +
+                                                   " AND " + MockResponseEntity.COLUMN_METHOD + "=?" +
+                                                   " AND " + MockResponseEntity.COLUMN_CONTENT_TYPE + "=?" +
+                                                   " AND " + MockResponseEntity.COLUMN_REQUEST_HEADERS + "=?" +
+                                                   " AND " + MockResponseEntity.COLUMN_REQUEST_BODY + "=?" +
+                                                   " AND " + MockResponseEntity.COLUMN_AUTO + "=?",
+                                           new String[]{url, method, contentType, requestHeaders, requestBody, auto ? "1" : "0"},
+                                           null);
 
             //如果已经收集过并且存在于数据库中，则更新
             if (cursor != null && cursor.getCount() > 0) {
@@ -589,7 +591,7 @@ public class MockUtil {
                 values.put(MockResponseEntity.COLUMN_RESPONSE, entity.getResponse());
                 values.put(MockResponseEntity.COLUMN_DESCRIPTION, entity.getDescription());
                 values.put(MockResponseEntity.COLUMN_IN_USE, entity.isInUse());
-                resolver.update(ContentUris.withAppendedId(MockContentProvider.CONTENT_URI, id), values, null, null);
+                resolver.update(ContentUris.withAppendedId(MockContentProvider.getContentUri(), id), values, null, null);
             } else {
                 saveResponseEntity(entity);
             }

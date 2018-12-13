@@ -3,7 +3,9 @@ package com.su.debugger.db;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
+import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -19,11 +21,10 @@ import com.su.debugger.entity.MockResponseEntity;
  */
 
 public class MockContentProvider extends ContentProvider {
-    private static final String AUTHORITY = "com.su.debugger.MockContentProvider";
-    private static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
+    private static Uri sAuthorityUri;
     private static final String TABLE_RESPONSE = "response";
-    public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, TABLE_RESPONSE);
-    public static final Uri HOST_URI = Uri.withAppendedPath(CONTENT_URI, "host");
+    private static Uri sContentUri;
+    private static Uri sHostUri;
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     public static final int RESPONSE = 1;
     public static final int RESPONSES = 2;
@@ -31,10 +32,16 @@ public class MockContentProvider extends ContentProvider {
     public static final Object LOCK = new Object();
     private SQLiteDatabase sqLiteDatabase;
 
-    static {
-        uriMatcher.addURI(AUTHORITY, TABLE_RESPONSE, RESPONSES);
-        uriMatcher.addURI(AUTHORITY, TABLE_RESPONSE + "/#", RESPONSE);
-        uriMatcher.addURI(AUTHORITY, TABLE_RESPONSE + "/host", HOST);
+    @Override
+    public void attachInfo(Context context, ProviderInfo info) {
+        super.attachInfo(context, info);
+        String authority = info.authority;
+        sAuthorityUri = Uri.parse("content://" + authority);
+        sContentUri = Uri.withAppendedPath(sAuthorityUri, TABLE_RESPONSE);
+        sHostUri = Uri.withAppendedPath(sContentUri, "host");
+        uriMatcher.addURI(authority, TABLE_RESPONSE, RESPONSES);
+        uriMatcher.addURI(authority, TABLE_RESPONSE + "/#", RESPONSE);
+        uriMatcher.addURI(authority, TABLE_RESPONSE + "/host", HOST);
     }
 
     @Override
@@ -101,15 +108,15 @@ public class MockContentProvider extends ContentProvider {
         String requestBody = values.getAsString("requestBody");
         boolean auto = values.getAsBoolean("auto");
 
-        Cursor cursor = resolver.query(MockContentProvider.CONTENT_URI, null,
-                MockResponseEntity.COLUMN_URL + "=?" +
+        Cursor cursor = resolver.query(MockContentProvider.sContentUri, null,
+                                       MockResponseEntity.COLUMN_URL + "=?" +
                         " AND " + MockResponseEntity.COLUMN_METHOD + "=?" +
                         " AND " + MockResponseEntity.COLUMN_CONTENT_TYPE + "=?" +
                         " AND " + MockResponseEntity.COLUMN_REQUEST_HEADERS + "=?" +
                         " AND " + MockResponseEntity.COLUMN_REQUEST_BODY + "=?" +
                         " AND " + MockResponseEntity.COLUMN_AUTO + "=?",
-                new String[]{url, method, contentType, requestHeaders, requestBody, auto ? "1" : "0"},
-                null);
+                                       new String[]{url, method, contentType, requestHeaders, requestBody, auto ? "1" : "0"},
+                                       null);
         if (cursor != null) {
             boolean unique = cursor.getCount() == 0;
             cursor.close();
@@ -159,5 +166,17 @@ public class MockContentProvider extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsUpdated;
+    }
+
+    public static Uri getAuthorityUri() {
+        return sAuthorityUri;
+    }
+
+    public static Uri getContentUri() {
+        return sContentUri;
+    }
+
+    public static Uri getHostUri() {
+        return sHostUri;
     }
 }

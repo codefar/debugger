@@ -70,7 +70,7 @@ public class GroupHostAdapter extends CursorAdapter implements AdapterView.OnIte
 
     private boolean deleteByHost(String host) {
         ContentResolver resolver = mActivity.getContentResolver();
-        int count = resolver.delete(MockContentProvider.CONTENT_URI, MockResponseEntity.COLUMN_HOST + "=?", new String[]{host});
+        int count = resolver.delete(MockContentProvider.getContentUri(), MockResponseEntity.COLUMN_HOST + "=?", new String[]{host});
         return count > 0;
     }
 

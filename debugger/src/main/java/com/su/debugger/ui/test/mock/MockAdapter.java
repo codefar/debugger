@@ -122,7 +122,7 @@ public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClic
             }
             ContentValues values = new ContentValues();
             values.put("inUse", holder.checkBox.isChecked());
-            resolver.update(ContentUris.withAppendedId(MockContentProvider.CONTENT_URI, id), values, null, null);
+            resolver.update(ContentUris.withAppendedId(MockContentProvider.getContentUri(), id), values, null, null);
         });
     }
 

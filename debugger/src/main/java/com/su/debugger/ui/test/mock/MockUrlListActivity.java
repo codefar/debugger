@@ -68,7 +68,7 @@ public class MockUrlListActivity extends BaseAppCompatActivity implements Loader
             selection += " AND host=?";
             selectionArgs = new String[]{likeStatement, likeStatement, likeStatement, likeStatement, likeStatement, mHost};
         }
-        return new CursorLoader(this, MockContentProvider.CONTENT_URI, MockResponseEntity.PROJECTION, selection, selectionArgs, "url ASC, method ASC");
+        return new CursorLoader(this, MockContentProvider.getContentUri(), MockResponseEntity.PROJECTION, selection, selectionArgs, "url ASC, method ASC");
     }
 
     @Override

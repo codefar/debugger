@@ -101,10 +101,10 @@ public class MockInterceptor implements Interceptor {
                 Log.d(TAG, "selectionArgs length: " + selectionArgs.length);
             }
             //手动数据优先自动收集的数据
-            cursor = resolver.query(MockContentProvider.CONTENT_URI, null,
-                    selection,
-                    selectionArgs,
-                    "auto ASC limit 1");
+            cursor = resolver.query(MockContentProvider.getContentUri(), null,
+                                    selection,
+                                    selectionArgs,
+                                    "auto ASC limit 1");
             if (cursor != null && cursor.getCount() > 0) {
                 Log.d(TAG, "got mock result!");
                 cursor.moveToFirst();

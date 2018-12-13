@@ -49,7 +49,7 @@ public class MockGroupHostActivity extends BaseAppCompatActivity implements Load
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int i, @Nullable Bundle bundle) {
-        return new CursorLoader(this, MockContentProvider.HOST_URI,
+        return new CursorLoader(this, MockContentProvider.getHostUri(),
                 //CursorAdapter要求cursor必须包含_id字段
                 new String[]{MockResponseEntity.COLUMN_HOST + " as _id", MockResponseEntity.COLUMN_HOST, "count(host)"},
                 null,
