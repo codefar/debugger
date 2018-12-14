@@ -1,10 +1,10 @@
 ## debugger
 
 ```groovy
-debugApi 'com.su:debugger.annotations:0.9.4'
-debugAnnotationProcessor 'com.su:debugger.compiler:0.9.4'
-debugImplementation 'com.su:debugger:0.9.4'
-releaseImplementation 'com.su:debugger-no-op:0.9.4'
+debugApi 'com.su:debugger.annotations:0.9.5'
+debugAnnotationProcessor 'com.su:debugger.compiler:0.9.5'
+debugImplementation 'com.su:debugger:0.9.5'
+releaseImplementation 'com.su:debugger-no-op:0.9.5'
 ```
 
 需要将module名称传给compiler
@@ -50,6 +50,8 @@ private static void initDebugger(Application application) {
 ```
 
 其中`type`必须要指定为`activity`，参数不仅可以配置为基本数据类型也可以配置实现Parcelable的类型。
+
+启动service也类似。
 
 
 
