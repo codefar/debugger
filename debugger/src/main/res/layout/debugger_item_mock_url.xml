@@ -24,6 +24,23 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/first_text"
                 android:textSize="12sp"
+                android:text="scheme:"/>
+            <TextView
+                android:id="@+id/scheme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/second_text"
+                android:textSize="12sp"
+                tools:text="https"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/first_text"
+                android:textSize="12sp"
                 android:text="host:"/>
             <TextView
                 android:id="@+id/host"
@@ -34,7 +51,7 @@
                 android:lines="1"
                 android:textColor="@color/second_text"
                 android:textSize="12sp"
-                tools:text="https://www.baidu.com"/>
+                tools:text="www.baidu.com"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

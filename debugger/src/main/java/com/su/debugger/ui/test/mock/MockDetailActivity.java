@@ -122,6 +122,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     //host/path/method/content type
     private void initHeader() {
         LayoutInflater inflater = getLayoutInflater();
+        Resources resources = getResources();
         View header = inflater.inflate(R.layout.debugger_header_mock_info, mListView, false);
         mDescView = header.findViewById(R.id.desc);
         mDescView.setOnClickListener(this);
@@ -129,6 +130,15 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         mAutoSwitchView = header.findViewById(R.id.auto);
         mAutoSwitchView.setChecked(mEntity.isAuto());
         mAutoSwitchView.setOnClickListener(this);
+        Uri uri = Uri.parse(mEntity.getUrl());
+        String scheme = uri.getScheme();
+        TextView schemeView = header.findViewById(R.id.scheme);
+        schemeView.setText(scheme);
+        if (TextUtils.equals("http", scheme)) {
+            schemeView.setTextColor(resources.getColor(R.color.error_hint));
+        } else {
+            schemeView.setTextColor(resources.getColor(R.color.second_text));
+        }
         String host = mEntity.getHost();
         TextView hostView = header.findViewById(R.id.host);
         hostView.setText(host);

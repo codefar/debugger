@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -25,11 +26,13 @@ import java.util.Set;
 
 public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClickListener {
     private Context mContext;
+    private Resources mResources;
     private String mQueryText;
 
     MockAdapter(Context context, Cursor c, boolean autoRequery) {
         super(context, c, autoRequery);
         mContext = context;
+        mResources = context.getResources();
     }
 
     @Override
@@ -70,6 +73,7 @@ public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClic
         entity.setInUse(inUse == 1);
 
         Uri uri = Uri.parse(url);
+        String scheme = uri.getScheme();
         Set<String> set = uri.getQueryParameterNames();
         String queryContent = MockUtil.makeQueryContent(uri, " ");
         if (set.isEmpty()) {
@@ -85,6 +89,12 @@ public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClic
         } else {
             holder.requestBodyView.setText(parametersContent);
             holder.requestBodyLayout.setVisibility(View.VISIBLE);
+        }
+        holder.schemeView.setText(scheme);
+        if (TextUtils.equals("http", scheme)) {
+            holder.schemeView.setTextColor(mResources.getColor(R.color.error_hint));
+        } else {
+            holder.schemeView.setTextColor(mResources.getColor(R.color.second_text));
         }
         holder.hostView.setText(host);
         holder.typeView.setText(auto == 0 ? "manual" : "auto");
@@ -170,6 +180,7 @@ public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClic
 
     private static class ViewHolder {
 
+        private TextView schemeView;
         private TextView hostView;
         private TextView typeView;
         private TextView pathView;
@@ -186,6 +197,7 @@ public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClic
         private AppCompatCheckBox checkBox;
 
         private ViewHolder(View itemView) {
+            schemeView = itemView.findViewById(R.id.scheme);
             hostView = itemView.findViewById(R.id.host);
             typeView = itemView.findViewById(R.id.type);
             pathView = itemView.findViewById(R.id.path);
