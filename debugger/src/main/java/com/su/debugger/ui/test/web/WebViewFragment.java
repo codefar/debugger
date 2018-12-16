@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,8 +31,6 @@ import com.su.debugger.R;
 import com.su.debugger.entity.NoteWebViewEntity;
 import com.su.debugger.entity.SimpleParameter;
 import com.su.debugger.ui.test.BaseAppCompatActivity;
-import com.su.debugger.widget.refresh.SwipeRefreshLayout;
-import com.su.debugger.widget.refresh.SwipeRefreshLayoutDirection;
 
 import java.util.HashMap;
 import java.util.List;
@@ -116,7 +115,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
 
     @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.debugger_fragment_webview, container, false);
         mSwipeRefreshLayout = v.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -149,7 +148,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 if (newProgress == 100) {
-                    mSwipeRefreshLayout.finishRefreshing();
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
 
@@ -178,7 +177,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 view.stopLoading();
                 view.clearView();
-                mSwipeRefreshLayout.finishRefreshing();
+                mSwipeRefreshLayout.setRefreshing(false);
                 mLoadingErrorLayout.setVisibility(View.VISIBLE);
                 Log.w(TAG, "failingUrl: " + failingUrl + " errorCode: " + errorCode + " description: " + description);
             }
@@ -194,7 +193,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
                 addCookie(url);
                 Log.d(TAG, "newUrl: " + mUrl);
                 updateWebViewActivityUrl();
-                mSwipeRefreshLayout.startRefreshing();
+                mSwipeRefreshLayout.setRefreshing(true);
                 view.loadUrl(url);
                 return true;
             }
@@ -214,7 +213,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
 
         mLoadingErrorLayout.setVisibility(View.GONE);
         mSwipeRefreshLayout.post(() -> {
-            mSwipeRefreshLayout.startRefreshing();
+            mSwipeRefreshLayout.setRefreshing(true);
             loadUrl();
         });
 
@@ -362,10 +361,8 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
     }
 
     @Override
-    public void onRefresh(SwipeRefreshLayoutDirection direction) {
-        if (direction == SwipeRefreshLayoutDirection.TOP) {
-            mWebView.reload();
-        }
+    public void onRefresh() {
+        mWebView.reload();
     }
 
     @Override
@@ -394,7 +391,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
         if (mWebView.isFocused() && mWebView.canGoBack()) {
             mLoadingErrorLayout.setVisibility(View.GONE);
             updateWebViewActivityUrl();
-            mSwipeRefreshLayout.startRefreshing();
+            mSwipeRefreshLayout.setRefreshing(true);
             mWebView.goBack();
             mUrl = mWebView.getUrl();
         } else {
@@ -418,7 +415,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
 
     public void refresh() {
         mLoadingErrorLayout.setVisibility(View.GONE);
-        mSwipeRefreshLayout.startRefreshing();
+        mSwipeRefreshLayout.setRefreshing(true);
         mWebView.reload();
     }
 
