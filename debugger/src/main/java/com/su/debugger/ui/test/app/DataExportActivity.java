@@ -3,11 +3,13 @@ package com.su.debugger.ui.test.app;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.view.View;
 import android.widget.Toast;
 
 import com.su.debugger.AppHelper;
@@ -19,6 +21,7 @@ import com.su.debugger.utils.IOUtil;
 import com.su.debugger.utils.ManifestParser;
 import com.su.debugger.utils.SpHelper;
 import com.su.debugger.widget.SimpleBlockedDialogFragment;
+import com.su.debugger.widget.recycler.PreferenceItemDecoration;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -214,6 +217,14 @@ public class DataExportActivity extends BaseAppCompatActivity {
             }
 
             findPreference("private_dir").setOnPreferenceClickListener(this);
+        }
+
+        @Override
+        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            setDividerHeight(-1);
+            PreferenceItemDecoration decoration = new PreferenceItemDecoration(mActivity, 0, 0);
+            getListView().addItemDecoration(decoration);
         }
 
         @Override

@@ -1,6 +1,7 @@
 package com.su.debugger.ui.test;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.content.ComponentName;
@@ -47,6 +48,7 @@ import com.su.debugger.utils.ReflectUtil;
 import com.su.debugger.utils.SpHelper;
 import com.su.debugger.utils.SystemInfoHelper;
 import com.su.debugger.widget.SimpleBlockedDialogFragment;
+import com.su.debugger.widget.recycler.PreferenceItemDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -62,7 +64,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     public static final String TAG = DebugListFragment.class.getSimpleName();
     private static final int REQUEST_HOST = 1;
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
-    com.su.debugger.widget.recycler.DividerDecoration mDividerDecoration;
     private Preference mProxyPreference;
     private Preference mSharedPreferencePreference;
     private Preference mNotificationPreference;
@@ -113,11 +114,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mSharedPreferencePreference.setOnPreferenceClickListener(this);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
         initHostPreference();
-        mMockPolicyPreference = (ListPreference) findPreference("new_fake_server");
-        mMockPolicyPreference.setOnPreferenceChangeListener(this);
-        initMockPolicy(mMockPolicyPreference.getValue());
-        findPreference("new_fake_server_list").setOnPreferenceClickListener(this);
-        findPreference("import_mock_data").setOnPreferenceClickListener(this);
+        initMockPreferences();
         findPreference("web_view_debug").setOnPreferenceClickListener(this);
         findPreference("js_interface").setOnPreferenceClickListener(this);
         Preference preference = findPreference("js_rhino");
@@ -126,14 +123,29 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         findPreference("open_source_debug").setOnPreferenceClickListener(this);
     }
 
+    private void initMockPreferences() {
+        boolean okHttp3 = ReflectUtil.isUseOkHttp3();
+        findPreference("debug_downtime").setVisible(okHttp3);
+        mMockPolicyPreference = (ListPreference) findPreference("mock_policy");
+        mMockPolicyPreference.setVisible(okHttp3);
+        mMockPolicyPreference.setOnPreferenceChangeListener(this);
+        initMockPolicy(mMockPolicyPreference.getValue());
+
+        Preference importMockDataPreference = findPreference("import_mock_data");
+        importMockDataPreference.setVisible(okHttp3);
+        importMockDataPreference.setOnPreferenceClickListener(this);
+
+        Preference mockDataListPreference = findPreference("mock_data_list");
+        mockDataListPreference.setVisible(okHttp3);
+        mockDataListPreference.setOnPreferenceClickListener(this);
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mDividerDecoration = new com.su.debugger.widget.recycler.DividerDecoration(getListView());
         setDividerHeight(-1);
-        getListView().addItemDecoration(mDividerDecoration);
-        mDividerDecoration.setDivider(getResources().getDrawable(R.drawable.debugger_shape_preference_list_divider_debug));
-        mDividerDecoration.setDividerHeight(1);
+        PreferenceItemDecoration decoration = new PreferenceItemDecoration(mActivity, 0, 0);
+        getListView().addItemDecoration(decoration);
     }
 
     @Override
@@ -208,7 +220,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             boolean enable = (boolean) newValue;
             enableEntry(mActivity, mEntryClassName, enable);
             return true;
-        } else if (TextUtils.equals(key, "new_fake_server")) {
+        } else if (TextUtils.equals(key, "mock_policy")) {
             initMockPolicy(newValue.toString());
             return true;
         }
@@ -276,29 +288,31 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.O)
     private void setNotificationSummary() {
         boolean enabled = AppHelper.isNotificationEnabled(mActivity);
-        if (enabled) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                List<NotificationChannel> notificationChannels = AppHelper.listNotificationChannels(mActivity);
-                if (notificationChannels != null && !notificationChannels.isEmpty()) {
-                    StringBuilder sb = new StringBuilder();
-                    for (NotificationChannel channel : notificationChannels) {
-                        sb.append(channel.getName());
-                        sb.append(": ");
-                        sb.append(AppHelper.isNotificationChannelEnabled(mActivity, channel.getId()) ? "enabled" : "disabled");
-                        sb.append("  ");
-                    }
-                    sb.delete(sb.length() - 2, sb.length());
-                    mNotificationPreference.setSummary(sb.toString());
-                } else {
-                    mNotificationPreference.setSummary("应用未创建channel");
-                }
-            } else {
-                mNotificationPreference.setSummary("enabled");
-            }
-        } else {
+        if (!enabled) {
             mNotificationPreference.setSummary("disabled");
+            return;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            mNotificationPreference.setSummary("enabled");
+            return;
+        }
+
+        List<NotificationChannel> notificationChannels = AppHelper.listNotificationChannels(mActivity);
+        if (notificationChannels != null && !notificationChannels.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (NotificationChannel channel : notificationChannels) {
+                sb.append(channel.getName());
+                sb.append(": ");
+                sb.append(AppHelper.isNotificationChannelEnabled(mActivity, channel.getId()) ? "enabled" : "disabled");
+                sb.append("  ");
+            }
+            sb.delete(sb.length() - 2, sb.length());
+            mNotificationPreference.setSummary(sb.toString());
+        } else {
+            mNotificationPreference.setSummary("应用未创建channel");
         }
     }
 
@@ -365,7 +379,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             case "import_mock_data":
                 startCollection();
                 return true;
-            case "new_fake_server_list":
+            case "mock_data_list":
                 Intent newFakeIntent = new Intent(mActivity, MockGroupHostActivity.class);
                 newFakeIntent.putExtra("title", preference.getTitle());
                 startActivity(newFakeIntent);

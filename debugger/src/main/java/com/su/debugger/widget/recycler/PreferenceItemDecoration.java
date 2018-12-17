@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -16,22 +17,22 @@ public class PreferenceItemDecoration extends RecyclerView.ItemDecoration {
     private int mStartPadding;
     private int mEndPadding;
 
-    public PreferenceItemDecoration(Context context) {
+    public PreferenceItemDecoration(@NonNull Context context) {
         this(context, 0, 0);
     }
 
-    public PreferenceItemDecoration(Context context, int startPadding, int endPadding) {
+    public PreferenceItemDecoration(@NonNull Context context, int startPadding, int endPadding) {
         this(context, startPadding, endPadding, ContextCompat.getDrawable(context, R.drawable.debugger_recycler_view_linear_divider));
     }
 
-    public PreferenceItemDecoration(Context context, int startPadding, int endPadding, Drawable drawable) {
+    public PreferenceItemDecoration(@NonNull Context context, int startPadding, int endPadding, Drawable drawable) {
         mStartPadding = startPadding;
         mEndPadding = endPadding;
         mDivider = drawable;
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         final int left = parent.getPaddingLeft() + mStartPadding;
         final int right = parent.getWidth() - parent.getPaddingRight() - mEndPadding;
         final int childCount = parent.getChildCount();
@@ -46,7 +47,7 @@ public class PreferenceItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         int position = parent.getChildLayoutPosition(view);
         int nextPosition = position + 1;
         int type = parent.getAdapter().getItemViewType(position);

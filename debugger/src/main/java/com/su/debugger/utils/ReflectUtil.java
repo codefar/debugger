@@ -91,6 +91,10 @@ public class ReflectUtil {
         }
     }
 
+    public static boolean isUseOkHttp3() {
+        return isUse("okhttp3.Call");
+    }
+
     public static boolean isUseRhino() {
         return isUse("org.mozilla.javascript.Context");
     }

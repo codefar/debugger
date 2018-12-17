@@ -2,15 +2,18 @@ package com.su.debugger.ui.test.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.view.View;
 
 import com.su.debugger.R;
 import com.su.debugger.ui.test.BaseAppCompatActivity;
 import com.su.debugger.ui.test.XmlViewerActivity;
 import com.su.debugger.utils.ManifestParser;
+import com.su.debugger.widget.recycler.PreferenceItemDecoration;
 
 /**
  * Created by su on 17-5-27.
@@ -45,6 +48,14 @@ public class AppComponentActivity extends BaseAppCompatActivity {
             findPreference("receiver").setOnPreferenceClickListener(this);
             findPreference("provider").setOnPreferenceClickListener(this);
             findPreference("manifest").setOnPreferenceClickListener(this);
+        }
+
+        @Override
+        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            setDividerHeight(-1);
+            PreferenceItemDecoration decoration = new PreferenceItemDecoration(mActivity, 0, 0);
+            getListView().addItemDecoration(decoration);
         }
 
         @Override

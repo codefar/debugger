@@ -21,26 +21,14 @@ public class GridItemSpaceDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         outRect.set(mSpacing, mSpacing, mSpacing, mSpacing);
         int position = parent.getChildLayoutPosition(view);
-        int count = parent.getAdapter().getItemCount();
+        RecyclerView.Adapter adapter = parent.getAdapter();
+        if (adapter == null) {
+            return;
+        }
+        int count = adapter.getItemCount();
         if (isLastLine(position, count)) {
             outRect.bottom = 0;
         }
-    }
-
-    private boolean isFirstColumn(int position) {
-        return position % mSpanCount == 0;
-    }
-
-    private boolean isLastColumn(int position) {
-        return (position + 1) % mSpanCount == 0;
-    }
-
-    private boolean isLast(int position, int count) {
-        return (position + 1) == count;
-    }
-
-    private boolean isFirstLine(int position) {
-        return position < mSpanCount;
     }
 
     private boolean isLastLine(int position, int count) {

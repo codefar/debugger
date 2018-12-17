@@ -76,7 +76,7 @@
             android:title="停机维护"
             android:track="@drawable/debugger_switch_track_selector" />
         <android.support.v7.preference.ListPreference
-            android:key="new_fake_server"
+            android:key="mock_policy"
             android:title="数据模拟策略"
             android:dialogTitle="模拟数据策略"
             android:defaultValue="none"
@@ -88,7 +88,7 @@
             android:title="导入mock数据"
             android:summary="从mock文件夹下导入.json文件中的数据"/>
         <android.support.v7.preference.Preference
-            android:key="new_fake_server_list"
+            android:key="mock_data_list"
             android:title="数据模拟接口列表" />
         <android.support.v7.preference.Preference
             android:key="web_view_debug"

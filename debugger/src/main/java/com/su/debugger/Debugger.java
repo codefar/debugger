@@ -35,7 +35,6 @@ public class Debugger {
         }
         Configuration configuration = new Configuration();
         configuration.setRequestSupplierClass(debugConfiguration.requestSupplier());
-        configuration.setHttpLibrary(debugConfiguration.httpLibrary());
         init(app, configuration);
     }
 
