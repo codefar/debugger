@@ -5,6 +5,8 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@drawable/debugger_item_selector"
+              android:clickable="true"
+              android:focusable="true"
               android:orientation="vertical"
               android:paddingBottom="14dip"
               android:paddingStart="45dip"

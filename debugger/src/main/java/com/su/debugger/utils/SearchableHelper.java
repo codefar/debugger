@@ -34,6 +34,7 @@ public class SearchableHelper {
     private Class<?> mQueryClass;
     private List<String> mFieldsAndMethods = new ArrayList<>();
     private Map<String, List<Map<Integer, Integer>>> mNameFilterColorMap = new HashMap<>();
+    private SearchView mSearchView;
 
     public SearchableHelper() {}
 
@@ -67,7 +68,7 @@ public class SearchableHelper {
         refreshFilterColor(textView, position, filterColorIndexList);
     }
 
-    public boolean isConformSplitFilter(String filter, String source, List<Map<Integer, Integer>> filterColorIndexList) {
+    public boolean isConformSplitFilter(CharSequence filter, String source, List<Map<Integer, Integer>> filterColorIndexList) {
         if (source == null) {
             source = "";
         }
@@ -218,17 +219,21 @@ public class SearchableHelper {
 
     public void initSearchToolbar(Toolbar toolbar, String queryHint, SearchView.OnQueryTextListener listener) {
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.search);
-        SearchView searchView = (SearchView) menuItem.getActionView();//加载searchview
-        EditText searchEdit = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchView.findViewById(android.support.v7.appcompat.R.id.search_plate)
+        mSearchView = (SearchView) menuItem.getActionView();//加载searchview
+        EditText searchEdit = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate)
                 .setBackgroundResource(android.R.color.transparent);
         searchEdit.setTextColor(toolbar.getResources().getColor(android.R.color.white));
         searchEdit.setHintTextColor(Color.WHITE);
         searchEdit.setBackgroundResource(android.R.color.transparent);
-        searchView.onActionViewExpanded();
-        searchView.setOnQueryTextListener(listener);
-        searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint(queryHint);
+        mSearchView.onActionViewExpanded();
+        mSearchView.setOnQueryTextListener(listener);
+        mSearchView.setIconifiedByDefault(false);
+        mSearchView.setQueryHint(queryHint);
+    }
+
+    public CharSequence getQueryText() {
+        return mSearchView.getQuery();
     }
 
     public void clear() {

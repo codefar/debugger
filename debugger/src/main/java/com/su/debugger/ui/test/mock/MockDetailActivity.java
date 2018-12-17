@@ -61,7 +61,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     private SwitchCompat mAutoSwitchView;
     private TextView mDescView;
     private SearchableHelper mSearchableHelper = new SearchableHelper();
-    List<Map<Integer, Integer>> responseColorIndexList = new ArrayList<>();
+    private List<Map<Integer, Integer>> responseColorIndexList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

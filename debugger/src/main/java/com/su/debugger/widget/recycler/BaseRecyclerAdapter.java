@@ -33,8 +33,9 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         this.mData = data;
     }
 
+    @NonNull
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_TYPE_FOOTER) {
             // 如果是底部类型，返回底部视图
             return new BaseViewHolder(mFooterView);
@@ -186,13 +187,14 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
         /**
          * 根据id获取布局上的view
          */
-        public View getView(int id) {
+        @SuppressWarnings("unchecked")
+        public <S extends View> S getView(int id) {
             View view = mViewMap.get(id);
             if (view == null) {
                 view = itemView.findViewById(id);
                 mViewMap.put(id, view);
             }
-            return view;
+            return (S) view;
         }
     }
 }
