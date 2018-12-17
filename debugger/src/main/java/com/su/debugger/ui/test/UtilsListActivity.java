@@ -52,41 +52,44 @@ public class UtilsListActivity extends BaseAppCompatActivity implements Recycler
     private void initData() {
         mInfoList.add(new OpenSourceInfo("chuck",
                 "jgilfelt",
-                "OkHttp拦截器，可以在通知栏方便的看到网络请求REQUEST/RESPONSE所有情况。目前不支持多进程，也不支持预览请求中的二进制文件",
+                "An in-app HTTP inspector for Android OkHttp clients",
                 "https://github.com/jgilfelt/chuck"));
         mInfoList.add(new OpenSourceInfo("okhttp-logging-interceptor",
                 "square",
-                "官方OkHttp拦截器，在logcat中输出网络请求REQUEST/RESPONSE所有情况",
+                "An OkHttp interceptor which logs HTTP request and response data",
                 "https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor"));
         mInfoList.add(new OpenSourceInfo("leakcanary",
                 "square",
-                "android/java内存泄漏检测工具",
+                "A memory leak detection library for Android and Java",
                 "https://github.com/square/leakcanary"));
         mInfoList.add(new OpenSourceInfo("AndroidPerformanceMonitor（BlockCanary）",
                 "markzhai",
-                "BlockCanary是一个Android平台的一个非侵入式的性能监控组件，应用只需要实现一个抽象类，提供一些该组件需要的上下文环境，就可以在平时使用应用的时候检测主线程上的各种卡慢问题，并通过组件提供的各种信息分析出原因并进行修复。\n" +
-                        "取名为BlockCanary则是为了向LeakCanary致敬，顺便本库的UI部分是从LeakCanary改来的，之后可能会做一些调整。",
+                "A transparent ui-block detection library for Android. (known as BlockCanary)",
                 "https://github.com/markzhai/AndroidPerformanceMonitor"));
         mInfoList.add(new OpenSourceInfo("ViewServer",
                 "romainguy",
-                "可以使user版使用HierarchyViewer工具",
+                "Local server for Android's HierarchyViewer",
                 "https://github.com/romainguy/ViewServer"));
         mInfoList.add(new OpenSourceInfo("dexcount-gradle-plugin",
                 "KeepSafe",
-                "用于监视字段/方法引用数限制的gradle插件。\n不支持以下版本的Android build工具3.0.0-alpha1 - 3.0.0-beta5。在此之下或之上的版本都支持。",
+                "A Gradle plugin to report the number of method references in your APK on every build",
                 "https://github.com/KeepSafe/dexcount-gradle-plugin"));
+        mInfoList.add(new OpenSourceInfo("Apktool",
+                "iBotPeaches",
+                "A tool for reverse engineering Android apk files",
+                "https://github.com/iBotPeaches/Apktool"));
         mInfoList.add(new OpenSourceInfo("android-classyshark",
                 "google",
-                "二进制文件检查工具。支持库文件（.dex, .aar, .so），可执行文件（.apk, .jar, .class）和所有Android二进制xml（AndroidManifest、资源、布局）等",
+                "Analyse 3rd party SDKs in your Android app (APK) ",
                 "https://github.com/google/android-classyshark"));
-        mInfoList.add(new OpenSourceInfo("debugger",
-                "su",
-                "android调试工具，可搭配okhttp进行mock，可模拟停机维护状态，可以全局切换域名。" +
-                        "可修改权限，查看四大组件信息，启动activity。可查看并修改SharedPreference。" +
-                        "可查看通知设置，系统代理。" +
-                        "可调试WebView，可调试通过JavascriptInterface注解暴露要给WebView的接口，可通过rhino调试js。" +
-                        "可查看手机基本信息（屏幕、系统、网络、硬件、各类ID）",
-                "https://github.com/su1216/debugger"));
+        mInfoList.add(new OpenSourceInfo("stetho",
+                "facebook",
+                "Stetho is a debug bridge for Android applications, enabling the powerful Chrome Developer Tools and much more",
+                "https://github.com/facebook/stetho"));
+        mInfoList.add(new OpenSourceInfo("acra",
+                "ACRA",
+                "Application Crash Reports for Android",
+                "https://github.com/ACRA/acra"));
     }
 
     @Override

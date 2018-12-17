@@ -52,8 +52,8 @@ public class FeatureListActivity extends BaseAppCompatActivity {
         @Override
         protected void bindData(@NonNull BaseViewHolder holder, int position, int itemType) {
             FeatureInfo featureInfo = getData().get(position);
-            TextView nameView = (TextView) holder.getView(R.id.key);
-            TextView versionView = (TextView) holder.getView(R.id.value);
+            TextView nameView = holder.getView(R.id.key);
+            TextView versionView = holder.getView(R.id.value);
             String name = featureInfo.name;
             if (TextUtils.isEmpty(name)) {
                 name = "OpenGL ES";

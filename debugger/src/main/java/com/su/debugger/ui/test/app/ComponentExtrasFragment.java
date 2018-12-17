@@ -274,7 +274,7 @@ public class ComponentExtrasFragment extends Fragment {
         protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
             Parameter parameter = getData().get(position);
             Log.w(TAG, "parameter: " + parameter);
-            TextView classNameView = (TextView) holder.getView(R.id.class_name);
+            TextView classNameView = holder.getView(R.id.class_name);
             final Class<?> clazz = parameter.getParameterClass();
             if (clazz.isArray()) {
                 classNameView.setText(ReflectUtil.getFullClassName(clazz));
@@ -282,7 +282,7 @@ public class ComponentExtrasFragment extends Fragment {
                 classNameView.setText(parameter.getParameterClass().getName());
             }
             ((TextView) holder.getView(R.id.field_name)).setText(parameter.getParameterName());
-            TextView fieldRequiredView = (TextView) holder.getView(R.id.field_required);
+            TextView fieldRequiredView = holder.getView(R.id.field_required);
             String text;
             int color;
             if (parameter.isParameterRequired()) {
@@ -298,7 +298,7 @@ public class ComponentExtrasFragment extends Fragment {
                     text.length() - 1,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             fieldRequiredView.setText(scoreSpannable);
-            final EditText valueView = (EditText) holder.getView(R.id.value);
+            final EditText valueView = holder.getView(R.id.value);
             TextWatcher textWatcher = (TextWatcher) valueView.getTag();
             if (textWatcher != null) {
                 valueView.removeTextChangedListener(textWatcher);
@@ -325,8 +325,8 @@ public class ComponentExtrasFragment extends Fragment {
 
         private void setNewInstanceView(@NonNull final BaseViewHolder holder, @NonNull Parameter parameter) {
             final Class<?> clazz = parameter.getParameterClass();
-            TextView newInstanceView = (TextView) holder.getView(R.id.new_instance);
-            final EditText valueView = (EditText) holder.getView(R.id.value);
+            TextView newInstanceView = holder.getView(R.id.new_instance);
+            final EditText valueView = holder.getView(R.id.value);
             if (ReflectUtil.isPrimitiveClass(clazz)) {
                 newInstanceView.setVisibility(View.GONE);
                 return;

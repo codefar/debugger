@@ -349,7 +349,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
                 fullName = false;
             }
 
-            TextView descView = (TextView) holder.getView(R.id.desc);
+            TextView descView = holder.getView(R.id.desc);
             if (noteComponent == null || TextUtils.isEmpty(noteComponent.getDescription())) {
                 descView.setVisibility(View.GONE);
             } else {
@@ -362,7 +362,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
                 holder.getView(R.id.extra_layout).setVisibility(View.GONE);
             } else {
                 holder.getView(R.id.extra_layout).setVisibility(View.VISIBLE);
-                TextView exportedView = (TextView) holder.getView(R.id.exported);
+                TextView exportedView = holder.getView(R.id.exported);
                 if (info.exported) {
                     exportedView.setVisibility(View.VISIBLE);
                     if (isDebug(noteComponent)) {
@@ -375,7 +375,7 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
                 }
                 holder.getView(R.id.disabled).setVisibility(info.enabled ? View.GONE : View.VISIBLE);
             }
-            mSearchableHelper.refreshFilterColor((TextView) holder.getView(R.id.name), position, mNameFilterColorIndexList);
+            mSearchableHelper.refreshFilterColor(holder.getView(R.id.name), position, mNameFilterColorIndexList);
             mSearchableHelper.refreshFilterColor(descView, position, mDescFilterColorIndexList);
         }
     }

@@ -140,8 +140,8 @@ public class ComponentFlagsFragment extends Fragment {
         @Override
         protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
             final Flag flag = getData().get(position);
-            TextView flagNameView = (TextView) holder.getView(R.id.flag_name);
-            final CheckBox checkBox = (CheckBox) holder.getView(R.id.check_box);
+            TextView flagNameView = holder.getView(R.id.flag_name);
+            final CheckBox checkBox = holder.getView(R.id.check_box);
             flagNameView.setText(flag.name);
             checkBox.setChecked(flag.checked);
             checkBox.setOnClickListener(v -> {

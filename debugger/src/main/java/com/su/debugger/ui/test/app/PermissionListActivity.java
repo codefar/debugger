@@ -212,7 +212,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
         @Override
         protected void bindData(@NonNull final BaseViewHolder holder, final int position, int itemType) {
             final PermissionInfoWrapper info = getData().get(position);
-            TextView nameTextView = (TextView) holder.getView(R.id.name);
+            TextView nameTextView = holder.getView(R.id.name);
             if (info.isHasPermission()) {
                 nameTextView.setText(info.name + " ✔");
                 nameTextView.setTextColor(mResources.getColor(R.color.first_text));
@@ -221,21 +221,21 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
                 nameTextView.setTextColor(mResources.getColor(R.color.error_hint));
             }
             int level = info.protectionLevel;
-            TextView levelView = (TextView) holder.getView(R.id.level);
+            TextView levelView = holder.getView(R.id.level);
             levelView.setText("level: " + protectionToString(level));
             if ((level & PermissionInfo.PROTECTION_MASK_BASE) == PermissionInfo.PROTECTION_DANGEROUS) {
                 levelView.setTextColor(mResources.getColor(R.color.error_hint));
             } else {
                 levelView.setTextColor(mResources.getColor(R.color.second_text));
             }
-            TextView groupView = (TextView) holder.getView(R.id.group);
+            TextView groupView = holder.getView(R.id.group);
             if (TextUtils.isEmpty(info.group)) {
                 groupView.setVisibility(View.GONE);
             } else {
                 groupView.setVisibility(View.VISIBLE);
                 groupView.setText(info.group);
             }
-            TextView descView = (TextView) holder.getView(R.id.desc);
+            TextView descView = holder.getView(R.id.desc);
             CharSequence desc = info.loadDescription(mPm);
             if (TextUtils.isEmpty(desc)) {
                 descView.setVisibility(View.GONE);
