@@ -2,6 +2,7 @@ package com.su.debugger.utils;
 
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -44,7 +45,7 @@ public class SearchableHelper {
         initMethodsData(query);
     }
 
-    public void refreshFilterColor(TextView textView, int position, List<Map<Integer, Integer>> filterColorIndexList) {
+    public void refreshFilterColor(@NonNull TextView textView, int position, @Nullable List<Map<Integer, Integer>> filterColorIndexList) {
         if (filterColorIndexList == null || filterColorIndexList.size() <= position) {
             return;
         }
@@ -68,7 +69,7 @@ public class SearchableHelper {
         refreshFilterColor(textView, position, filterColorIndexList);
     }
 
-    public boolean isConformSplitFilter(CharSequence filter, String source, List<Map<Integer, Integer>> filterColorIndexList) {
+    public boolean find(@NonNull CharSequence filter, @Nullable String source, @Nullable List<Map<Integer, Integer>> filterColorIndexList) {
         if (source == null) {
             source = "";
         }
@@ -111,24 +112,36 @@ public class SearchableHelper {
         return find;
     }
 
-    public boolean isConformSplitFilter(@NonNull String filter, @NonNull Object query) {
+    public boolean find(@NonNull String filter, @NonNull Object query) {
+        List<String> keys = new ArrayList<>();
+        Matcher matcher = PATTERN.matcher(filter);
+        while (matcher.find()) {
+            keys.add(matcher.group());
+        }
+        int keysSize = keys.size();
+
         int size = mFieldsAndMethods.size();
         boolean[] findStatus = new boolean[size];
         for (int i = 0; i < size; i++) {
             String fieldOrMethodName = mFieldsAndMethods.get(i);
             String source = getSource(mQueryClass, fieldOrMethodName, query).toLowerCase();
-            char[] ss = filter.toLowerCase().replaceAll("\\s+", "").toCharArray();
-            int[] colorIndex = new int[ss.length];
+
+            int startPointer = 0;
+            int endPointer = 0;
+            int[] colorIndex = new int[keysSize];
+            int[] colorLengthIndex = new int[keysSize];
             findStatus[i] = true;
-            int count = 0;
-            for (int j = 0; j < ss.length; j++) {
-                char c = ss[j];
+
+
+            for (int j = 0; j < keysSize; j++) {
+                String c = keys.get(j);
                 int index = source.indexOf(c);
                 if (index >= 0) {
-                    count += index;
-                    colorIndex[j] = count;
-                    source = source.substring(index + 1, source.length());
-                    count++;
+                    startPointer = endPointer + index;
+                    endPointer = startPointer + c.length();
+                    colorLengthIndex[j] = c.length();
+                    colorIndex[j] = startPointer;
+                    source = source.substring(index + c.length(), source.length());
                 } else {
                     findStatus[i] = false;
                     break;
@@ -138,8 +151,9 @@ public class SearchableHelper {
             List<Map<Integer, Integer>> filterColorIndexList = mNameFilterColorMap.get(fieldOrMethodName);
             if (findStatus[i] && filterColorIndexList != null) {
                 HashMap<Integer, Integer> map = new HashMap<>();
-                for (int index : colorIndex) {
-                    map.put(index, index + 1);
+                int length = colorIndex.length;
+                for (int j = 0; j < length; j++) {
+                    map.put(colorIndex[j], colorIndex[j] + colorLengthIndex[j]);
                 }
                 filterColorIndexList.add(map);
             }
@@ -203,7 +217,7 @@ public class SearchableHelper {
         }
     }
 
-    private void initData(String name, Annotation[] annotations) {
+    private void initData(@NonNull String name, @NonNull Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             Class<? extends Annotation> annotationClass = annotation.annotationType();
             if (annotationClass.equals(Searchable.class)) {
@@ -213,13 +227,13 @@ public class SearchableHelper {
         }
     }
 
-    public void initSearchToolbar(Toolbar toolbar, SearchView.OnQueryTextListener listener) {
+    public void initSearchToolbar(@NonNull Toolbar toolbar, @NonNull SearchView.OnQueryTextListener listener) {
         initSearchToolbar(toolbar, "请输入关键词", listener);
     }
 
-    public void initSearchToolbar(Toolbar toolbar, String queryHint, SearchView.OnQueryTextListener listener) {
+    public void initSearchToolbar(@NonNull Toolbar toolbar, @Nullable String queryHint, @NonNull SearchView.OnQueryTextListener listener) {
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.search);
-        mSearchView = (SearchView) menuItem.getActionView();//加载searchview
+        mSearchView = (SearchView) menuItem.getActionView();
         EditText searchEdit = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         mSearchView.findViewById(android.support.v7.appcompat.R.id.search_plate)
                 .setBackgroundResource(android.R.color.transparent);

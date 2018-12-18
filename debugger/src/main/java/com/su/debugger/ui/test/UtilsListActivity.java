@@ -1,6 +1,5 @@
 package com.su.debugger.ui.test;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,15 +7,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.su.debugger.AppHelper;
 import com.su.debugger.R;
 import com.su.debugger.entity.OpenSourceInfo;
 import com.su.debugger.utils.SearchableHelper;
+import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
 import com.su.debugger.widget.recycler.RecyclerItemClickListener;
 
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class UtilsListActivity extends BaseAppCompatActivity implements Recycler
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
         initData();
-        mAdapter = new RecyclerViewAdapter(this);
+        mAdapter = new RecyclerViewAdapter(mFilterInfoList);
         recyclerView.setAdapter(mAdapter);
         filter("");
     }
@@ -113,7 +111,7 @@ public class UtilsListActivity extends BaseAppCompatActivity implements Recycler
             return;
         }
         for (OpenSourceInfo search : mInfoList) {
-            if (mSearchableHelper.isConformSplitFilter(str, search)) {
+            if (mSearchableHelper.find(str, search)) {
                 mFilterInfoList.add(search);
             }
         }
@@ -139,43 +137,28 @@ public class UtilsListActivity extends BaseAppCompatActivity implements Recycler
         return false;
     }
 
-    private class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
-        private final LayoutInflater mLayoutInflater;
+    private class RecyclerViewAdapter extends BaseRecyclerAdapter<OpenSourceInfo> {
 
-        RecyclerViewAdapter(Context context) {
-            mLayoutInflater = LayoutInflater.from(context);
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ViewHolder(mLayoutInflater.inflate(R.layout.debugger_item_open_source_info, parent, false));
+        RecyclerViewAdapter(List<OpenSourceInfo> data) {
+            super(data);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-            OpenSourceInfo item = mFilterInfoList.get(position);
-            holder.desc.setText(item.getDesc());
-            holder.name.setText(item.getName());
-            mSearchableHelper.refreshFilterColor(holder.name, position, "name");
-            mSearchableHelper.refreshFilterColor(holder.desc, position, "desc");
+        public int getLayoutId(int itemType) {
+            return R.layout.debugger_item_open_source_info;
         }
 
         @Override
-        public int getItemCount() {
-            return mFilterInfoList.size();
+        protected void bindData(@NonNull BaseViewHolder holder, int position, int itemType) {
+            OpenSourceInfo item = getData().get(position);
+            TextView descView = holder.getView(R.id.desc);
+            TextView nameView = holder.getView(R.id.name);
+            descView.setText(item.getDesc());
+            nameView.setText(item.getName());
+            mSearchableHelper.refreshFilterColor(nameView, position, "name");
+            mSearchableHelper.refreshFilterColor(descView, position, "desc");
         }
-    }
 
-    private static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView desc;
-        private TextView name;
-
-        ViewHolder(View view) {
-            super(view);
-            desc = view.findViewById(R.id.desc);
-            name = view.findViewById(R.id.name);
-        }
     }
 
     @Override

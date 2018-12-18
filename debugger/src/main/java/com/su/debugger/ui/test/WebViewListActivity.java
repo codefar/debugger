@@ -1,6 +1,5 @@
 package com.su.debugger.ui.test;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -11,9 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +23,7 @@ import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.IOUtil;
 import com.su.debugger.utils.SearchableHelper;
 import com.su.debugger.utils.UiHelper;
+import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
 import com.su.debugger.widget.recycler.PreferenceItemDecoration;
 import com.su.debugger.widget.recycler.RecyclerItemClickListener;
 
@@ -63,7 +61,7 @@ public class WebViewListActivity extends BaseAppCompatActivity implements Recycl
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new PreferenceItemDecoration(this, UiHelper.dp2px(13, getResources().getDisplayMetrics()), 0));
-        mAdapter = new RecyclerViewAdapter(this);
+        mAdapter = new RecyclerViewAdapter(mFilterNotes);
         recyclerView.setAdapter(mAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
         makeData();
@@ -140,49 +138,33 @@ public class WebViewListActivity extends BaseAppCompatActivity implements Recycl
             return;
         }
         for (NoteWebViewEntity search : mNotes) {
-            if (mSearchableHelper.isConformSplitFilter(str, search)) {
+            if (mSearchableHelper.find(str, search)) {
                 mFilterNotes.add(search);
             }
         }
         mAdapter.notifyDataSetChanged();
     }
 
-    private class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolder> {
-        private final LayoutInflater mLayoutInflater;
+    private class RecyclerViewAdapter extends BaseRecyclerAdapter<NoteWebViewEntity> {
 
-        RecyclerViewAdapter(Context context) {
-            mLayoutInflater = LayoutInflater.from(context);
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ViewHolder(mLayoutInflater.inflate(R.layout.debugger_item_web_view_url_info, parent, false));
+        RecyclerViewAdapter(List<NoteWebViewEntity> data) {
+            super(data);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        public int getLayoutId(int itemType) {
+            return R.layout.debugger_item_web_view_url_info;
+        }
+
+        @Override
+        protected void bindData(@NonNull BaseViewHolder holder, int position, int itemType) {
             NoteWebViewEntity item = mFilterNotes.get(position);
-            holder.url.setText(item.getUrl());
-            holder.desc.setText(item.getDescription());
-            mSearchableHelper.refreshFilterColor(holder.url, position, "url");
-            mSearchableHelper.refreshFilterColor(holder.desc, position, "description");
-        }
-
-        @Override
-        public int getItemCount() {
-            return mFilterNotes.size();
-        }
-    }
-
-    private static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView url;
-        private TextView desc;
-
-        ViewHolder(View view) {
-            super(view);
-            url = view.findViewById(R.id.url);
-            desc = view.findViewById(R.id.desc);
+            TextView descView = holder.getView(R.id.desc);
+            TextView urlView = holder.getView(R.id.url);
+            descView.setText(item.getDescription());
+            urlView.setText(item.getUrl());
+            mSearchableHelper.refreshFilterColor(urlView, position, "url");
+            mSearchableHelper.refreshFilterColor(descView, position, "description");
         }
     }
 

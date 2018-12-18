@@ -274,7 +274,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
     private void filterItem(String filter, String type, String source, List<Map<Integer, Integer>> filterColorIndexList) {
         int index = getGroupIndex(type);
-        if (mSearchableHelper.isConformSplitFilter(filter, source, filterColorIndexList)) {
+        if (mSearchableHelper.find(filter, source, filterColorIndexList)) {
             mListView.expandGroup(index);
         } else {
             mListView.collapseGroup(index);

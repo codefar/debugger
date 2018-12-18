@@ -304,13 +304,13 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
 
             boolean nameFind = false;
             boolean descFind = false;
-            if (mSearchableHelper.isConformSplitFilter(str, shortName, mNameFilterColorIndexList)) {
+            if (mSearchableHelper.find(str, shortName, mNameFilterColorIndexList)) {
                 nameFind = true;
             }
             NoteComponentEntity noteComponent = mNoteComponentMap.get(name);
             if (noteComponent != null) {
                 String description = noteComponent.getDescription();
-                if (mSearchableHelper.isConformSplitFilter(str, description, mDescFilterColorIndexList)) {
+                if (mSearchableHelper.find(str, description, mDescFilterColorIndexList)) {
                     descFind = true;
                 }
             }

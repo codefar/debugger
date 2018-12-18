@@ -186,11 +186,11 @@ public class JsInterfaceTestActivity extends BaseAppCompatActivity implements Se
             for (MethodItem search : methodItems) {
                 boolean nameFind = false;
                 boolean descFind = false;
-                if (mSearchableHelper.isConformSplitFilter(cs, search.getName(), mNameFilterColorIndexList)) {
+                if (mSearchableHelper.find(cs, search.getName(), mNameFilterColorIndexList)) {
                     nameFind = true;
                 }
 
-                if (mSearchableHelper.isConformSplitFilter(cs, search.getDesc(), mDescFilterColorIndexList)) {
+                if (mSearchableHelper.find(cs, search.getDesc(), mDescFilterColorIndexList)) {
                     descFind = true;
                 }
 
