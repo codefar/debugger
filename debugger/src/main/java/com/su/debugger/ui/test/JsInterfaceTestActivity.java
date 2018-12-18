@@ -26,6 +26,7 @@ import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.IOUtil;
 import com.su.debugger.utils.SearchableHelper;
 import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
+import com.su.debugger.widget.recycler.PreferenceItemDecoration;
 import com.su.debugger.widget.recycler.RecyclerItemClickListener;
 
 import java.io.BufferedReader;
@@ -65,6 +66,8 @@ public class JsInterfaceTestActivity extends BaseAppCompatActivity implements Se
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
+        PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);
+        mRecyclerView.addItemDecoration(decoration);
         mRecyclerView.setAdapter(mAdapter);
         makeData();
         filter("");

@@ -30,6 +30,7 @@ import com.su.debugger.entity.JsFunction;
 import com.su.debugger.entity.NoteJsFunction;
 import com.su.debugger.utils.IOUtil;
 import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
+import com.su.debugger.widget.recycler.PreferenceItemDecoration;
 
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstNode;
@@ -78,6 +79,8 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
+        PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);
+        mRecyclerView.addItemDecoration(decoration);
         mRecyclerView.setAdapter(mAdapter);
 
         View bottomSheet = findViewById(R.id.bottomSheet);

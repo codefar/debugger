@@ -22,7 +22,6 @@ import com.su.debugger.entity.NoteWebViewEntity;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.IOUtil;
 import com.su.debugger.utils.SearchableHelper;
-import com.su.debugger.utils.UiHelper;
 import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
 import com.su.debugger.widget.recycler.PreferenceItemDecoration;
 import com.su.debugger.widget.recycler.RecyclerItemClickListener;
@@ -60,7 +59,7 @@ public class WebViewListActivity extends BaseAppCompatActivity implements Recycl
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(new PreferenceItemDecoration(this, UiHelper.dp2px(13, getResources().getDisplayMetrics()), 0));
+        recyclerView.addItemDecoration(new PreferenceItemDecoration(this, 0, 0));
         mAdapter = new RecyclerViewAdapter(mFilterNotes);
         recyclerView.setAdapter(mAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
