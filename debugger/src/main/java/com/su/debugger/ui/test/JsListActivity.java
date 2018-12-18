@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,10 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +29,7 @@ import com.su.debugger.R;
 import com.su.debugger.entity.JsFunction;
 import com.su.debugger.entity.NoteJsFunction;
 import com.su.debugger.utils.IOUtil;
+import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
 
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstNode;
@@ -52,17 +52,19 @@ import java.util.List;
  * 调试rhino
  */
 
-public class JsListActivity extends BaseAppCompatActivity implements ExpandableListView.OnChildClickListener, ExpandableListView.OnGroupClickListener, View.OnClickListener {
+public class JsListActivity extends BaseAppCompatActivity implements View.OnClickListener {
     private static final String TAG = JsListActivity.class.getSimpleName();
 
     private File mJsDIr = new File(Debugger.getDebuggerSdcardDir(), "js");
     private BottomSheetBehavior mBehavior;
+    private TextView mJsFilepathView;
     private TextView mJsFileNameView;
     private EditText mJsContentView;
-    private ExpandableListView mListView;
-    private List<String> groupList = new ArrayList<>();
-    private List<List<JsFunction>> itemLists = new ArrayList<>();
-    private JsAdapter mJsAdapter;
+    private View mDeleteMenuView;
+    private List<String> mGroupList = new ArrayList<>();
+    private List<Functions> mFunctionsList = new ArrayList<>();
+    private FileAdapter mAdapter;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,8 +73,16 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
         if (!mJsDIr.exists()) {
             mJsDIr.mkdirs();
         }
-        mListView = findViewById(R.id.expandable_list);
+        mRecyclerView = findViewById(R.id.recycler_view);
+        mAdapter = new FileAdapter(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
         View bottomSheet = findViewById(R.id.bottomSheet);
+        mDeleteMenuView = findViewById(R.id.delete);
+        mJsFilepathView = findViewById(R.id.js_filepath);
         mJsFileNameView = findViewById(R.id.js_file_name);
         mJsContentView = findViewById(R.id.content);
         findViewById(R.id.close).setOnClickListener(this);
@@ -85,7 +95,7 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
                     File file = new File((String) mJsFileNameView.getTag());
                     createOrUpdateJs(file.getAbsolutePath(), mJsContentView.getText().toString());
                     loadFiles();
-                    mJsAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
                     AppHelper.hideSoftInputFromWindow(getWindow());
                 }
             }
@@ -94,11 +104,6 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
             public void onSlide(@NonNull View view, float v) {}
         });
         loadFiles();
-        mJsAdapter = new JsAdapter(this);
-        mListView.setAdapter(mJsAdapter);
-        mListView.setOnGroupClickListener(this);
-        mListView.setOnChildClickListener(this);
-        expandAll(groupList.size());
     }
 
     @Override
@@ -107,15 +112,9 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
         setTitle("Js函数列表");
     }
 
-    private void expandAll(int groupCount) {
-        for (int i=0; i< groupCount; i++) {
-            mListView.expandGroup(i);
-        }
-    }
-
     private void loadFiles() {
-        groupList.clear();
-        itemLists.clear();
+        mGroupList.clear();
+        mFunctionsList.clear();
         if (mJsDIr.listFiles() == null) {
             return;
         }
@@ -185,179 +184,177 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
         mBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
-    @Override
-    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        String filepath = groupList.get(groupPosition);
-        JsFunction jsFunction = itemLists.get(groupPosition).get(childPosition);
-        Intent intent = new Intent(this, ExecJsActivity.class);
-        intent.putExtra("filepath", filepath);
-        intent.putExtra("function", jsFunction);
-        startActivity(intent);
-        return false;
-    }
+    private class FileAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
 
-    @Override
-    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-        return itemLists.get(groupPosition).isEmpty();
-    }
-
-    private class JsAdapter extends BaseExpandableListAdapter {
         private Context mContext;
-        private LayoutInflater mInflater;
 
-        private JsAdapter(Context context) {
-            this.mContext = context;
-            mInflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+        FileAdapter(Context context) {
+            mContext = context;
         }
 
+        @NonNull
         @Override
-        public int getGroupCount() {
-            return groupList.size();
+        public BaseRecyclerAdapter.BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(getLayoutId(viewType), parent, false);
+            return new BaseRecyclerAdapter.BaseViewHolder(view);
         }
 
-        @Override
-        public int getChildrenCount(int groupPosition) {
-            return itemLists.get(groupPosition).size();
-        }
-
-        @Override
-        public Object getGroup(int groupPosition) {
-            return groupList.get(groupPosition);
-        }
-
-        @Override
-        public Object getChild(int groupPosition, int childPosition) {
-            return itemLists.get(groupPosition).get(childPosition);
-        }
-
-        @Override
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
-
-        @Override
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return false;
-        }
-
-        @Override
-        public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            GroupViewHolder viewHolder;
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.debugger_item_group_js_file, parent, false);
-                viewHolder = new GroupViewHolder(convertView);
-                convertView.setTag(viewHolder);
+        public int getLayoutId(int itemType) {
+            if (itemType == BaseRecyclerAdapter.ITEM_TYPE_GROUP) {
+                return R.layout.debugger_item_group_js_file;
             } else {
-                viewHolder = (GroupViewHolder) convertView.getTag();
+                return R.layout.debugger_item_js_function;
             }
+        }
 
-            final String filepath = groupList.get(groupPosition);
-            viewHolder.filenameView.setText(new File(filepath).getName());
-            viewHolder.openView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(mContext, "filepath: " + filepath, Toast.LENGTH_SHORT).show();
-                    mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    try {
-                        String content = "";
-                        if (URLUtil.isAssetUrl(filepath)) {
-                            String realFilePath = IOUtil.getAssetFilePath(filepath);
-                            content = IOUtil.readAssetsFile(mContext, realFilePath);
-                            mJsContentView.setEnabled(false);
-                        } else if (URLUtil.isFileUrl(filepath)) {
-                            try {
-                                File file = new File(new URI(filepath));
-                                content = IOUtil.readFile(file);
-                                mJsContentView.setEnabled(true);
-                            } catch (URISyntaxException e) {
-                                Log.w(TAG, e);
-                            }
+        private void bindGroupData(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
+            final String filepath = mGroupList.get(getPositions(position)[0]);
+            TextView filenameView = holder.getView(R.id.filename);
+            filenameView.setText(new File(filepath).getName());
+            holder.getView(R.id.open).setOnClickListener(v -> {
+                mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                mJsFilepathView.setText(filepath);
+                try {
+                    String content = "";
+                    if (URLUtil.isAssetUrl(filepath)) {
+                        String realFilePath = IOUtil.getAssetFilePath(filepath);
+                        content = IOUtil.readAssetsFile(mContext, realFilePath);
+                        mJsContentView.setEnabled(false);
+                    } else if (URLUtil.isFileUrl(filepath)) {
+                        try {
+                            File file = new File(new URI(filepath));
+                            content = IOUtil.readFile(file);
+                            mJsContentView.setEnabled(true);
+                        } catch (URISyntaxException e) {
+                            Log.w(TAG, e);
                         }
-                        File file = new File(new URI(filepath));
-                        mJsFileNameView.setText(file.getName());
-                        mJsFileNameView.setTag(file.getAbsolutePath());
-                        mJsContentView.setText(content);
-                    } catch (URISyntaxException e) {
-                        Log.w(TAG, e);
                     }
+                    File file = new File(new URI(filepath));
+                    mJsFileNameView.setText(file.getName());
+                    mJsFileNameView.setTag(file.getAbsolutePath());
+                    mJsContentView.setText(content);
+                    mDeleteMenuView.setVisibility(URLUtil.isAssetUrl(filepath) ? View.GONE : View.VISIBLE);
+                    mDeleteMenuView.setOnClickListener(view -> showDeleteFileDialog(getPositions(position)[0], filepath));
+                } catch (URISyntaxException e) {
+                    Log.w(TAG, e);
                 }
             });
-            viewHolder.deleteView.setVisibility(URLUtil.isAssetUrl(filepath) ? View.GONE : View.VISIBLE);
-            viewHolder.deleteView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showDeleteFileDialog(groupPosition, filepath);
-                }
+            holder.itemView.setOnClickListener(v -> {
+                int[] positions = mAdapter.getPositions(position);
+                Functions functions = mFunctionsList.get(positions[0]);
+                functions.collapse = !functions.collapse;
+                mAdapter.notifyDataSetChanged();
             });
-            return convertView;
         }
 
-        @Override
-        public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-            ItemViewHolder viewHolder;
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.debugger_item_js_function, parent, false);
-                viewHolder = new ItemViewHolder(convertView);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ItemViewHolder) convertView.getTag();
-            }
-
-            JsFunction jsFunction = (JsFunction) getChild(groupPosition, childPosition);
-            viewHolder.functionNameView.setText(jsFunction.getName());
+        private void bindChildData(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
+            int[] positions = getPositions(position);
+            JsFunction jsFunction = mFunctionsList.get(positions[0]).jsFunctionList.get(positions[1]);
+            TextView functionNameView = holder.getView(R.id.function_name);
+            TextView parametersView = holder.getView(R.id.parameters);
+            functionNameView.setText(jsFunction.getName());
             String parameters = jsFunction.getParametersString();
             if (TextUtils.isEmpty(parameters)) {
-                viewHolder.parametersView.setText("无参数");
+                parametersView.setText("无参数");
             } else {
-                viewHolder.parametersView.setText(parameters);
+                parametersView.setText(parameters);
             }
-            return convertView;
+
+            holder.itemView.setOnClickListener(v -> {
+                int[] currentPositions = mAdapter.getPositions(holder.getAdapterPosition());
+                Functions functions = mFunctionsList.get(currentPositions[0]);
+                String filepath = functions.sourceUri;
+                JsFunction currentJsFunction = mFunctionsList.get(currentPositions[0]).jsFunctionList.get(currentPositions[1]);
+                Intent intent = new Intent(mContext, ExecJsActivity.class);
+                intent.putExtra("filepath", filepath);
+                intent.putExtra("function", currentJsFunction);
+                startActivity(intent);
+            });
         }
 
         @Override
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return true;
+        public void onBindViewHolder(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
+            int type = getItemViewType(position);
+            if (type == BaseRecyclerAdapter.ITEM_TYPE_GROUP) {
+                bindGroupData(holder, position);
+            } else {
+                bindChildData(holder, position);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            int pointer = -1;
+            for (Functions functions : mFunctionsList) {
+                pointer++;
+                if (pointer == position) {
+                    return BaseRecyclerAdapter.ITEM_TYPE_GROUP;
+                }
+                int childrenSize = functions.collapse ? 0 : functions.jsFunctionList.size();
+                pointer += childrenSize;
+                if (pointer >= position) {
+                    return BaseRecyclerAdapter.ITEM_TYPE_NORMAL;
+                }
+            }
+            throw new IllegalStateException("wrong state");
+        }
+
+        private int[] getPositions(int position) {
+            int[] positions = new int[2];
+            int pointer = -1;
+            int groupPosition = -1;
+            int childPosition = -1;
+            positions[0] = groupPosition;
+            positions[1] = childPosition;
+            for (Functions functions : mFunctionsList) {
+                pointer++;
+                groupPosition++;
+                positions[0] = groupPosition;
+                int childrenSize = functions.collapse ? 0 : functions.jsFunctionList.size();
+                if (pointer + childrenSize >= position) {
+                    childPosition = position - pointer - 1;
+                    positions[1] = childPosition;
+                    return positions;
+                }
+                pointer += childrenSize;
+            }
+            return positions;
+        }
+
+        @Override
+        public int getItemCount() {
+            int size = 0;
+            for (Functions functions : mFunctionsList) {
+                size++;
+                int childrenSize = functions.collapse ? 0 : functions.jsFunctionList.size();
+                size += childrenSize;
+            }
+            return size;
         }
     }
 
-    private static class GroupViewHolder {
-        private TextView filenameView;
-        private Button openView;
-        private Button deleteView;
+    private static class Functions {
+        private boolean collapse;
+        private String sourceUri;
+        private List<JsFunction> jsFunctionList;
 
-        private GroupViewHolder(View view) {
-            this.filenameView = view.findViewById(R.id.filename);
-            this.openView = view.findViewById(R.id.open);
-            this.deleteView = view.findViewById(R.id.delete);
-        }
-    }
-
-    private static class ItemViewHolder {
-        private TextView functionNameView;
-        private TextView parametersView;
-
-        private ItemViewHolder(View view) {
-            this.functionNameView = view.findViewById(R.id.function_name);
-            this.parametersView = view.findViewById(R.id.parameters);
+        private Functions(String sourceUri, List<JsFunction> jsFunctionList) {
+            this.sourceUri = sourceUri;
+            this.jsFunctionList = jsFunctionList;
         }
     }
 
     private void parseJs(String sourceString, String sourceUri) {
         if (TextUtils.isEmpty(sourceString)) {
-            groupList.add(sourceUri);
-            itemLists.add(new ArrayList<>());
+            mGroupList.add(sourceUri);
+            mFunctionsList.add(new Functions(sourceUri, new ArrayList<>()));
             Log.d(TAG, "functions: remote js file. load later.");
         } else {
             AstNode node = new Parser().parse(sourceString, sourceUri, 0);
             FunctionNodeVisitor visitor = new FunctionNodeVisitor(sourceUri);
             node.visit(visitor);
-            groupList.add(sourceUri);
-            itemLists.add(visitor.getJsFunctions());
+            mGroupList.add(sourceUri);
+            mFunctionsList.add(new Functions(sourceUri, visitor.getJsFunctions()));
             Log.d(TAG, "functions: " + visitor.getJsFunctions());
         }
     }
@@ -445,9 +442,9 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (file.delete()) {
-                            groupList.remove(groupPosition);
-                            itemLists.remove(groupPosition);
-                            mJsAdapter.notifyDataSetChanged();
+                            mGroupList.remove(groupPosition);
+                            mFunctionsList.remove(groupPosition);
+                            mAdapter.notifyDataSetChanged();
                             Toast.makeText(JsListActivity.this, file.getName() + "删除成功", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(JsListActivity.this, file.getName() + "删除失败", Toast.LENGTH_SHORT).show();
@@ -488,7 +485,7 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
                         public void onClick(DialogInterface dialog, int which) {
                             createOrUpdateJs(file.getAbsolutePath(), contentView.getText().toString());
                             loadFiles();
-                            mJsAdapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
                         }
                     })
                     .setNegativeButton("", null)
@@ -497,7 +494,7 @@ public class JsListActivity extends BaseAppCompatActivity implements ExpandableL
         }
         createOrUpdateJs(file.getAbsolutePath(), contentView.getText().toString());
         loadFiles();
-        mJsAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     private void createOrUpdateJs(String filepath, String content) {

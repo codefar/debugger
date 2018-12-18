@@ -10,10 +10,13 @@
         android:layout_height="wrap_content">
         <include layout="@layout/debugger_toolbar"/>
     </android.support.design.widget.AppBarLayout>
-    <ExpandableListView
-        android:id="@+id/expandable_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:drawSelectorOnTop="false"
+        android:cacheColorHint="@android:color/transparent"
+        android:fastScrollEnabled="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     <LinearLayout
         android:id="@+id/bottomSheet"
@@ -40,30 +43,48 @@
             <TextView
                 android:id="@+id/js_file_name"
                 style="@style/DebuggerActionBarTitleTextStyle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="4dip"
                 tools:text="test.js"
                 android:textColor="@color/first_text"/>
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/actionBarItemBackground"
+                android:scaleType="centerInside"
+                android:src="@drawable/debugger_menu_delete"/>
         </LinearLayout>
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white">
-            <EditText
-                android:id="@+id/content"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="27dip"
-                android:paddingStart="13dip"
-                android:paddingEnd="13dip"
-                android:paddingTop="27dip"
-                android:scrollbars="vertical"
-                android:textColor="@color/second_text"
-                android:textIsSelectable="true"
-                android:textSize="12sp"
-                tools:text="test"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="13dip">
+                <TextView
+                    android:id="@+id/js_filepath"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/first_text"
+                    android:textSize="16sp" />
+                <EditText
+                    android:id="@+id/content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dip"
+                    android:padding="0dip"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/second_text"
+                    android:textIsSelectable="true"
+                    android:textSize="12sp"
+                    tools:text="test"/>
+            </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

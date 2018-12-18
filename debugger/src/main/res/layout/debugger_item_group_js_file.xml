@@ -23,14 +23,4 @@
         android:focusable="false"
         android:text="open"
         android:textSize="12sp"/>
-    <Button
-        android:id="@+id/delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="6dip"
-        android:paddingEnd="6dip"
-        android:layout_marginStart="6dip"
-        android:focusable="false"
-        android:text="delete"
-        android:textSize="12sp"/>
 </LinearLayout>
