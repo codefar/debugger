@@ -1,7 +1,6 @@
 package com.su.debugger.ui.test;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -441,17 +440,15 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
         new AlertDialog.Builder(this)
                 .setMessage("确定要将" + file.getName() + "删除吗")
                 .setNegativeButton("取消", null)
-                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (file.delete()) {
-                            mGroupList.remove(groupPosition);
-                            mFunctionsList.remove(groupPosition);
-                            mAdapter.notifyDataSetChanged();
-                            Toast.makeText(JsListActivity.this, file.getName() + "删除成功", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(JsListActivity.this, file.getName() + "删除失败", Toast.LENGTH_SHORT).show();
-                        }
+                .setPositiveButton("删除", (dialog, which) -> {
+                    if (file.delete()) {
+                        mBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        mGroupList.remove(groupPosition);
+                        mFunctionsList.remove(groupPosition);
+                        mAdapter.notifyDataSetChanged();
+                        Toast.makeText(JsListActivity.this, file.getName() + "删除成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(JsListActivity.this, file.getName() + "删除失败", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .show();
@@ -465,12 +462,7 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
                 .setTitle("创建js文件")
                 .setView(v)
                 .setNegativeButton("取消", null)
-                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        tryCreateJsFile(titleView, contentView);
-                    }
-                })
+                .setPositiveButton("确认", (dialog, which) -> tryCreateJsFile(titleView, contentView))
                 .show();
     }
 
@@ -483,13 +475,10 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
         if (file.exists()) {
             new AlertDialog.Builder(JsListActivity.this)
                     .setMessage("同名js文件已存在，是否要覆盖现有js文件？")
-                    .setPositiveButton("覆盖", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            createOrUpdateJs(file.getAbsolutePath(), contentView.getText().toString());
-                            loadFiles();
-                            mAdapter.notifyDataSetChanged();
-                        }
+                    .setPositiveButton("覆盖", (dialog, which) -> {
+                        createOrUpdateJs(file.getAbsolutePath(), contentView.getText().toString());
+                        loadFiles();
+                        mAdapter.notifyDataSetChanged();
                     })
                     .setNegativeButton("", null)
                     .show();

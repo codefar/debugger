@@ -8,6 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LayoutAnimationController;
+import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
 import com.su.debugger.AppHelper;
@@ -41,6 +46,7 @@ public class UtilsListActivity extends BaseAppCompatActivity implements Recycler
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
+        recyclerView.setLayoutAnimation(getLayoutAnimationController());
         initData();
         mAdapter = new RecyclerViewAdapter(mFilterInfoList);
         recyclerView.setAdapter(mAdapter);
@@ -49,45 +55,45 @@ public class UtilsListActivity extends BaseAppCompatActivity implements Recycler
 
     private void initData() {
         mInfoList.add(new OpenSourceInfo("chuck",
-                "jgilfelt",
-                "An in-app HTTP inspector for Android OkHttp clients",
-                "https://github.com/jgilfelt/chuck"));
+                                         "jgilfelt",
+                                         "An in-app HTTP inspector for Android OkHttp clients",
+                                         "https://github.com/jgilfelt/chuck"));
         mInfoList.add(new OpenSourceInfo("okhttp-logging-interceptor",
-                "square",
-                "An OkHttp interceptor which logs HTTP request and response data",
-                "https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor"));
+                                         "square",
+                                         "An OkHttp interceptor which logs HTTP request and response data",
+                                         "https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor"));
         mInfoList.add(new OpenSourceInfo("leakcanary",
-                "square",
-                "A memory leak detection library for Android and Java",
-                "https://github.com/square/leakcanary"));
+                                         "square",
+                                         "A memory leak detection library for Android and Java",
+                                         "https://github.com/square/leakcanary"));
         mInfoList.add(new OpenSourceInfo("AndroidPerformanceMonitor（BlockCanary）",
-                "markzhai",
-                "A transparent ui-block detection library for Android. (known as BlockCanary)",
-                "https://github.com/markzhai/AndroidPerformanceMonitor"));
+                                         "markzhai",
+                                         "A transparent ui-block detection library for Android. (known as BlockCanary)",
+                                         "https://github.com/markzhai/AndroidPerformanceMonitor"));
         mInfoList.add(new OpenSourceInfo("ViewServer",
-                "romainguy",
-                "Local server for Android's HierarchyViewer",
-                "https://github.com/romainguy/ViewServer"));
+                                         "romainguy",
+                                         "Local server for Android's HierarchyViewer",
+                                         "https://github.com/romainguy/ViewServer"));
         mInfoList.add(new OpenSourceInfo("dexcount-gradle-plugin",
-                "KeepSafe",
-                "A Gradle plugin to report the number of method references in your APK on every build",
-                "https://github.com/KeepSafe/dexcount-gradle-plugin"));
+                                         "KeepSafe",
+                                         "A Gradle plugin to report the number of method references in your APK on every build",
+                                         "https://github.com/KeepSafe/dexcount-gradle-plugin"));
         mInfoList.add(new OpenSourceInfo("Apktool",
-                "iBotPeaches",
-                "A tool for reverse engineering Android apk files",
-                "https://github.com/iBotPeaches/Apktool"));
+                                         "iBotPeaches",
+                                         "A tool for reverse engineering Android apk files",
+                                         "https://github.com/iBotPeaches/Apktool"));
         mInfoList.add(new OpenSourceInfo("android-classyshark",
-                "google",
-                "Analyse 3rd party SDKs in your Android app (APK) ",
-                "https://github.com/google/android-classyshark"));
+                                         "google",
+                                         "Analyse 3rd party SDKs in your Android app (APK) ",
+                                         "https://github.com/google/android-classyshark"));
         mInfoList.add(new OpenSourceInfo("stetho",
-                "facebook",
-                "Stetho is a debug bridge for Android applications, enabling the powerful Chrome Developer Tools and much more",
-                "https://github.com/facebook/stetho"));
+                                         "facebook",
+                                         "Stetho is a debug bridge for Android applications, enabling the powerful Chrome Developer Tools and much more",
+                                         "https://github.com/facebook/stetho"));
         mInfoList.add(new OpenSourceInfo("acra",
-                "ACRA",
-                "Application Crash Reports for Android",
-                "https://github.com/ACRA/acra"));
+                                         "ACRA",
+                                         "Application Crash Reports for Android",
+                                         "https://github.com/ACRA/acra"));
     }
 
     @Override
@@ -95,6 +101,23 @@ public class UtilsListActivity extends BaseAppCompatActivity implements Recycler
         super.onPostCreate(savedInstanceState);
         mSearchableHelper.initSearchToolbar(mToolbar, this);
         setTitle("debug相关开源库列表");
+    }
+
+    private LayoutAnimationController getLayoutAnimationController() {
+        long duration = 300L;
+        AnimationSet set = new AnimationSet(true);
+        Animation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
+        alphaAnimation.setDuration(duration);
+        set.addAnimation(alphaAnimation);
+
+        Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                                                              Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                                                              0.1f, Animation.RELATIVE_TO_SELF, 0.0f);
+        translateAnimation.setDuration(duration);
+        set.addAnimation(translateAnimation);
+        LayoutAnimationController controller = new LayoutAnimationController(set, 0.3f);
+        controller.setOrder(LayoutAnimationController.ORDER_NORMAL);
+        return controller;
     }
 
     @Override
@@ -158,7 +181,6 @@ public class UtilsListActivity extends BaseAppCompatActivity implements Recycler
             mSearchableHelper.refreshFilterColor(nameView, position, "name");
             mSearchableHelper.refreshFilterColor(descView, position, "desc");
         }
-
     }
 
     @Override

@@ -78,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="8dip"
-                    android:padding="0dip"
+                    android:paddingTop="0dip"
                     android:scrollbars="vertical"
                     android:textColor="@color/second_text"
                     android:textIsSelectable="true"
