@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -17,15 +16,11 @@ public class PreferenceItemDecoration extends RecyclerView.ItemDecoration {
     private int mStartPadding;
     private int mEndPadding;
 
-    public PreferenceItemDecoration(@NonNull Context context) {
-        this(context, 0, 0);
-    }
-
     public PreferenceItemDecoration(@NonNull Context context, int startPadding, int endPadding) {
         this(context, startPadding, endPadding, ContextCompat.getDrawable(context, R.drawable.debugger_recycler_view_linear_divider));
     }
 
-    public PreferenceItemDecoration(@NonNull Context context, int startPadding, int endPadding, Drawable drawable) {
+    public PreferenceItemDecoration(@NonNull Context context, int startPadding, int endPadding, @NonNull Drawable drawable) {
         mStartPadding = startPadding;
         mEndPadding = endPadding;
         mDivider = drawable;
@@ -39,7 +34,7 @@ public class PreferenceItemDecoration extends RecyclerView.ItemDecoration {
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-            final int top = child.getBottom() + params.bottomMargin + Math.round(ViewCompat.getTranslationY(child));
+            final int top = child.getBottom() + params.bottomMargin + Math.round(child.getTranslationY());
             final int bottom = top + mDivider.getIntrinsicHeight();
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
