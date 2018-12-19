@@ -1,6 +1,7 @@
 package com.su.debugger.ui.test;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,6 +51,8 @@ import java.util.List;
 /**
  * Created by su on 17-10-24.
  * 调试rhino
+ *
+ * warning: 此类暂时不要使用lambda表达式，com.android.tools.build:gradle:3.2.1编译时会报错
  */
 
 public class JsListActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -213,39 +216,51 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
             final String filepath = mGroupList.get(getPositions(position)[0]);
             TextView filenameView = holder.getView(R.id.filename);
             filenameView.setText(new File(filepath).getName());
-            holder.getView(R.id.open).setOnClickListener(v -> {
-                mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                mJsFilepathView.setText(filepath);
-                try {
-                    String content = "";
-                    if (URLUtil.isAssetUrl(filepath)) {
-                        String realFilePath = IOUtil.getAssetFilePath(filepath);
-                        content = IOUtil.readAssetsFile(mContext, realFilePath);
-                        mJsContentView.setEnabled(false);
-                    } else if (URLUtil.isFileUrl(filepath)) {
-                        try {
-                            File file = new File(new URI(filepath));
-                            content = IOUtil.readFile(file);
-                            mJsContentView.setEnabled(true);
-                        } catch (URISyntaxException e) {
-                            Log.w(TAG, e);
+            //warning 暂时不要改为lambda表达式，com.android.tools.build:gradle:3.2.1编译时会报错
+            holder.getView(R.id.open).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    mJsFilepathView.setText(filepath);
+                    try {
+                        String content = "";
+                        if (URLUtil.isAssetUrl(filepath)) {
+                            String realFilePath = IOUtil.getAssetFilePath(filepath);
+                            content = IOUtil.readAssetsFile(mContext, realFilePath);
+                            mJsContentView.setEnabled(false);
+                        } else if (URLUtil.isFileUrl(filepath)) {
+                            try {
+                                File file = new File(new URI(filepath));
+                                content = IOUtil.readFile(file);
+                                mJsContentView.setEnabled(true);
+                            } catch (URISyntaxException e) {
+                                Log.w(TAG, e);
+                            }
                         }
+                        File file = new File(new URI(filepath));
+                        mJsFileNameView.setText(file.getName());
+                        mJsFileNameView.setTag(file.getAbsolutePath());
+                        mJsContentView.setText(content);
+                        mDeleteMenuView.setVisibility(URLUtil.isAssetUrl(filepath) ? View.GONE : View.VISIBLE);
+                        mDeleteMenuView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showDeleteFileDialog(getPositions(position)[0], filepath);
+                            }
+                        });
+                    } catch (URISyntaxException e) {
+                        Log.w(TAG, e);
                     }
-                    File file = new File(new URI(filepath));
-                    mJsFileNameView.setText(file.getName());
-                    mJsFileNameView.setTag(file.getAbsolutePath());
-                    mJsContentView.setText(content);
-                    mDeleteMenuView.setVisibility(URLUtil.isAssetUrl(filepath) ? View.GONE : View.VISIBLE);
-                    mDeleteMenuView.setOnClickListener(view -> showDeleteFileDialog(getPositions(position)[0], filepath));
-                } catch (URISyntaxException e) {
-                    Log.w(TAG, e);
                 }
             });
-            holder.itemView.setOnClickListener(v -> {
-                int[] positions = mAdapter.getPositions(position);
-                Functions functions = mFunctionsList.get(positions[0]);
-                functions.collapse = !functions.collapse;
-                mAdapter.notifyDataSetChanged();
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int[] positions = mAdapter.getPositions(position);
+                    Functions functions = mFunctionsList.get(positions[0]);
+                    functions.collapse = !functions.collapse;
+                    mAdapter.notifyDataSetChanged();
+                }
             });
         }
 
@@ -262,15 +277,18 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
                 parametersView.setText(parameters);
             }
 
-            holder.itemView.setOnClickListener(v -> {
-                int[] currentPositions = mAdapter.getPositions(holder.getAdapterPosition());
-                Functions functions = mFunctionsList.get(currentPositions[0]);
-                String filepath = functions.sourceUri;
-                JsFunction currentJsFunction = mFunctionsList.get(currentPositions[0]).jsFunctionList.get(currentPositions[1]);
-                Intent intent = new Intent(mContext, ExecJsActivity.class);
-                intent.putExtra("filepath", filepath);
-                intent.putExtra("function", currentJsFunction);
-                startActivity(intent);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int[] currentPositions = mAdapter.getPositions(holder.getAdapterPosition());
+                    Functions functions = mFunctionsList.get(currentPositions[0]);
+                    String filepath = functions.sourceUri;
+                    JsFunction currentJsFunction = mFunctionsList.get(currentPositions[0]).jsFunctionList.get(currentPositions[1]);
+                    Intent intent = new Intent(mContext, ExecJsActivity.class);
+                    intent.putExtra("filepath", filepath);
+                    intent.putExtra("function", currentJsFunction);
+                    startActivity(intent);
+                }
             });
         }
 
@@ -440,15 +458,18 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
         new AlertDialog.Builder(this)
                 .setMessage("确定要将" + file.getName() + "删除吗")
                 .setNegativeButton("取消", null)
-                .setPositiveButton("删除", (dialog, which) -> {
-                    if (file.delete()) {
-                        mBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                        mGroupList.remove(groupPosition);
-                        mFunctionsList.remove(groupPosition);
-                        mAdapter.notifyDataSetChanged();
-                        Toast.makeText(JsListActivity.this, file.getName() + "删除成功", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(JsListActivity.this, file.getName() + "删除失败", Toast.LENGTH_SHORT).show();
+                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (file.delete()) {
+                            mBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                            mGroupList.remove(groupPosition);
+                            mFunctionsList.remove(groupPosition);
+                            mAdapter.notifyDataSetChanged();
+                            Toast.makeText(JsListActivity.this, file.getName() + "删除成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(JsListActivity.this, file.getName() + "删除失败", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .show();
@@ -462,7 +483,12 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
                 .setTitle("创建js文件")
                 .setView(v)
                 .setNegativeButton("取消", null)
-                .setPositiveButton("确认", (dialog, which) -> tryCreateJsFile(titleView, contentView))
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tryCreateJsFile(titleView, contentView);
+                    }
+                })
                 .show();
     }
 
@@ -475,10 +501,13 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
         if (file.exists()) {
             new AlertDialog.Builder(JsListActivity.this)
                     .setMessage("同名js文件已存在，是否要覆盖现有js文件？")
-                    .setPositiveButton("覆盖", (dialog, which) -> {
-                        createOrUpdateJs(file.getAbsolutePath(), contentView.getText().toString());
-                        loadFiles();
-                        mAdapter.notifyDataSetChanged();
+                    .setPositiveButton("覆盖", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            createOrUpdateJs(file.getAbsolutePath(), contentView.getText().toString());
+                            loadFiles();
+                            mAdapter.notifyDataSetChanged();
+                        }
                     })
                     .setNegativeButton("", null)
                     .show();
