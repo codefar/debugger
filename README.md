@@ -11,11 +11,7 @@ releaseImplementation 'com.su:debugger-no-op:0.9.6'
 
 ```groovy
 defaultConfig {
-    applicationId "com.su.sample"
-    minSdkVersion rootProject.ext.minSdkVersion
-    targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 1
-    versionName "1.0"
+    ...
     javaCompileOptions {
         annotationProcessorOptions {
             arguments = [MODULE_NAME: project.getName()]
@@ -88,15 +84,15 @@ public List<List<String>> getRequestBodyExcludeKeys() {
 
 ```java
 Object environmentInterceptor = Debugger.getEnvironmentInterceptor();
-if (environmentInterceptor != null && environmentInterceptor instanceof Interceptor) {
+if (environmentInterceptor != null) {
     builder.addInterceptor((Interceptor) environmentInterceptor);
 }
 Object mockInterceptor = Debugger.getMockInterceptor();
-if (mockInterceptor != null && mockInterceptor instanceof Interceptor) {
+if (mockInterceptor != null) {
     builder.addInterceptor((Interceptor) mockInterceptor);
 }
 Object dataCollectorInterceptor = Debugger.getDataCollectorInterceptor();
-if (dataCollectorInterceptor != null && dataCollectorInterceptor instanceof Interceptor) {
+if (dataCollectorInterceptor != null) {
     builder.addInterceptor((Interceptor) dataCollectorInterceptor);
 }
 ```
@@ -111,7 +107,7 @@ if (dataCollectorInterceptor != null && dataCollectorInterceptor instanceof Inte
 
 ```java
 String host = Debugger.getHost();
-if (TextUtils.isEmpty(host)) {
+if (!TextUtils.isEmpty(host)) {
     newUrl = DebuggerSupplier.getInstance().urlMapping(url, newHost);
 }
 ```
