@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.auto.service.AutoService;
 import com.su.annotations.NoteComponent;
 import com.su.annotations.NoteJsCallAndroid;
+import com.su.annotations.NoteJsFilepath;
 import com.su.annotations.NoteJsFunction;
 import com.su.annotations.NoteWebView;
 import com.su.compiler.entity.NoteComponentEntity;
@@ -80,7 +81,7 @@ public class NoteProcessor extends AbstractProcessor {
         mMessager = processingEnv.getMessager();
         Map<String, String> options =  processingEnv.getOptions();
         String moduleName = options.get("MODULE_NAME");
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "moduleName: " + moduleName);
+        note(mMessager, "moduleName: " + moduleName);
         prepareGeneratedDirPath(moduleName);
         if (roundEnvironment.processingOver()) {
             if (sDone) {
@@ -94,7 +95,7 @@ public class NoteProcessor extends AbstractProcessor {
             }
             sCount++;
             note(mMessager, "start processing...");
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "WORKING_DIR: " + WORKING_DIR);
+            note(mMessager, "WORKING_DIR: " + WORKING_DIR);
             processNoteJsCallAndroid(roundEnvironment);
             processNoteWebView(roundEnvironment);
             processNoteComponent(roundEnvironment);
@@ -116,12 +117,7 @@ public class NoteProcessor extends AbstractProcessor {
         Collection<? extends Element> annotatedElements = roundEnvironment.getElementsAnnotatedWith(NoteJsCallAndroid.class);
         for (Element e : annotatedElements) {
             String className = e.getEnclosingElement().getSimpleName().toString();
-            List<NoteJsCallAndroidEntity> results = allResults.get(className);
-            if (results == null) {
-                results = new ArrayList<>();
-                allResults.put(className, results);
-            }
-
+            List<NoteJsCallAndroidEntity> results = allResults.computeIfAbsent(className, s -> new ArrayList<>());
             NoteJsCallAndroid noteJsCallAndroid = e.getAnnotation(NoteJsCallAndroid.class);
             NoteJsCallAndroidEntity entity = new NoteJsCallAndroidEntity();
             entity.setDescription(noteJsCallAndroid.description());
@@ -129,7 +125,7 @@ public class NoteProcessor extends AbstractProcessor {
             entity.setFunctionName(e.getSimpleName().toString());
 
             results.add(entity);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "entity: " + entity);
+            note(mMessager, "entity: " + entity);
         }
 
         Set<String> keySet = allResults.keySet();
@@ -137,7 +133,7 @@ public class NoteProcessor extends AbstractProcessor {
             List<NoteJsCallAndroidEntity> results = allResults.get(key);
             String jsonString = JSON.toJSONString(results, true);
             String filename = "JsCallAndroid-" + key;
-            mMessager.printMessage(Diagnostic.Kind.NOTE, filename + ": " + jsonString);
+            note(mMessager, filename + ": " + jsonString);
             save(filename, jsonString);
         }
     }
@@ -158,11 +154,11 @@ public class NoteProcessor extends AbstractProcessor {
             entity.setTitle(noteWebView.title());
             entity.setPostContent(noteWebView.postContent());
             list.add(entity);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "entity: " + entity);
+            note(mMessager, "entity: " + entity);
         }
 
         String jsonString = JSON.toJSONString(list, true);
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "webView: " + jsonString);
+        note(mMessager, "webView: " + jsonString);
         save("webView", jsonString);
     }
 
@@ -188,7 +184,7 @@ public class NoteProcessor extends AbstractProcessor {
             }
             return stringBuilder.toString();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            error(mMessager, e.getMessage());
         }
         return urlString;
     }
@@ -242,7 +238,6 @@ public class NoteProcessor extends AbstractProcessor {
                     parameter.parameterClass();
                 } catch (MirroredTypeException mte) {
                     TypeMirror typeMirror = mte.getTypeMirror();
-                    mMessager.printMessage(Diagnostic.Kind.NOTE, "typeMirror: " + typeMirror);
                     parameterEntity.setParameterClassName(typeMirror.toString());
                 }
                 parameterEntity.setParameterRequired(parameter.parameterRequired());
@@ -251,11 +246,11 @@ public class NoteProcessor extends AbstractProcessor {
             entity.setParameters(realParameters);
 
             list.add(entity);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "entity: " + entity);
+            note(mMessager, "entity: " + entity);
         }
 
         String jsonString = JSON.toJSONString(list, true);
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "components: " + jsonString);
+        note(mMessager, "components: " + jsonString);
         save("components", jsonString);
     }
 
@@ -282,7 +277,6 @@ public class NoteProcessor extends AbstractProcessor {
                     parameter.parameterClass();
                 } catch (MirroredTypeException mte) {
                     TypeMirror typeMirror = mte.getTypeMirror();
-                    mMessager.printMessage(Diagnostic.Kind.NOTE, "typeMirror: " + typeMirror);
                     parameterEntity.setParameterClassName(typeMirror.toString());
                 }
                 parameterEntity.setParameterRequired(parameter.parameterRequired());
@@ -291,7 +285,6 @@ public class NoteProcessor extends AbstractProcessor {
             entity.setParameters(realParameters);
             //获取此元素上的所有注解，并找到目标注解
             AnnotationMirror annotationMirror = getAnnotationMirror(element, NoteJsFunction.class);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "annotationMirror: " + annotationMirror);
             //获取注解内容
             Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = annotationMirror.getElementValues();
             for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : elementValues.entrySet()) {
@@ -307,24 +300,12 @@ public class NoteProcessor extends AbstractProcessor {
                 }
             }
             list.add(entity);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "entity: " + entity);
+            note(mMessager, "entity: " + entity);
         }
 
         String jsonString = JSON.toJSONString(list, true);
-        mMessager.printMessage(Diagnostic.Kind.NOTE, "js: " + jsonString);
+        note(mMessager, "js: " + jsonString);
         save("js", jsonString);
-    }
-
-    private String[] makeParameterClassNames(List<? extends AnnotationValue> typeMirrors) {
-        if (typeMirrors == null) {
-            return null;
-        }
-        int size = typeMirrors.size();
-        String[] result = new String[size];
-        for(int i = 0; i < size; i++) {
-            result[i] = typeMirrors.get(i).getValue().toString();
-        }
-        return result;
     }
 
     private AnnotationMirror getAnnotationMirror(Element typeElement, Class<?> clazz) {
@@ -352,11 +333,10 @@ public class NoteProcessor extends AbstractProcessor {
         try {
             List<String> lines = Arrays.asList(result);
             Path path = Paths.get(GENERATED_DIR_PATH + filename + ".json");
-            System.out.println("path: " + path);
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "PATH: " + path.toAbsolutePath());
+            note(mMessager, "PATH: " + path.toAbsolutePath());
             Files.write(path, lines, Charset.forName("UTF-8"));
         } catch (IOException e) {
-            e.printStackTrace();
+            error(mMessager, e.getMessage());
         }
     }
 
@@ -382,6 +362,9 @@ public class NoteProcessor extends AbstractProcessor {
         annotations.add(NoteJsCallAndroid.class);
         annotations.add(NoteComponent.class);
         annotations.add(NoteJsFunction.class);
+        annotations.add(NoteJsFilepath.class);
+        annotations.add(NoteWebView.class);
+        annotations.add(com.su.annotations.Parameter.class);
         return annotations;
     }
 }
