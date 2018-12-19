@@ -52,5 +52,5 @@ publish {
     desc = 'debug and mock for android'
     website = 'https://github.com/su1216/debugger'
     groupId = 'com.su' // 组名
-    publishVersion = '0.9.5' // 版本号
+    publishVersion = '0.9.6' // 版本号
 }

@@ -1,10 +1,10 @@
 ## debugger
 
 ```groovy
-debugApi 'com.su:debugger.annotations:0.9.5'
-debugAnnotationProcessor 'com.su:debugger.compiler:0.9.5'
-debugImplementation 'com.su:debugger:0.9.5'
-releaseImplementation 'com.su:debugger-no-op:0.9.5'
+debugApi 'com.su:debugger.annotations:0.9.6'
+debugAnnotationProcessor 'com.su:debugger.compiler:0.9.6'
+debugImplementation 'com.su:debugger:0.9.6'
+releaseImplementation 'com.su:debugger-no-op:0.9.6'
 ```
 
 需要将module名称传给compiler
