@@ -3,8 +3,8 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:paddingStart="8dip"
-              android:paddingEnd="8dip"
+              android:paddingStart="13dip"
+              android:paddingEnd="13dip"
               android:orientation="vertical"
               android:gravity="center_vertical">
     <LinearLayout
@@ -16,14 +16,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/first_text"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:text="key: "/>
         <TextView
             android:id="@+id/key"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/first_text"
-            android:textSize="12sp"
+            android:textSize="14sp"
             tools:text="key:"/>
     </LinearLayout>
     <LinearLayout
@@ -35,14 +35,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/second_text"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:text="value: "/>
         <TextView
             android:id="@+id/value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/second_text"
-            android:textSize="12sp"
+            android:textSize="14sp"
             tools:text="value"/>
     </LinearLayout>
     <LinearLayout
@@ -55,14 +55,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/third_text"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:text="class: "/>
         <TextView
             android:id="@+id/value_class"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/third_text"
-            android:textSize="12sp"
+            android:textSize="14sp"
             tools:text="class"/>
     </LinearLayout>
 </LinearLayout>
