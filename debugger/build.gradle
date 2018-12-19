@@ -48,8 +48,8 @@ dependencies {
     api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
     compileOnly 'org.mozilla:rhino:1.7.9'
     //OkHttp
-    api 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
-    api 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp
+    compileOnly 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
+    compileOnly 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp
 }
 
 Properties properties = new Properties()
