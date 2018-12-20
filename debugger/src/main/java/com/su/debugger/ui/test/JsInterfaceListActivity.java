@@ -1,5 +1,7 @@
 package com.su.debugger.ui.test;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,9 +43,9 @@ import java.util.Set;
  * Created by su on 17-4-7.
  * 调试功能列表 - android - js 接口调试
  */
-public class JsInterfaceTestActivity extends BaseAppCompatActivity implements SearchView.OnQueryTextListener {
+public class JsInterfaceListActivity extends BaseAppCompatActivity implements SearchView.OnQueryTextListener {
 
-    private static final String TAG = JsInterfaceTestActivity.class.getSimpleName();
+    private static final String TAG = JsInterfaceListActivity.class.getSimpleName();
     private static final String INIT_URL = "file:///android_asset/web/html/debugger_js_interface_web.html";
     private FileAdapter mAdapter;
     private RecyclerView mRecyclerView;
@@ -54,6 +56,10 @@ public class JsInterfaceTestActivity extends BaseAppCompatActivity implements Se
 
     private List<FileItem> mAllFileList = new ArrayList<>();
     private List<FileItem> mFilterFileItems = new ArrayList<>();
+
+    public static void startActivity(@NonNull Context context) {
+        context.startActivity(new Intent(context, JsInterfaceListActivity.class));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -268,7 +274,7 @@ public class JsInterfaceTestActivity extends BaseAppCompatActivity implements Se
                 if (!TextUtils.isEmpty(parameters)) {
                     params = params + "&functionParameter=" + Uri.encode(parameters);
                 }
-                AppHelper.startWebView(JsInterfaceTestActivity.this, "android - js接口调试", INIT_URL + params, false);
+                AppHelper.startWebView(JsInterfaceListActivity.this, "android - js接口调试", INIT_URL + params, false);
             });
         }
 

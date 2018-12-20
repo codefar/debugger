@@ -48,7 +48,7 @@
             android:theme="@style/DebuggerCustomDialog"/>
         <!--js接口列表-->
         <activity
-            android:name=".ui.test.JsInterfaceTestActivity"
+            android:name=".ui.test.JsInterfaceListActivity"
             android:exported="false"
             android:theme="@style/DebuggerSearchViewToolbar"
             android:screenOrientation="portrait"/>

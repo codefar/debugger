@@ -1,5 +1,6 @@
 package com.su.debugger.ui.test.app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ComponentInfo;
 import android.content.pm.PackageInfo;
@@ -64,6 +65,12 @@ public class ComponentListActivity extends BaseAppCompatActivity implements Recy
     private SearchableHelper mSearchableHelper = new SearchableHelper();
     private int mDangerousColor;
     private int mNormalColor;
+
+    public static void startActivity(@NonNull Context context, @NonNull String type) {
+        Intent intent = new Intent(context, ComponentListActivity.class);
+        intent.putExtra("type", type);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

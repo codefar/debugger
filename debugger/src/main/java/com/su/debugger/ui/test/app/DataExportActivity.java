@@ -1,6 +1,7 @@
 package com.su.debugger.ui.test.app;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,6 +36,10 @@ public class DataExportActivity extends BaseAppCompatActivity {
     private static final File EXPORTED_DATABASE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-databases");
     private static final File EXPORTED_SHARED_PREFERENCE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), GeneralInfoHelper.getVersionName() + "-" + SpHelper.SHARED_PREFERENCE_BASE_DIRNAME);
     private static File EXPORTED_SHARED_PRIVATE_DIR_FILE;
+
+    public static void startActivity(@NonNull Context context) {
+        context.startActivity(new Intent(context, DataExportActivity.class));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -231,7 +236,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
         public boolean onPreferenceClick(Preference preference) {
             if (!AppHelper.checkPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 Toast.makeText(mActivity, "没有外存写入权限", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(mActivity, PermissionListActivity.class));
+                PermissionListActivity.startActivity(mActivity);
                 return true;
             }
             switch (preference.getKey()) {

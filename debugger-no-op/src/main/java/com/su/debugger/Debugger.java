@@ -1,6 +1,7 @@
 package com.su.debugger;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
@@ -45,4 +46,16 @@ public class Debugger {
     public static Intent getDebuggerMainIntent() {
         return null;
     }
+
+    public static void startDataExportActivity(@NonNull Context context) {}
+
+    public static void startPermissionsActivity(@NonNull Context context) {}
+
+    public static void startActivitiesActivity(@NonNull Context context) {}
+
+    public static void startMockDataActivity(@NonNull Context context) {}
+
+    public static void startJsInterfacesActivity(@NonNull Context context) {}
+
+    public static void startAppInfoActivity(@NonNull Context context) {}
 }

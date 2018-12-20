@@ -170,7 +170,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             File mockCacheDir = mActivity.getExternalFilesDir("mock");
             if (mockCacheDir == null) {
                 Toast.makeText(mActivity, "没有外存读取权限", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(mActivity, PermissionListActivity.class));
+                PermissionListActivity.startActivity(mActivity);
                 return;
             }
             Toast.makeText(mActivity, "没有外存读取权限只能处理" + mockCacheDir.getAbsolutePath() + "下的json文件", Toast.LENGTH_LONG).show();
@@ -350,13 +350,13 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 AppHelper.goNotificationSettings(mActivity);
                 return true;
             case "permission":
-                startActivity(new Intent(mActivity, PermissionListActivity.class));
+                PermissionListActivity.startActivity(mActivity);
                 return true;
             case "feature":
                 startActivity(new Intent(mActivity, FeatureListActivity.class));
                 return true;
             case "data_export":
-                startActivity(new Intent(mActivity, DataExportActivity.class));
+                DataExportActivity.startActivity(mActivity);
                 return true;
             case "shared_preference":
                 if (SpHelper.sharedPreferenceCount(mActivity) == 1) {
@@ -368,7 +368,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 }
                 return true;
             case "app_info":
-                startActivity(new Intent(mActivity, AppInfoListActivity.class));
+                AppInfoListActivity.startActivity(mActivity);
                 return true;
             case "app_component_info":
                 startActivity(new Intent(mActivity, AppComponentActivity.class));
@@ -380,9 +380,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 startCollection();
                 return true;
             case "mock_data_list":
-                Intent newFakeIntent = new Intent(mActivity, MockGroupHostActivity.class);
-                newFakeIntent.putExtra("title", preference.getTitle());
-                startActivity(newFakeIntent);
+                MockGroupHostActivity.startActivity(mActivity, preference.getTitle());
                 return true;
             case "web_view_debug":
                 Intent serverIntent = new Intent(mActivity, WebViewListActivity.class);
@@ -391,13 +389,13 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 startActivity(serverIntent);
                 return true;
             case "js_interface":
-                startActivity(new Intent(mActivity, JsInterfaceTestActivity.class));
+                JsInterfaceListActivity.startActivity(mActivity);
                 return true;
             case "js_rhino":
                 if (!AppHelper.checkPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
                         || !AppHelper.checkPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     Toast.makeText(mActivity, "没有外存读写权限", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(mActivity, PermissionListActivity.class));
+                    PermissionListActivity.startActivity(mActivity);
                     return true;
                 }
                 startActivity(new Intent(mActivity, JsListActivity.class));

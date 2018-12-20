@@ -1,5 +1,6 @@
 package com.su.debugger.ui.test.mock;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -21,6 +22,12 @@ public class MockGroupHostActivity extends BaseAppCompatActivity implements Load
     public static final String TAG = MockGroupHostActivity.class.getSimpleName();
     private String mHostListTitle;
     private GroupHostAdapter mAdapter;
+
+    public static void startActivity(@NonNull Context context, @Nullable CharSequence title) {
+        Intent intent = new Intent(context, MockGroupHostActivity.class);
+        intent.putExtra("title", title);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

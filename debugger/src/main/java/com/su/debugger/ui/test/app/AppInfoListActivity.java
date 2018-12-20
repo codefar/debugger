@@ -1,8 +1,10 @@
 package com.su.debugger.ui.test.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -39,6 +41,10 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
     private ExpandableListView mListView;
     private List<List<Pair<String, String>>> mDataList = new ArrayList<>();
     private AppInfoAdapter mAdapter;
+
+    public static void startActivity(@NonNull Context context) {
+        context.startActivity(new Intent(context, AppInfoListActivity.class));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

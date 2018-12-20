@@ -53,6 +53,10 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
     private List<PermissionInfoWrapper> mDataList = new ArrayList<>();
     private RecyclerViewAdapter mAdapter;
 
+    public static void startActivity(@NonNull Context context) {
+        context.startActivity(new Intent(context, PermissionListActivity.class));
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

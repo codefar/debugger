@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.su.debugger.R;
@@ -61,27 +62,11 @@ public class AppComponentActivity extends BaseAppCompatActivity {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             String key = preference.getKey();
-            Intent intent = new Intent(mActivity, ComponentListActivity.class);
-            switch (key) {
-                case "activity":
-                    intent.putExtra("type", "activity");
-                    break;
-                case "service":
-                    intent.putExtra("type", "service");
-                    break;
-                case "receiver":
-                    intent.putExtra("type", "receiver");
-                    break;
-                case "provider":
-                    intent.putExtra("type", "provider");
-                    break;
-                case "manifest":
-                    startTextViewerActivity();
-                    return true;
-                default:
-                    break;
+            if (TextUtils.equals(key, "manifest")) {
+                startTextViewerActivity();
+                return true;
             }
-            startActivity(intent);
+            ComponentListActivity.startActivity(mActivity, key);
             return true;
         }
 
