@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MockDetailActivity extends BaseAppCompatActivity implements View.OnClickListener, ExpandableListView.OnChildClickListener, SearchView.OnQueryTextListener {
+public class MockDetailActivity extends BaseAppCompatActivity implements View.OnClickListener, ExpandableListView.OnChildClickListener, SearchView.OnQueryTextListener, ExpandableListView.OnGroupClickListener {
     public static final String TAG = MockDetailActivity.class.getSimpleName();
     private Info2Adapter mAdapter;
     private ExpandableListView mListView;
@@ -103,6 +104,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         initHeader();
         mAdapter = new Info2Adapter(this);
         mListView.setAdapter(mAdapter);
+        mListView.setOnGroupClickListener(this);
         mListView.setOnChildClickListener(this);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -194,6 +196,11 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         setTitle("mock详情");
         mSearchableHelper.initSearchToolbar(mToolbar, "在response中搜索", this);
         filter("");
+    }
+
+    @Override
+    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+        return false;
     }
 
     @Override
@@ -305,14 +312,15 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
     private class Info2Adapter extends BaseExpandableListAdapter {
         private LayoutInflater mInflater;
+        private Resources mResources;
         private int mFirstColor;
         private int mSecondColor;
 
         private Info2Adapter(Context context) {
             mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            Resources resources = context.getResources();
-            mFirstColor = resources.getColor(R.color.first_text);
-            mSecondColor = resources.getColor(R.color.second_text);
+            mResources = context.getResources();
+            mFirstColor = mResources.getColor(R.color.first_text);
+            mSecondColor = mResources.getColor(R.color.second_text);
         }
 
         @Override
@@ -330,7 +338,10 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
             holder.textView.setText(item.value);
             holder.textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
             holder.textView.setTextColor(mFirstColor);
-            holder.actionView.setText("A");
+            holder.actionView.clearColorFilter();
+            holder.actionView.setImageDrawable(mResources.getDrawable(R.drawable.icon_button_add));
+            holder.arrowView.setSelected(isExpanded);
+            holder.arrowView.setVisibility(View.VISIBLE);
             //检查是否为单一元素类型
             //如果为单一元素类型，此时是否已经存在
             if (!MockUtil.singleElement(item.itemKey) || mItemList.get(groupPosition).isEmpty()) {
@@ -367,9 +378,10 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
             } else {
                 holder.textView.setText(item.key + ": " + item.value);
             }
+            holder.arrowView.setVisibility(View.GONE);
             holder.textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
             holder.textView.setTextColor(mSecondColor);
-            holder.actionView.setText("D");
+            holder.actionView.setImageDrawable(mResources.getDrawable(R.drawable.icon_button_delete));
             holder.actionView.setOnClickListener(v -> {
                 String action = "remove";
                 int rowsUpdated = 0;
@@ -667,10 +679,12 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
     private static class ViewHolder {
         private TextView textView;
-        private TextView actionView;
+        private ImageView actionView;
+        private ImageView arrowView;
 
         ViewHolder(View itemView) {
             this.textView = itemView.findViewById(R.id.content);
+            this.arrowView = itemView.findViewById(R.id.arrow);
             this.actionView = itemView.findViewById(R.id.action);
         }
     }

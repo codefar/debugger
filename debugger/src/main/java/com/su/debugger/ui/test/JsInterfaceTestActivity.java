@@ -27,7 +27,6 @@ import com.su.debugger.utils.IOUtil;
 import com.su.debugger.utils.SearchableHelper;
 import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
 import com.su.debugger.widget.recycler.PreferenceItemDecoration;
-import com.su.debugger.widget.recycler.RecyclerItemClickListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,7 +41,7 @@ import java.util.Set;
  * Created by su on 17-4-7.
  * 调试功能列表 - android - js 接口调试
  */
-public class JsInterfaceTestActivity extends BaseAppCompatActivity implements SearchView.OnQueryTextListener, RecyclerItemClickListener.OnItemClickListener {
+public class JsInterfaceTestActivity extends BaseAppCompatActivity implements SearchView.OnQueryTextListener {
 
     private static final String TAG = JsInterfaceTestActivity.class.getSimpleName();
     private static final String INIT_URL = "file:///android_asset/web/html/debugger_js_interface_web.html";
@@ -65,7 +64,6 @@ public class JsInterfaceTestActivity extends BaseAppCompatActivity implements Se
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
         PreferenceItemDecoration decoration = new PreferenceItemDecoration(this, 0, 0);
         mRecyclerView.addItemDecoration(decoration);
         mRecyclerView.setAdapter(mAdapter);
@@ -215,27 +213,6 @@ public class JsInterfaceTestActivity extends BaseAppCompatActivity implements Se
         mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onItemClick(View view, int position) {
-        int type = mAdapter.getItemViewType(position);
-        int[] positions = mAdapter.getPositions(position);
-        FileItem fileItem = mFilterFileItems.get(positions[0]);
-        if (type == BaseRecyclerAdapter.ITEM_TYPE_GROUP) {
-            fileItem.collapse = !fileItem.collapse;
-            filter(mSearchableHelper.getQueryText());
-            return;
-        }
-        MethodItem methodItem = fileItem.methodItemList.get(positions[1]);
-        String functionName = methodItem.getName();
-        String parameters = methodItem.getParameters();
-        String params = "?javascriptInterfaceObjectName=" + fileItem.injectName
-                + "&functionName=" + Uri.encode(functionName);
-        if (!TextUtils.isEmpty(parameters)) {
-            params = params + "&functionParameter=" + Uri.encode(parameters);
-        }
-        AppHelper.startWebView(this, "android - js接口调试", INIT_URL + params, false);
-    }
-
     private class FileAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
 
         @NonNull
@@ -255,8 +232,13 @@ public class JsInterfaceTestActivity extends BaseAppCompatActivity implements Se
 
         private void bindGroupData(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
             FileItem fileItem = mFilterFileItems.get(getPositions(position)[0]);
-            TextView filenameView = holder.getView(R.id.group_layout);
+            TextView filenameView = holder.getView(R.id.filename);
             filenameView.setText(fileItem.injectName);
+            holder.itemView.setOnClickListener(v -> {
+                fileItem.collapse = !fileItem.collapse;
+                holder.getView(R.id.arrow).setSelected(fileItem.collapse);
+                filter(mSearchableHelper.getQueryText());
+            });
         }
 
         private void bindChildData(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
@@ -277,6 +259,17 @@ public class JsInterfaceTestActivity extends BaseAppCompatActivity implements Se
             int colorIndex = position - positions[0] - 1;
             mSearchableHelper.refreshFilterColor(nameView, colorIndex, mNameFilterColorIndexList);
             mSearchableHelper.refreshFilterColor(descView, colorIndex, mDescFilterColorIndexList);
+            holder.itemView.setOnClickListener(v -> {
+                MethodItem currentMethodItem = fileItem.methodItemList.get(positions[1]);
+                String functionName = currentMethodItem.getName();
+                String parameters = currentMethodItem.getParameters();
+                String params = "?javascriptInterfaceObjectName=" + fileItem.injectName
+                        + "&functionName=" + Uri.encode(functionName);
+                if (!TextUtils.isEmpty(parameters)) {
+                    params = params + "&functionParameter=" + Uri.encode(parameters);
+                }
+                AppHelper.startWebView(JsInterfaceTestActivity.this, "android - js接口调试", INIT_URL + params, false);
+            });
         }
 
         @Override

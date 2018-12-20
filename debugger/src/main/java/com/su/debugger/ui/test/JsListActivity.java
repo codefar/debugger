@@ -217,7 +217,7 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
             TextView filenameView = holder.getView(R.id.filename);
             filenameView.setText(new File(filepath).getName());
             //warning 暂时不要改为lambda表达式，com.android.tools.build:gradle:3.2.1编译时会报错
-            holder.getView(R.id.open).setOnClickListener(new View.OnClickListener() {
+            holder.getView(R.id.view).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -259,6 +259,7 @@ public class JsListActivity extends BaseAppCompatActivity implements View.OnClic
                     int[] positions = mAdapter.getPositions(position);
                     Functions functions = mFunctionsList.get(positions[0]);
                     functions.collapse = !functions.collapse;
+                    holder.getView(R.id.arrow).setSelected(functions.collapse);
                     mAdapter.notifyDataSetChanged();
                 }
             });
