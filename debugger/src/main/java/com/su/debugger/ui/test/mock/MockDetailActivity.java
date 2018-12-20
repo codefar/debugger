@@ -48,6 +48,7 @@ import java.util.Objects;
 
 public class MockDetailActivity extends BaseAppCompatActivity implements View.OnClickListener, ExpandableListView.OnChildClickListener, SearchView.OnQueryTextListener, ExpandableListView.OnGroupClickListener {
     public static final String TAG = MockDetailActivity.class.getSimpleName();
+    public static final String KEY_ENTITY = "mockEntity";
     private Info2Adapter mAdapter;
     private ExpandableListView mListView;
     private List<Item> mGroupList = new ArrayList<>();
@@ -70,9 +71,9 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         setContentView(R.layout.debugger_activity_mock_detail);
         if (savedInstanceState == null) {
             Intent intent = getIntent();
-            mEntity = intent.getParcelableExtra("mockEntity");
+            mEntity = intent.getParcelableExtra(KEY_ENTITY);
         } else {
-            mEntity = savedInstanceState.getParcelable("mockEntity");
+            mEntity = savedInstanceState.getParcelable(KEY_ENTITY);
         }
         Log.d(TAG, "entity: " + mEntity);
         Uri uri = Uri.parse(mEntity.getUrl());
@@ -697,7 +698,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("mockEntity", mEntity);
+        outState.putParcelable(KEY_ENTITY, mEntity);
     }
 
     @Override

@@ -170,7 +170,7 @@ public class MockAdapter extends CursorAdapter implements AdapterView.OnItemClic
         entity.setInUse(inUse == 1);
         entity.setAuto(auto == 1);
         Intent intent = new Intent(mContext, MockDetailActivity.class);
-        intent.putExtra("mockEntity", entity);
+        intent.putExtra(MockDetailActivity.KEY_ENTITY, entity);
         mContext.startActivity(intent);
     }
 

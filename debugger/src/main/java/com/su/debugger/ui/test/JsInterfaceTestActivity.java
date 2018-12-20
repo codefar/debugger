@@ -88,7 +88,7 @@ public class JsInterfaceTestActivity extends BaseAppCompatActivity implements Se
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mSearchableHelper.initSearchToolbar(mToolbar, this);
-        setTitle("android - js接口列表");
+        setTitle("@JavascriptInterface接口列表");
     }
 
     private void makeData() {
