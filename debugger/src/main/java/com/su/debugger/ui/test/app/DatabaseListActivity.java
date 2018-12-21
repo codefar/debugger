@@ -167,12 +167,12 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
         @Override
         public int getItemViewType(int position) {
             int pointer = -1;
-            for (Database functions : mDatabaseList) {
+            for (Database database : mDatabaseList) {
                 pointer++;
                 if (pointer == position) {
                     return BaseRecyclerAdapter.ITEM_TYPE_GROUP;
                 }
-                int childrenSize = functions.collapse ? 0 : functions.tableList.size();
+                int childrenSize = database.collapse ? 0 : database.tableList.size();
                 pointer += childrenSize;
                 if (pointer >= position) {
                     return BaseRecyclerAdapter.ITEM_TYPE_NORMAL;
@@ -188,11 +188,11 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
             int childPosition = -1;
             positions[0] = groupPosition;
             positions[1] = childPosition;
-            for (Database functions : mDatabaseList) {
+            for (Database database : mDatabaseList) {
                 pointer++;
                 groupPosition++;
                 positions[0] = groupPosition;
-                int childrenSize = functions.collapse ? 0 : functions.tableList.size();
+                int childrenSize = database.collapse ? 0 : database.tableList.size();
                 if (pointer + childrenSize >= position) {
                     childPosition = position - pointer - 1;
                     positions[1] = childPosition;
@@ -206,9 +206,9 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
         @Override
         public int getItemCount() {
             int size = 0;
-            for (Database functions : mDatabaseList) {
+            for (Database database : mDatabaseList) {
                 size++;
-                int childrenSize = functions.collapse ? 0 : functions.tableList.size();
+                int childrenSize = database.collapse ? 0 : database.tableList.size();
                 size += childrenSize;
             }
             return size;
