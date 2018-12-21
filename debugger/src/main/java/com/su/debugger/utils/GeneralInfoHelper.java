@@ -81,9 +81,11 @@ public class GeneralInfoHelper {
         sViewConfiguration = ViewConfiguration.get(context);
         SharedPreferences sharedPreferences = SpHelper.getDebuggerSharedPreferences();
         long now = System.currentTimeMillis();
+        if (!sharedPreferences.contains("first_launch_time")) {
+            sharedPreferences.edit().putLong("first_launch_time", now).apply();
+        }
         sFirstLaunchTime = sharedPreferences.getLong("first_launch_time", now);
         sLaunchTime = sharedPreferences.getLong("launch_time", now);
-        sharedPreferences.edit().putLong("first_launch_time", now).apply();
     }
 
     private static void initPackageInfo() {
