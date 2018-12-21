@@ -36,6 +36,7 @@ import com.su.debugger.R;
 import com.su.debugger.ui.test.app.AppComponentActivity;
 import com.su.debugger.ui.test.app.AppInfoListActivity;
 import com.su.debugger.ui.test.app.DataExportActivity;
+import com.su.debugger.ui.test.app.DatabaseListActivity;
 import com.su.debugger.ui.test.app.FeatureListActivity;
 import com.su.debugger.ui.test.app.PermissionListActivity;
 import com.su.debugger.ui.test.app.SharedPreferenceDetailActivity;
@@ -112,6 +113,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         }
         mSharedPreferencePreference = findPreference("shared_preference");
         mSharedPreferencePreference.setOnPreferenceClickListener(this);
+        findPreference("database").setOnPreferenceClickListener(this);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
         initHostPreference();
         initMockPreferences();
@@ -366,6 +368,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 } else {
                     startActivity(new Intent(mActivity, SharedPreferenceListActivity.class));
                 }
+                return true;
+            case "database":
+                startActivity(new Intent(mActivity, DatabaseListActivity.class));
                 return true;
             case "app_info":
                 AppInfoListActivity.startActivity(mActivity);

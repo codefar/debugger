@@ -101,6 +101,18 @@
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:screenOrientation="portrait"/>
+        <!-- Database列表 -->
+        <activity
+            android:name=".ui.test.app.DatabaseListActivity"
+            android:exported="false"
+            android:theme="@style/DebuggerListTheme"
+            android:screenOrientation="portrait"/>
+        <!-- table信息 -->
+        <activity
+            android:name=".ui.test.app.TableInfoActivity"
+            android:exported="false"
+            android:theme="@style/DebuggerListTheme"
+            android:screenOrientation="portrait"/>
         <!-- 系统信息 -->
         <activity
             android:name=".ui.test.DeviceInfoActivity"

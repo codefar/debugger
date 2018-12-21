@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,11 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 
     public BaseRecyclerAdapter(List<T> data) {
         this.mData = data;
+    }
+
+    public void updateData(@NonNull List<T> data) {
+        mData = new ArrayList<>(data);
+        notifyDataSetChanged();
     }
 
     @NonNull

@@ -8,7 +8,7 @@ public class CollectorSQLiteHelper extends SQLiteOpenHelper {
 
     public static final String TAG = CollectorSQLiteHelper.class.getSimpleName();
     private static final String DATABASE_NAME = "responses.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 8;
 
     CollectorSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
