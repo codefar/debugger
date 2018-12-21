@@ -48,6 +48,7 @@
                   android:layout_height="wrap_content"
                   android:layout_marginTop="4dip"
                   android:textSize="12sp"
+                  android:breakStrategy="simple"
                   android:layout_below="@android:id/title"
                   android:layout_alignStart="@android:id/title"
                   android:textColor="@color/third_text"
