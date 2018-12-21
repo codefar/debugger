@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MockDetailActivity extends BaseAppCompatActivity implements View.OnClickListener, ExpandableListView.OnChildClickListener, SearchView.OnQueryTextListener, ExpandableListView.OnGroupClickListener {
+public class MockDetailActivity extends BaseAppCompatActivity implements View.OnClickListener, ExpandableListView.OnChildClickListener, SearchView.OnQueryTextListener {
     public static final String TAG = MockDetailActivity.class.getSimpleName();
     public static final String KEY_ENTITY = "mockEntity";
     private Info2Adapter mAdapter;
@@ -105,7 +105,6 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         initHeader();
         mAdapter = new Info2Adapter(this);
         mListView.setAdapter(mAdapter);
-        mListView.setOnGroupClickListener(this);
         mListView.setOnChildClickListener(this);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -197,11 +196,6 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         setTitle("mock详情");
         mSearchableHelper.initSearchToolbar(mToolbar, "在response中搜索", this);
         filter("");
-    }
-
-    @Override
-    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-        return false;
     }
 
     @Override

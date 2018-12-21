@@ -131,9 +131,10 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
             databaseNameView.setText(dbPath);
             versionView.setText("version: " + database.version);
             tablesView.setText("tables: " + database.tableCount);
+            holder.getView(R.id.arrow).setSelected(!database.collapse);
             holder.itemView.setOnClickListener(v -> {
                 database.collapse = !database.collapse;
-                holder.getView(R.id.arrow).setSelected(database.collapse);
+                holder.getView(R.id.arrow).setSelected(!database.collapse);
                 notifyDataSetChanged();
             });
         }

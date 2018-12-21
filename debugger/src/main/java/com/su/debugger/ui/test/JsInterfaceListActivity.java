@@ -237,12 +237,13 @@ public class JsInterfaceListActivity extends BaseAppCompatActivity implements Se
         }
 
         private void bindGroupData(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
-            FileItem fileItem = mFilterFileItems.get(getPositions(position)[0]);
+            final FileItem fileItem = mFilterFileItems.get(getPositions(position)[0]);
             TextView filenameView = holder.getView(R.id.filename);
             filenameView.setText(fileItem.injectName);
+            holder.getView(R.id.arrow).setSelected(!fileItem.collapse);
             holder.itemView.setOnClickListener(v -> {
                 fileItem.collapse = !fileItem.collapse;
-                holder.getView(R.id.arrow).setSelected(fileItem.collapse);
+                holder.getView(R.id.arrow).setSelected(!fileItem.collapse);
                 filter(mSearchableHelper.getQueryText());
             });
         }
