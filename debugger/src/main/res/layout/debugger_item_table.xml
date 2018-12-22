@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:id="@+id/table_name"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:clickable="true"
-          android:focusable="true"
-          android:paddingTop="8dip"
-          android:paddingBottom="8dip"
-          android:paddingStart="45dip"
-          android:paddingEnd="30dip"
-          android:textColor="@color/second_text"
-          android:textSize="14sp"
-          android:background="@drawable/debugger_item_selector"
-          tools:text="functionName" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:paddingTop="8dip"
+              android:paddingBottom="8dip"
+              android:clickable="true"
+              android:focusable="true"
+              android:background="@drawable/debugger_item_selector">
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingStart="45dip"
+        android:paddingEnd="30dip"
+        android:textColor="@color/second_text"
+        android:textSize="14sp"
+        tools:text="functionName" />
+    <TextView
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="16dip"
+        android:textColor="@color/second_text"
+        android:textSize="14sp"
+        tools:text="table" />
+</LinearLayout>
+

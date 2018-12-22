@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +17,13 @@ import android.widget.TextView;
 import com.su.debugger.R;
 import com.su.debugger.db.DbInfoProvider;
 import com.su.debugger.entity.Table;
+import com.su.debugger.entity.Trigger;
 import com.su.debugger.ui.test.BaseAppCompatActivity;
 import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
 import com.su.debugger.widget.recycler.PreferenceItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DatabaseListActivity extends BaseAppCompatActivity {
@@ -38,7 +41,7 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_template_recycler_list);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        mAdapter = new DatabaseAdapter();
+        mAdapter = new DatabaseAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -74,8 +77,9 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
             mGroupList.add(dbName);
             DbInfoProvider dbInfoProvider = DbInfoProvider.getInstance(this, dbName);
             int version = dbInfoProvider.getDatabaseVersion();
-            List<Table> tables = getTables(dbInfoProvider.getAllTables());
-            Database database = new Database(dbName, version, tables);
+            List<Table> tables = getTables(dbInfoProvider.getAllTablesAndViews());
+            List<Trigger> triggers = getTriggerSqlList(dbInfoProvider.getAllTriggers());
+            Database database = new Database(dbName, version, tables, triggers);
             mDatabaseList.add(database);
             dbInfoProvider.closeDb();
         }
@@ -84,26 +88,54 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
 
     private List<Table> getTables(Cursor cursor) {
         List<Table> list = new ArrayList<>();
-        if (cursor == null) {
+        if (cursor == null || cursor.getCount() == 0) {
             return list;
         }
         cursor.moveToFirst();
         do {
             String tableName = cursor.getString(cursor.getColumnIndex("name"));
             String tableSql = cursor.getString(cursor.getColumnIndex("sql"));
+            String tableType = cursor.getString(cursor.getColumnIndex("type"));
             Table table = new Table();
             table.setTableName(tableName);
             table.setTableSql(tableSql);
+            table.setType(tableType);
             list.add(table);
+        } while (cursor.moveToNext());
+        cursor.close();
+        Collections.sort(list);
+        return list;
+    }
+
+    private List<Trigger> getTriggerSqlList(Cursor cursor) {
+        List<Trigger> list = new ArrayList<>();
+        if (cursor == null || cursor.getCount() == 0) {
+            return list;
+        }
+        cursor.moveToFirst();
+        do {
+            String sql = cursor.getString(cursor.getColumnIndex("sql"));
+            String name = cursor.getString(cursor.getColumnIndex("name"));
+            String tblName = cursor.getString(cursor.getColumnIndex("tbl_name"));
+            Trigger trigger = new Trigger();
+            trigger.setName(name);
+            trigger.setTblName(tblName);
+            trigger.setSql(sql);
+            list.add(trigger);
         } while (cursor.moveToNext());
         cursor.close();
         return list;
     }
 
-    private class DatabaseAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
+    private static class DatabaseAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseViewHolder> {
 
         private List<String> mGroupList = new ArrayList<>();
         private List<Database> mDatabaseList = new ArrayList<>();
+        private Context mContext;
+
+        DatabaseAdapter(@NonNull Context context) {
+            mContext = context;
+        }
 
         private void updateData(@NonNull List<String> groupList, @NonNull List<Database> databaseList) {
             mGroupList = new ArrayList<>(groupList);
@@ -131,9 +163,12 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
             final String dbPath = mGroupList.get(groupIndex);
             final Database database = mDatabaseList.get(groupIndex);
             TextView databaseNameView = holder.getView(R.id.database_name);
+            View triggersView = holder.getView(R.id.triggers);
             TextView versionView = holder.getView(R.id.version);
             TextView tablesView = holder.getView(R.id.tables);
             databaseNameView.setText(dbPath);
+            triggersView.setVisibility(database.triggerCount == 0 ? View.GONE : View.VISIBLE);
+            triggersView.setOnClickListener(v -> showAllTriggers(database));
             versionView.setText("version: " + database.version);
             tablesView.setText("tables: " + database.tableCount);
             holder.getView(R.id.arrow).setSelected(!database.collapse);
@@ -144,18 +179,40 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
             });
         }
 
+        private void showAllTriggers(@NonNull Database database) {
+            List<Trigger> triggerSqlList = database.triggerSqlList;
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Trigger trigger : triggerSqlList) {
+                stringBuilder.append(trigger.getName());
+                stringBuilder.append("\n");
+                stringBuilder.append(trigger.getSql());
+                stringBuilder.append("\n\n");
+            }
+            if (!triggerSqlList.isEmpty()) {
+                stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+            }
+
+            new AlertDialog.Builder(mContext)
+                    .setTitle("triggers")
+                    .setMessage(stringBuilder)
+                    .setPositiveButton(R.string.confirm, null)
+                    .show();
+        }
+
         private void bindChildData(@NonNull BaseRecyclerAdapter.BaseViewHolder holder, int position) {
             int[] positions = getPositions(position);
             String dbName = mGroupList.get(positions[0]);
             Table table = mDatabaseList.get(positions[0]).tableList.get(positions[1]);
-            TextView tableNameView = holder.getView(R.id.table_name);
-            tableNameView.setText(table.getTableName());
+            TextView nameView = holder.getView(R.id.name);
+            TextView typeView = holder.getView(R.id.type);
+            nameView.setText(table.getTableName());
+            typeView.setText(table.getType());
             holder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(DatabaseListActivity.this, TableInfoActivity.class);
+                Intent intent = new Intent(mContext, TableInfoActivity.class);
                 intent.putExtra("sql", table.getTableSql());
                 intent.putExtra("database_name", dbName);
                 intent.putExtra("table_name", table.getTableName());
-                startActivity(intent);
+                mContext.startActivity(intent);
             });
         }
 
@@ -225,17 +282,24 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
         private int version;
         private List<Table> tableList;
         private int tableCount;
+        private int triggerCount;
         private boolean collapse;
+        private List<Trigger> triggerSqlList;
 
-        public Database(String databasePath, int version, List<Table> tableList) {
+        private Database(String databasePath, int version, List<Table> tableList, List<Trigger> triggerSqlList) {
             this.databasePath = databasePath;
             this.version = version;
             this.tableList = tableList;
+            this.triggerSqlList = triggerSqlList;
             if (tableList != null) {
                 tableCount = tableList.size();
             }
+            if (triggerSqlList != null) {
+                triggerCount = triggerSqlList.size();
+            }
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "Database{" +
@@ -243,6 +307,9 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
                     ", version=" + version +
                     ", tableList=" + tableList +
                     ", tableCount=" + tableCount +
+                    ", triggerSqlList=" + triggerSqlList +
+                    ", triggerCount=" + triggerCount +
+                    ", collapse=" + collapse +
                     '}';
         }
     }

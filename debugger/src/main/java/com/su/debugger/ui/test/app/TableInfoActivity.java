@@ -74,7 +74,7 @@ public class TableInfoActivity extends BaseAppCompatActivity {
         sqlView.setText(mTableSql);
         header.setOnClickListener(v -> {
             AppHelper.copyToClipboard(this, "sql", mTableSql);
-            Toast.makeText(this, "已将" + mTableName + "建表语句复制到粘贴板中", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "已将" + mTableName + "创建语句复制到粘贴板中", Toast.LENGTH_LONG).show();
         });
         return header;
     }
@@ -83,7 +83,7 @@ public class TableInfoActivity extends BaseAppCompatActivity {
         List<TableColumn> columns = new ArrayList<>();
         DbInfoProvider dbInfoProvider = DbInfoProvider.getInstance(this, mDatabaseName);
         Cursor cursor = dbInfoProvider.getTableInfo(mTableName);
-        if (cursor == null) {
+        if (cursor == null || cursor.getCount() == 0) {
             mAdapter.updateData(columns);
             return;
         }

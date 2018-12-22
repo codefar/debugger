@@ -49,15 +49,26 @@ public class DbInfoProvider {
         mDb = SQLiteDatabase.openDatabase(filePath.getPath(), null, SQLiteDatabase.OPEN_READONLY, null);
     }
 
-    //获取库中所有表明和建表语句
-    public Cursor getAllTables() {
+    //获取库中所有表与视图
+    public Cursor getAllTablesAndViews() {
         return mDb.query("sqlite_master",
-                        new String[]{"name", "sql"},
-                        "type='table' and name<>'android_metadata' and name<>'sqlite_sequence'",
+                        new String[]{"name", "sql", "type"},
+                        "(type='table' or type='view') and name<>'android_metadata' and name<>'sqlite_sequence'",
                         null,
                         null,
                         null,
                         null);
+    }
+
+    //获取库中所有触发器
+    public Cursor getAllTriggers() {
+        return mDb.query("sqlite_master",
+                new String[]{"name", "tbl_name", "sql", "type"},
+                "type='trigger'",
+                null,
+                null,
+                null,
+                null);
     }
 
     //获取数据库版本
