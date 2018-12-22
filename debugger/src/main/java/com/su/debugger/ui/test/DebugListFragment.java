@@ -108,12 +108,12 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         findPreference("permission").setOnPreferenceClickListener(this);
         Preference featurePreference = findPreference("feature");
         featurePreference.setOnPreferenceClickListener(this);
-        if (AppHelper.getRequiredFeatures(mActivity).isEmpty()) {
-            featurePreference.setVisible(false);
-        }
+        featurePreference.setVisible(!AppHelper.getRequiredFeatures(mActivity).isEmpty());
         mSharedPreferencePreference = findPreference("shared_preference");
         mSharedPreferencePreference.setOnPreferenceClickListener(this);
-        findPreference("database").setOnPreferenceClickListener(this);
+        Preference databasePreference = findPreference("database");
+        databasePreference.setOnPreferenceClickListener(this);
+        databasePreference.setVisible(AppHelper.getDatabasesCount(mActivity) > 0);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
         initHostPreference();
         initMockPreferences();

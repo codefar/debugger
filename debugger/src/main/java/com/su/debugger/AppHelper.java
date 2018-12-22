@@ -209,6 +209,21 @@ public final class AppHelper {
         cmb.setPrimaryClip(ClipData.newPlainText(label, text));
     }
 
+    public static int getDatabasesCount(@NonNull Context context) {
+        String[] dbList = context.getApplicationContext().databaseList();
+        if (dbList == null) {
+            return 0;
+        }
+        int count = 0;
+        for (String dbName : dbList) {
+            if (dbName.endsWith("-journal")) {
+                continue;
+            }
+            count++;
+        }
+        return count;
+    }
+
     /**
      * 判断是否是魅族系统
      *

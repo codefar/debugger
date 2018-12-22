@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="debugger_name">debugger</string>
     <string name="set_permission">设置权限</string>
     <string name="help">帮助</string>
     <string name="confirm">确定</string>

@@ -1,5 +1,6 @@
 package com.su.debugger.ui.test.app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -27,6 +28,10 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
     private List<String> mGroupList = new ArrayList<>();
     private List<Database> mDatabaseList = new ArrayList<>();
     private DatabaseAdapter mAdapter;
+
+    public static void startActivity(@NonNull Context context) {
+        context.startActivity(new Intent(context, DatabaseListActivity.class));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
