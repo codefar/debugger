@@ -13,7 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.su.debugger.AppHelper;
 import com.su.debugger.R;
 import com.su.debugger.db.DbInfoProvider;
 import com.su.debugger.entity.TableColumn;
@@ -70,6 +72,10 @@ public class TableInfoActivity extends BaseAppCompatActivity {
         View header = inflater.inflate(R.layout.debugger_header_table, mRecyclerView, false);
         TextView sqlView = header.findViewById(R.id.sql);
         sqlView.setText(mTableSql);
+        header.setOnClickListener(v -> {
+            AppHelper.copyToClipboard(this, "sql", mTableSql);
+            Toast.makeText(this, "已将" + mTableName + "建表语句复制到粘贴板中", Toast.LENGTH_LONG).show();
+        });
         return header;
     }
 
