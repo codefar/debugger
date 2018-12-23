@@ -59,7 +59,7 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
     }
 
     private void expandAll(int groupCount) {
-        for (int i=0; i< groupCount; i++) {
+        for (int i = 0; i < groupCount; i++) {
             mListView.expandGroup(i);
         }
     }
@@ -93,13 +93,13 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
             targetSdkVersion = sdkVersions[2];
         }
         if (compileSdkVersion > 0) {
-            group1.add(new Pair<>("compileSdkVersion", compileSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(compileSdkVersion)+ ", " + SystemInfoHelper.getSystemVersionName(compileSdkVersion)+ ")"));
+            group1.add(new Pair<>("compileSdkVersion", compileSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(compileSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(compileSdkVersion) + ")"));
         }
         if (minSdkVersion > 0) {
-            group1.add(new Pair<>("minSdkVersion", minSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(minSdkVersion)+ ", " + SystemInfoHelper.getSystemVersionName(minSdkVersion)+ ")"));
+            group1.add(new Pair<>("minSdkVersion", minSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(minSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(minSdkVersion) + ")"));
         }
         if (targetSdkVersion > 0) {
-            group1.add(new Pair<>("targetSdkVersion", targetSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(targetSdkVersion)+ ", " + SystemInfoHelper.getSystemVersionName(targetSdkVersion)+ ")"));
+            group1.add(new Pair<>("targetSdkVersion", targetSdkVersion + " (Android " + SystemInfoHelper.getSystemVersionCode(targetSdkVersion) + ", " + SystemInfoHelper.getSystemVersionName(targetSdkVersion) + ")"));
         }
         group1.add(new Pair<>("debuggable", String.valueOf(GeneralInfoHelper.isDebuggable())));
         group1.add(new Pair<>("Uid", String.valueOf(GeneralInfoHelper.getUid())));

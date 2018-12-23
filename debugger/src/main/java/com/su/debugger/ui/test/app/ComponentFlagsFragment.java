@@ -127,6 +127,7 @@ public class ComponentFlagsFragment extends Fragment {
     private static class FlagAdapter extends BaseRecyclerAdapter<Flag> {
 
         private ComponentFlagsFragment mFragment;
+
         private FlagAdapter(@NonNull ComponentFlagsFragment fragment, @NonNull List<Flag> data) {
             super(data);
             mFragment = fragment;

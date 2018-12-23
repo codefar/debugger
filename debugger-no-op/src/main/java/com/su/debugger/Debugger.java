@@ -31,7 +31,7 @@ public class Debugger {
         return null;
     }
 
-    public static Object getEnvironmentInterceptor() {
+    public static Object getHostInterceptor() {
         return null;
     }
 

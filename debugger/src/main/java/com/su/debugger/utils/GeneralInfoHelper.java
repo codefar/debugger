@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Process;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.Display;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
+
+import com.su.debugger.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,11 +69,14 @@ public class GeneralInfoHelper {
     private static String sDeviceProtectedDataDir;
     private static String sNativeLibraryDir;
     private static String sDataDir;
+    private static String sLibName;
 
     private GeneralInfoHelper() {}
 
     public static void init(Context context) {
         sContext = context.getApplicationContext();
+        Resources resources = sContext.getResources();
+        sLibName = resources.getString(R.string.debugger_name);
         initPackageInfo();
         initAndroidId();
         initScreenSize();
@@ -283,10 +289,14 @@ public class GeneralInfoHelper {
         return sActionBarHeight;
     }
 
+    public static String getLibName() {
+        return sLibName;
+    }
+
     @NonNull
     public static String infoToString() {
         return "GeneralInfoHelper{" +
-                "context=" + sContext +
+                "libName=" + sLibName +
                 ", debuggable=" + sDebuggable +
                 ", processId=" + sProcessId +
                 ", processName=" + sProcessName +

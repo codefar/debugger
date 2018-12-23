@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class CollectorSQLiteHelper extends SQLiteOpenHelper {
 
     public static final String TAG = CollectorSQLiteHelper.class.getSimpleName();
-    private static final String DATABASE_NAME = "responses.db";
+    private static final String DATABASE_NAME = "debugger-responses.db";
     private static final int DATABASE_VERSION = 8;
 
     CollectorSQLiteHelper(Context context) {
@@ -33,7 +33,7 @@ public class CollectorSQLiteHelper extends SQLiteOpenHelper {
                 + "test integer,\n"
                 + "auto integer,\n"
                 + "inUse integer);\n";
-        String indexSql = "CREATE UNIQUE INDEX response_I" +
+        String indexSql = "CREATE UNIQUE INDEX locate_request" +
                 " ON response(url, method, contentType, requestHeaders, requestBody, auto);";
         db.execSQL(tableSql);
         db.execSQL(indexSql);

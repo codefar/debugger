@@ -17,7 +17,7 @@ import okhttp3.Response;
  * webview中需要手动调用urlMapping函数修改url。
  * 需要在MockInterceptor之前设置，先mock再修改url，否则mock找不到需要mock数据的url
  **/
-public class EnvironmentInterceptor implements Interceptor {
+public class HostInterceptor implements Interceptor {
 
     @NonNull
     @Override

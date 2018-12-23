@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 
 import com.su.debugger.component.annotation.DebugConfiguration;
 import com.su.debugger.net.DataCollectorInterceptor;
-import com.su.debugger.net.EnvironmentInterceptor;
+import com.su.debugger.net.HostInterceptor;
 import com.su.debugger.net.MockInterceptor;
 import com.su.debugger.ui.test.DebuggerMainActivity;
 import com.su.debugger.ui.test.JsInterfaceListActivity;
@@ -69,8 +69,8 @@ public class Debugger {
         return new DataCollectorInterceptor();
     }
 
-    public static Object getEnvironmentInterceptor() {
-        return new EnvironmentInterceptor();
+    public static Object getHostInterceptor() {
+        return new HostInterceptor();
     }
 
     public static File getDebuggerSdcardDir() {

@@ -116,7 +116,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     }
 
     private void expandAll(int groupCount) {
-        for (int i=0; i< groupCount; i++) {
+        for (int i = 0; i < groupCount; i++) {
             mListView.expandGroup(i);
         }
     }
@@ -574,7 +574,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
 
         Map<String, String> headers = new HashMap<>();
         if (!TextUtils.isEmpty(mEntity.getRequestHeaders())) {
-            headers = JSON.parseObject(mEntity.getRequestHeaders(), Map.class);
+            headers = JSON.parseObject(mEntity.getRequestHeaders(), new TypeReference<Map<String, String>>() {});
         }
 
         Map<String, Object> parameters = new HashMap<>();

@@ -18,7 +18,7 @@ public class XmlViewerActivity extends BaseAppCompatActivity {
         setContentView(R.layout.debugger_activity_text_viewer);
         Intent intent = getIntent();
         String content = intent.getStringExtra("content");
-        WebView webView =  findViewById(R.id.web_view);
+        WebView webView = findViewById(R.id.web_view);
         WebSettings webSettings = webView.getSettings();
         webSettings.setSupportZoom(true);
         webView.loadData(content, "text/xml", "utf-8");

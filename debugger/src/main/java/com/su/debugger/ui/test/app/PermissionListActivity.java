@@ -158,7 +158,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
             makeHintDialog(permission).show();
         } else {
-            ActivityCompat.requestPermissions(this, new String[] {permission}, REQ_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{permission}, REQ_CODE);
         }
     }
 
@@ -202,6 +202,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
 
         private Resources mResources;
         private PackageManager mPm;
+
         private RecyclerViewAdapter(@NonNull Context context, @NonNull List<PermissionInfoWrapper> data) {
             super(data);
             mPm = context.getPackageManager();
@@ -252,7 +253,7 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
 
     /**
      * @see android.content.pm.PermissionInfo
-     * */
+     */
     public static String protectionToString(int level) {
         String protectLevel = "????";
         switch (level & PermissionInfo.PROTECTION_MASK_BASE) {

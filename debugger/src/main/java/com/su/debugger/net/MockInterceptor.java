@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.su.debugger.DebuggerSupplier;
 import com.su.debugger.db.MockContentProvider;
 import com.su.debugger.entity.MockResponseEntity;
@@ -115,7 +116,7 @@ public class MockInterceptor implements Interceptor {
                 String responseHeaders = cursor.getString(cursor.getColumnIndexOrThrow(MockResponseEntity.COLUMN_RESPONSE_HEADERS));
                 Headers.Builder responseHeadersBuilder = new Headers.Builder();
                 if (!TextUtils.isEmpty(responseHeaders)) {
-                    Map<String, String> map = JSON.parseObject(responseHeaders, Map.class);
+                    Map<String, String> map = JSON.parseObject(responseHeaders, new TypeReference<Map<String, String>>() {});
                     Set<Map.Entry<String, String>> entrySet = map.entrySet();
                     for (Map.Entry<String, String> entry : entrySet) {
                         responseHeadersBuilder.add(entry.getKey(), entry.getValue());

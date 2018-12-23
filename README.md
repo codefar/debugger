@@ -83,9 +83,9 @@ public List<List<String>> getRequestBodyExcludeKeys() {
 使用`Server相关`的功能时，需要给OkHttp添加如下拦截器
 
 ```java
-Object environmentInterceptor = Debugger.getEnvironmentInterceptor();
-if (environmentInterceptor != null) {
-    builder.addInterceptor((Interceptor) environmentInterceptor);
+Object hostInterceptor = Debugger.getHostInterceptor();
+if (hostInterceptor != null) {
+    builder.addInterceptor((Interceptor) hostInterceptor);
 }
 Object mockInterceptor = Debugger.getMockInterceptor();
 if (mockInterceptor != null) {
