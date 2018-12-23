@@ -29,13 +29,8 @@ public class EnvironmentInterceptor implements Interceptor {
         }
 
         String url = request.url().toString();
-        String newUrl = urlMapping(url, host);
+        String newUrl = DebuggerSupplier.getInstance().urlMapping(url, host);
         Request newRequest = request.newBuilder().url(newUrl).build();
         return chain.proceed(newRequest);
-    }
-
-    @NonNull
-    public static String urlMapping(@NonNull String url, @NonNull String newHost) {
-        return DebuggerSupplier.getInstance().urlMapping(url, newHost);
     }
 }

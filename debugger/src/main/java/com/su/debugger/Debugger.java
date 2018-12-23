@@ -73,11 +73,6 @@ public class Debugger {
         return new EnvironmentInterceptor();
     }
 
-    @NonNull
-    public static String urlMapping(@NonNull String url, @NonNull String newHost) {
-        return EnvironmentInterceptor.urlMapping(url, newHost);
-    }
-
     public static File getDebuggerSdcardDir() {
         return sDebuggerSdcardDir;
     }

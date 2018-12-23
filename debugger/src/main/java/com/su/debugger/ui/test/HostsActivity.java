@@ -17,9 +17,11 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.su.debugger.Debugger;
 import com.su.debugger.DebuggerSupplier;
 import com.su.debugger.R;
 import com.su.debugger.utils.GeneralInfoHelper;
+import com.su.debugger.utils.SpHelper;
 import com.su.debugger.utils.UiHelper;
 import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
 import com.su.debugger.widget.recycler.PreferenceItemDecoration;
@@ -42,7 +44,7 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
                                                 "(?<host>[a-z0-9\\-._~%]+" + //Named or IPv4 host
                                                 "|\\[[a-z0-9\\-._~%!$&'()*+,;=:]+\\])"); //IPv6+ host
     private List<Pair<String, String>> mHosts; //name host
-    private String mHost;
+    private String mHost = Debugger.getHost();;
     private RecyclerViewAdapter mAdapter;
     private EditText mInputView;
 
@@ -50,12 +52,6 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_activity_dialog_hosts);
-        if (savedInstanceState == null) {
-            Intent intent = getIntent();
-            mHost = intent.getStringExtra("host");
-        } else {
-            mHost = savedInstanceState.getString("host");
-        }
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         DebuggerSupplier supplier = DebuggerSupplier.getInstance();
         mHosts = supplier.allHosts();
@@ -124,6 +120,11 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
     }
 
     private void selectHost(@NonNull String host) {
+        SpHelper.getDebuggerSharedPreferences()
+                .edit()
+                .putString("host", host)
+                .apply();
+
         Intent intent = new Intent();
         intent.putExtra("value", host);
         setResult(RESULT_OK, intent);
@@ -154,12 +155,6 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
             RadioButton radioButton = holder.getView(R.id.radio);
             radioButton.setChecked(mLastCheckedPos == position);
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("host", mHost);
     }
 
     @Override

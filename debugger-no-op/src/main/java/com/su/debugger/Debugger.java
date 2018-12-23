@@ -35,11 +35,6 @@ public class Debugger {
         return null;
     }
 
-    @NonNull
-    public static String urlMapping(@NonNull String url, @NonNull String newHost) {
-        return url;
-    }
-
     @Nullable
     public static Intent getDebuggerMainIntent() {
         return null;

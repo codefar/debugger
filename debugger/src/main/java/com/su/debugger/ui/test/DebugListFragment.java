@@ -69,6 +69,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private Preference mSharedPreferencePreference;
     private Preference mNotificationPreference;
     private ListPreference mMockPolicyPreference;
+    private Preference mHostsPreference;
     private String mHost;
     private FragmentActivity mActivity;
     private String mEntryClassName;
@@ -115,7 +116,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         databasePreference.setOnPreferenceClickListener(this);
         databasePreference.setVisible(AppHelper.getDatabasesCount(mActivity) > 0);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
-        initHostPreference();
+        mHostsPreference = findPreference("hosts");
         initMockPreferences();
         findPreference("web_view_debug").setOnPreferenceClickListener(this);
         findPreference("js_interface").setOnPreferenceClickListener(this);
@@ -153,6 +154,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     @Override
     public void onResume() {
         super.onResume();
+        initHostPreference();
         mSharedPreferencePreference.setEnabled(SpHelper.sharedPreferenceCount(mActivity) != 0);
         setNotificationSummary();
         if (!NetworkUtil.isNetworkAvailable()) {
@@ -191,11 +193,10 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
 
     private void initHostPreference() {
         mHost = Debugger.getHost();
-        Preference hostsPreference = findPreference("hosts");
         DebuggerSupplier supplier = DebuggerSupplier.getInstance();
         List<Pair<String, String>> hosts = supplier.allHosts();
         if (hosts.isEmpty()) {
-            ((PreferenceGroup) findPreference("server")).removePreference(hostsPreference);
+            ((PreferenceGroup) findPreference("server")).removePreference(mHostsPreference);
         } else {
             int size = hosts.size();
             Pair<String, String> pair = null;
@@ -203,16 +204,16 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 Pair<String, String> host = hosts.get(i);
                 if (TextUtils.equals(host.second, mHost)) {
                     pair = host;
-                    hostsPreference.setSummary(host.first + ": " + mHost);
+                    mHostsPreference.setSummary(host.first + ": " + mHost);
                 }
             }
             if (pair == null) {
-                hostsPreference.setSummary(mHost);
+                mHostsPreference.setSummary(mHost);
             } else {
-                hostsPreference.setSummary(pair.first + " (" + pair.second + ")");
+                mHostsPreference.setSummary(pair.first + " (" + pair.second + ")");
             }
         }
-        hostsPreference.setOnPreferenceClickListener(this);
+        mHostsPreference.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -325,12 +326,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             if (!TextUtils.equals(mHost, value)) {
                 new AlertDialog.Builder(mActivity)
                         .setCancelable(false)
-                        .setMessage("点击确认，程序自动重启")
+                        .setMessage("是否重启应用？")
                         .setPositiveButton(R.string.confirm, (dialog, which) -> {
-                            SpHelper.getDebuggerSharedPreferences()
-                                    .edit()
-                                    .putString("host", value)
-                                    .apply();
                             AppHelper.restartApp(mActivity);
                         })
                         .setNegativeButton(R.string.cancel, null)
@@ -344,9 +341,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         String key = preference.getKey();
         switch (key) {
             case "hosts":
-                Intent intent = new Intent(mActivity, HostsActivity.class);
-                intent.putExtra("host", mHost);
-                startActivityForResult(intent, REQUEST_HOST);
+                startActivityForResult(new Intent(mActivity, HostsActivity.class), REQUEST_HOST);
                 return true;
             case "system_notification":
                 AppHelper.goNotificationSettings(mActivity);
