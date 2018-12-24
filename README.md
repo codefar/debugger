@@ -97,7 +97,7 @@ if (dataCollectorInterceptor != null) {
 }
 ```
 
-`EnvironmentInterceptor`用于域名切换
+`HostInterceptor`用于域名切换
 
 `MockInterceptor`用于数据模拟
 
