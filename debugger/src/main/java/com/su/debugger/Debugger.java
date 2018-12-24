@@ -11,6 +11,7 @@ import com.su.debugger.net.DataCollectorInterceptor;
 import com.su.debugger.net.HostInterceptor;
 import com.su.debugger.net.MockInterceptor;
 import com.su.debugger.ui.test.DebuggerMainActivity;
+import com.su.debugger.ui.test.HostsActivity;
 import com.su.debugger.ui.test.JsInterfaceListActivity;
 import com.su.debugger.ui.test.app.AppInfoListActivity;
 import com.su.debugger.ui.test.app.ComponentListActivity;
@@ -77,12 +78,14 @@ public class Debugger {
         return sDebuggerSdcardDir;
     }
 
-    /**
-     * app需要使用此方法切换域名，切换域名后需要重启app
-     * */
     @NonNull
     public static String getHost() {
         return SpHelper.getDebuggerSharedPreferences().getString(SpHelper.COLUMN_HOST, "");
+    }
+
+    @NonNull
+    public static String getWebViewHost() {
+        return SpHelper.getDebuggerSharedPreferences().getString(SpHelper.COLUMN_WEB_VIEW_HOST, "");
     }
 
     public static Intent getDebuggerMainIntent() {
@@ -123,5 +126,9 @@ public class Debugger {
 
     public static void startDatabaseListActivity(@NonNull Context context) {
         DatabaseListActivity.startActivity(context);
+    }
+
+    public static void startHostsActivity(@NonNull Context context, int type) {
+        HostsActivity.startActivity(context, type);
     }
 }

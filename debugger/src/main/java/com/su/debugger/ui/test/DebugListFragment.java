@@ -64,13 +64,16 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
 
     public static final String TAG = DebugListFragment.class.getSimpleName();
     private static final int REQUEST_HOST = 1;
+    private static final int REQUEST_WEB_VIEW_HOST = 2;
     private static final SimpleBlockedDialogFragment DIALOG_FRAGMENT = SimpleBlockedDialogFragment.newInstance();
     private Preference mProxyPreference;
     private Preference mSharedPreferencePreference;
     private Preference mNotificationPreference;
     private ListPreference mMockPolicyPreference;
     private Preference mHostsPreference;
+    private Preference mWebViewHostsPreference;
     private String mHost;
+    private String mWebViewHost;
     private FragmentActivity mActivity;
     private String mEntryClassName;
 
@@ -116,9 +119,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         databasePreference.setOnPreferenceClickListener(this);
         databasePreference.setVisible(AppHelper.getDatabasesCount(mActivity) > 0);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
-        DebuggerSupplier supplier = DebuggerSupplier.getInstance();
         mHostsPreference = findPreference("hosts");
-        mHostsPreference.setVisible(!supplier.allHosts().isEmpty());
+        mWebViewHostsPreference = findPreference("web_view_hosts");
         initMockPreferences();
         findPreference("web_view_debug").setOnPreferenceClickListener(this);
         findPreference("js_interface").setOnPreferenceClickListener(this);
@@ -156,7 +158,10 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     @Override
     public void onResume() {
         super.onResume();
-        initHostPreference();
+        mHost = Debugger.getHost();
+        mWebViewHost = Debugger.getWebViewHost();
+        initHostPreference(mHostsPreference, mHost, HostsActivity.TYPE_HOST);
+        initHostPreference(mWebViewHostsPreference, mWebViewHost, HostsActivity.TYPE_WEB_VIEW_HOST);
         mSharedPreferencePreference.setEnabled(SpHelper.sharedPreferenceCount(mActivity) != 0);
         setNotificationSummary();
         if (!NetworkUtil.isNetworkAvailable()) {
@@ -193,29 +198,32 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         }.start();
     }
 
-    private void initHostPreference() {
-        mHost = Debugger.getHost();
+    private void initHostPreference(@NonNull Preference preference, String currentHost, int hostType) {
         DebuggerSupplier supplier = DebuggerSupplier.getInstance();
-        List<Pair<String, String>> hosts = supplier.allHosts();
-        if (hosts.isEmpty()) {
-            ((PreferenceGroup) findPreference("server")).removePreference(mHostsPreference);
+        List<Pair<String, String>> hosts;
+        if (hostType == HostsActivity.TYPE_HOST) {
+            hosts = supplier.allHosts();
         } else {
+            hosts = supplier.allWebViewHosts();
+        }
+        preference.setVisible(!hosts.isEmpty());
+        if (!hosts.isEmpty()) {
             int size = hosts.size();
             Pair<String, String> pair = null;
             for (int i = 0; i < size; i++) {
                 Pair<String, String> host = hosts.get(i);
-                if (TextUtils.equals(host.second, mHost)) {
+                if (TextUtils.equals(host.second, currentHost)) {
                     pair = host;
-                    mHostsPreference.setSummary(host.first + ": " + mHost);
+                    preference.setSummary(host.first + ": " + currentHost);
                 }
             }
             if (pair == null) {
-                mHostsPreference.setSummary(mHost);
+                preference.setSummary(currentHost);
             } else {
-                mHostsPreference.setSummary(pair.first + " (" + pair.second + ")");
+                preference.setSummary(pair.first + " (" + pair.second + ")");
             }
         }
-        mHostsPreference.setOnPreferenceClickListener(this);
+        preference.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -323,7 +331,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_HOST && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == REQUEST_HOST || requestCode == REQUEST_WEB_VIEW_HOST) && resultCode == Activity.RESULT_OK) {
             final String value = data.getStringExtra("value");
             if (!TextUtils.equals(mHost, value)) {
                 new AlertDialog.Builder(mActivity)
@@ -343,7 +351,14 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         String key = preference.getKey();
         switch (key) {
             case "hosts":
-                startActivityForResult(new Intent(mActivity, HostsActivity.class), REQUEST_HOST);
+                Intent hostIntent = new Intent(mActivity, HostsActivity.class);
+                hostIntent.putExtra("type", HostsActivity.TYPE_HOST);
+                startActivityForResult(hostIntent, REQUEST_HOST);
+                return true;
+            case "web_view_hosts":
+                Intent webViewHostIntent = new Intent(mActivity, HostsActivity.class);
+                webViewHostIntent.putExtra("type", HostsActivity.TYPE_WEB_VIEW_HOST);
+                startActivityForResult(webViewHostIntent, REQUEST_WEB_VIEW_HOST);
                 return true;
             case "system_notification":
                 AppHelper.goNotificationSettings(mActivity);

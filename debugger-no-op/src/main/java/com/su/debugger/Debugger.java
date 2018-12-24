@@ -53,4 +53,6 @@ public class Debugger {
     public static void startAppInfoActivity(@NonNull Context context) {}
 
     public static void startDatabaseListActivity(@NonNull Context context) {}
+
+    public static void startHostsActivity(@NonNull Context context, int type) {}
 }

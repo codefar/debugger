@@ -1,5 +1,6 @@
 package com.su.debugger.ui.test;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,6 +34,8 @@ import java.util.regex.Pattern;
 public class HostsActivity extends BaseAppCompatActivity implements RecyclerItemClickListener.OnItemClickListener, View.OnClickListener {
 
     private static final String TAG = HostsActivity.class.getSimpleName();
+    public static final int TYPE_HOST = 0;
+    public static final int TYPE_WEB_VIEW_HOST = 1;
     private Pattern mIpPattern = Pattern.compile("^https?://" +
                                                 "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
                                                 "(?:1\\d\\d|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
@@ -44,17 +47,31 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
                                                     "(?<host>[a-z0-9\\-._~%]+" + //Named or IPv4 host
                                                     "|\\[[a-z0-9\\-._~%!$&'()*+,;=:]+\\])"); //IPv6+ host
     private List<Pair<String, String>> mHosts; //name host
-    private String mHost = Debugger.getHost();
+    private String mHost;
     private RecyclerViewAdapter mAdapter;
     private EditText mInputView;
+    private int mType;
+
+    public static void startActivity(@NonNull Context context, int type) {
+        Intent intent = new Intent(context, HostsActivity.class);
+        intent.putExtra("type", type);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_activity_dialog_hosts);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        mType = getIntent().getIntExtra("type", TYPE_HOST);
         DebuggerSupplier supplier = DebuggerSupplier.getInstance();
-        mHosts = supplier.allHosts();
+        if (mType == TYPE_HOST) {
+            mHost = Debugger.getHost();
+            mHosts = supplier.allHosts();
+        } else {
+            mHost = Debugger.getWebViewHost();
+            mHosts = supplier.allWebViewHosts();
+        }
         mHosts.add(0, new Pair<>("恢复默认", ""));
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -121,9 +138,10 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
     }
 
     private void selectHost(@NonNull String host) {
+        String key = mType == TYPE_HOST ? SpHelper.COLUMN_HOST : SpHelper.COLUMN_WEB_VIEW_HOST;
         SpHelper.getDebuggerSharedPreferences()
                 .edit()
-                .putString("host", host)
+                .putString(key, host)
                 .apply();
 
         Intent intent = new Intent();
