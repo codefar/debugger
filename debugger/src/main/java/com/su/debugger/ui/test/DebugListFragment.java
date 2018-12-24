@@ -116,7 +116,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         databasePreference.setOnPreferenceClickListener(this);
         databasePreference.setVisible(AppHelper.getDatabasesCount(mActivity) > 0);
         findPreference("more_phone_info").setOnPreferenceClickListener(this);
+        DebuggerSupplier supplier = DebuggerSupplier.getInstance();
         mHostsPreference = findPreference("hosts");
+        mHostsPreference.setVisible(!supplier.allHosts().isEmpty());
         initMockPreferences();
         findPreference("web_view_debug").setOnPreferenceClickListener(this);
         findPreference("js_interface").setOnPreferenceClickListener(this);

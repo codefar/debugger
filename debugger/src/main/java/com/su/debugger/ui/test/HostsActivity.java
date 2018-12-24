@@ -55,6 +55,7 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         DebuggerSupplier supplier = DebuggerSupplier.getInstance();
         mHosts = supplier.allHosts();
+        mHosts.add(0, new Pair<>("恢复默认", ""));
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         int padding = UiHelper.dp2px(16, displayMetrics);
@@ -150,7 +151,10 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
 
         @Override
         protected void bindData(@NonNull final BaseRecyclerAdapter.BaseViewHolder holder, final int position, int itemType) {
-            ((TextView) holder.getView(R.id.host)).setText(getData().get(position).second);
+            String host = getData().get(position).second;
+            TextView hostView = holder.getView(R.id.host);
+            hostView.setText(host);
+            hostView.setVisibility(TextUtils.isEmpty(host)? View.GONE : View.VISIBLE);
             ((TextView) holder.getView(R.id.name)).setText(getData().get(position).first);
             RadioButton radioButton = holder.getView(R.id.radio);
             radioButton.setChecked(mLastCheckedPos == position);
