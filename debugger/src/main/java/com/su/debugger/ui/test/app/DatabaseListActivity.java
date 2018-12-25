@@ -71,7 +71,7 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
         }
 
         for (String dbName : dbList) {
-            if (dbName.endsWith("-journal")) {
+            if (!dbName.endsWith(".db")) {
                 continue;
             }
             mGroupList.add(dbName);
