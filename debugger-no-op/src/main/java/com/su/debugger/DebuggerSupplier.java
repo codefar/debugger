@@ -50,4 +50,8 @@ public class DebuggerSupplier {
     public String toCookies(@NonNull String host) {
         return null;
     }
+
+    public static DebuggerSupplier getInstance() {
+        return null;
+    }
 }

@@ -40,6 +40,11 @@ public class Debugger {
         return null;
     }
 
+    @NonNull
+    public static String getWebViewHost() {
+        return "";
+    }
+
     public static void startDataExportActivity(@NonNull Context context) {}
 
     public static void startPermissionsActivity(@NonNull Context context) {}

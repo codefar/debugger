@@ -106,9 +106,12 @@ if (dataCollectorInterceptor != null) {
 在WebView中切换域名时需要集成如下代码：
 
 ```java
-String host = Debugger.getHost();
+String host = Debugger.getWebViewHost();
 if (!TextUtils.isEmpty(host)) {
-    newUrl = DebuggerSupplier.getInstance().urlMapping(url, newHost);
+    DebuggerSupplier supplier = DebuggerSupplier.getInstance();
+    if (supplier != null) {
+        mUrl = supplier.urlMapping(mUrl, host);
+    }
 }
 ```
 
