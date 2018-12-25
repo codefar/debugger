@@ -1,6 +1,7 @@
 package com.su.debugger.ui.test;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
@@ -29,6 +30,7 @@ import com.su.debugger.entity.SystemInfo;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.NetworkUtil;
 import com.su.debugger.utils.SystemInfoHelper;
+import com.su.debugger.utils.TelephonyManagerWrapper;
 import com.su.debugger.utils.UiHelper;
 import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
 import com.su.debugger.widget.recycler.GridItemSpaceDecoration;
@@ -110,6 +112,10 @@ public class DeviceInfoActivity extends BaseAppCompatActivity {
         mData.add(getHardwareInfo());
         mData.add(getPhoneId());
         mData.add(getFeatureList());
+        if (PackageManager.PERMISSION_GRANTED == getPackageManager().checkPermission(Manifest.permission.READ_PHONE_STATE, getPackageName())
+                && AppHelper.isPhone(this)) {
+            mData.add(getTelephonyInfo());
+        }
     }
 
     private SystemInfo getPhoneId() {
@@ -117,18 +123,13 @@ public class DeviceInfoActivity extends BaseAppCompatActivity {
         SystemInfo info = new SystemInfo();
         info.setTitle("本机ID");
         String desc = "";
-        TelephonyManager tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
-        desc += "IMEI: " + (isHasPermission ? tm.getDeviceId() : "未授权");
-        desc += "\n\n" + "SV: " + (isHasPermission ? tm.getDeviceSoftwareVersion() : "未授权");
-        desc += "\n\n" + "手机号: " + (isHasPermission ? tm.getLine1Number() : "未授权");
-        desc += "\n\n" + "IMSI: " + (isHasPermission ? tm.getSubscriberId() : "未授权");
-        desc += "\n\n" + "SIM序列号: " + (isHasPermission ? tm.getSimSerialNumber() : "未授权");
-        desc += "\n\n" + "Android ID: " + GeneralInfoHelper.getAndroidId();
+        desc += "Android ID: " + GeneralInfoHelper.getAndroidId();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             desc += "\n\n" + "设备序列号: " + (isHasPermission ? Build.getSerial() : "未授权");
         } else {
             desc += "\n\n" + "设备序列号: " + Build.SERIAL;
         }
+        desc += "\n\n" + "FINGERPRINT: " + Build.FINGERPRINT;
         info.setDesc(desc);
         return info;
     }
@@ -185,7 +186,9 @@ public class DeviceInfoActivity extends BaseAppCompatActivity {
         SystemInfo info = new SystemInfo();
         info.setTitle("系统");
         String desc = "";
-        desc += "Android " + Build.VERSION.RELEASE + " / " + SystemInfoHelper.getSystemVersionName(Build.VERSION.SDK_INT) + " / " + "API " + Build.VERSION.SDK_INT;
+        desc += "Android " + Build.VERSION.RELEASE + " / " + SystemInfoHelper.getSystemVersionName(Build.VERSION.SDK_INT) + " / " + "API " + Build.VERSION
+                .SDK_INT;
+        desc += "\n\n" + "系统类型: " + Build.TYPE;
         desc += "\n\n" + "基带版本: " + Build.getRadioVersion();
         desc += "\n\n" + "Linux 内核版本: " + System.getProperty("os.version");
         desc += "\n\n" + "Http User Agent: " + System.getProperty("http.agent");
@@ -262,9 +265,57 @@ public class DeviceInfoActivity extends BaseAppCompatActivity {
         return info;
     }
 
+    public SystemInfo getTelephonyInfo() {
+        SystemInfo info = new SystemInfo();
+        info.setTitle("电话相关");
+        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManagerWrapper wrapper = new TelephonyManagerWrapper(manager);
+        int count = wrapper.getPhoneCount();
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("多卡: " + (count > 1 ? "true" : "false") + "\n");
+        builder.append("当前网络: " + wrapper.getNetworkTypeName() + "\n\n");
+        for (int i = 0; i < count; i++) {
+            if (!wrapper.isSimCardPresent(i)) {
+                continue;
+            }
+
+            int slot = i + 1;
+            String indexHolder = count > 1 ? " " + slot : "";
+            int phoneType = wrapper.getPhoneType(slot);
+            if (phoneType == TelephonyManager.PHONE_TYPE_CDMA || phoneType == TelephonyManager.PHONE_TYPE_GSM) {
+                if (phoneType == TelephonyManager.PHONE_TYPE_CDMA) {
+                    String meid = wrapper.getMeid(slot);
+                    builder.append(wrapper.field2String("网络制式", indexHolder, "CDMA") + "\n");
+                    builder.append(wrapper.field2String("meid", indexHolder, meid) + "\n");
+                } else {
+                    String imei = wrapper.getImei(slot);
+                    builder.append(wrapper.field2String("网络制式", indexHolder, "GSM") + "\n");
+                    builder.append(wrapper.field2String("imei", indexHolder, imei) + "\n");
+                }
+            }
+            String subscriberId = wrapper.getSubscriberId(slot);
+            builder.append(wrapper.field2String("Subscriber Id", indexHolder, subscriberId) + "\n");
+            String sv = wrapper.getDeviceSoftwareVersion(slot);
+            builder.append(wrapper.field2String("sv", indexHolder, sv) + "\n");
+            String phoneNumber = wrapper.getLine1Number(slot);
+            builder.append(wrapper.field2String("电话号码", indexHolder, phoneNumber) + "\n");
+            String simSerialNumber = wrapper.getSimSerialNumber(slot);
+            builder.append(wrapper.field2String("SIM序列号", indexHolder, simSerialNumber) + "\n");
+
+            String networkCountryIso = wrapper.getNetworkCountryIso(slot);
+            builder.append(wrapper.field2String("国家代码", indexHolder, networkCountryIso) + "\n");
+
+            String operatorName = wrapper.getNetworkOperatorName(slot);
+            builder.append(wrapper.field2String("运营商名称", indexHolder, operatorName) + "\n\n");
+        }
+        builder.deleteCharAt(builder.length() - 2);
+        info.setDesc(builder.toString());
+        return info;
+    }
+
     @Override
     protected String getTag() {
         return TAG;
     }
-
 }
