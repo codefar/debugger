@@ -111,8 +111,7 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
         List<Pair<String, String>> group2 = new ArrayList<>();
         group2.add(new Pair<>("应用安装时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getInstallTime()))));
         group2.add(new Pair<>("应用最近更新时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getUpdateTime()))));
-        group2.add(new Pair<>("首次打开应用时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getFirstLaunchTime()))));
-        group2.add(new Pair<>("本次打开应用时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getLaunchTime()))));
+        group2.add(new Pair<>("本次应用启动时间", SIMPLE_DATE_FORMAT.format(new Date(GeneralInfoHelper.getLaunchTime()))));
         return group2;
     }
 

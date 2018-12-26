@@ -52,7 +52,6 @@ public class GeneralInfoHelper {
     private static String sProcessName = "";
     private static int sProcessId = -1;
     private static boolean sDebuggable;
-    private static long sFirstLaunchTime;
     private static long sLaunchTime;
 
     private static int sActionBarHeight;
@@ -87,10 +86,6 @@ public class GeneralInfoHelper {
         sViewConfiguration = ViewConfiguration.get(context);
         SharedPreferences sharedPreferences = SpHelper.getDebuggerSharedPreferences();
         long now = System.currentTimeMillis();
-        if (!sharedPreferences.contains("first_launch_time")) {
-            sharedPreferences.edit().putLong("first_launch_time", now).apply();
-        }
-        sFirstLaunchTime = sharedPreferences.getLong("first_launch_time", now);
         sLaunchTime = sharedPreferences.getLong("launch_time", now);
     }
 
@@ -225,10 +220,6 @@ public class GeneralInfoHelper {
         return sDebuggable;
     }
 
-    public static long getFirstLaunchTime() {
-        return sFirstLaunchTime;
-    }
-
     public static long getLaunchTime() {
         return sLaunchTime;
     }
@@ -322,7 +313,6 @@ public class GeneralInfoHelper {
                 ", nativeLibraryDir=" + sNativeLibraryDir +
                 ", dataDir=" + sDataDir +
                 ", deviceProtectedDataDir=" + sDeviceProtectedDataDir +
-                ", firstLaunchTime=" + sFirstLaunchTime +
                 ", launchTime=" + sLaunchTime +
                 ", targetSdkVersion=" + sTargetSdkVersion +
                 ", minSdkVersion=" + sMinSdkVersion +
