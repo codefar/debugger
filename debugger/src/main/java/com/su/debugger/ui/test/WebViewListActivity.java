@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.su.debugger.AppHelper;
+import com.su.debugger.Debugger;
 import com.su.debugger.DebuggerSupplier;
 import com.su.debugger.R;
 import com.su.debugger.entity.NoteWebViewEntity;
@@ -108,9 +109,8 @@ public class WebViewListActivity extends BaseAppCompatActivity implements Recycl
 
     @Override
     public void onItemClick(View view, int position) {
-        DebuggerSupplier debugger = DebuggerSupplier.getInstance();
         NoteWebViewEntity noteWebView = mFilterNotes.get(position);
-        if (noteWebView.isNeedLogin() && !debugger.isLogin()) {
+        if (noteWebView.isNeedLogin() && !Debugger.isLogin()) {
             Toast.makeText(GeneralInfoHelper.getContext(), "登录可访问此页面", Toast.LENGTH_LONG).show();
         } else {
             AppHelper.startWebView(this, noteWebView);

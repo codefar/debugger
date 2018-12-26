@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.su.debugger.AppHelper;
 import com.su.debugger.BuildConfig;
-import com.su.debugger.DebuggerSupplier;
+import com.su.debugger.Debugger;
 import com.su.debugger.R;
 import com.su.debugger.entity.NoteWebViewEntity;
 import com.su.debugger.entity.SimpleParameter;
@@ -137,8 +137,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
         mLoadingErrorLayout.setOnClickListener(this);
 
         initWebViewSettings();
-        DebuggerSupplier supplier = DebuggerSupplier.getInstance();
-        Map<String, Object> jsObjectMap = supplier.jsObjectList(mActivity);
+        Map<String, Object> jsObjectMap = Debugger.jsObjectList(mActivity);
         for (Map.Entry<String, Object> entry : jsObjectMap.entrySet()) {
             mWebView.addJavascriptInterface(entry.getValue(), entry.getKey());
         }
@@ -244,10 +243,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
         cookieManager.setAcceptCookie(true);
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
-        DebuggerSupplier debugger = DebuggerSupplier.getInstance();
         String cookie = null;
         if (host != null) {
-            cookie = debugger.toCookies(host);
+            cookie = Debugger.toCookies(host);
         }
         cookieManager.setCookie(url, cookie);
         if (BuildConfig.DEBUG) {
@@ -257,8 +255,7 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
     }
 
     private void postUrl() {
-        DebuggerSupplier debugger = DebuggerSupplier.getInstance();
-        mWebView.postUrl(mUrl, debugger.toPostData(mEntity.getPostContent()));
+        mWebView.postUrl(mUrl, Debugger.toPostData(mEntity.getPostContent()));
     }
 
     private void getUrl() {
@@ -328,10 +325,9 @@ public class WebViewFragment extends Fragment implements View.OnClickListener, S
                 content;
         Uri uri = Uri.parse(mUrl);
         String host = uri.getHost();
-        DebuggerSupplier debugger = DebuggerSupplier.getInstance();
         String cookie = null;
         if (host != null) {
-            cookie = debugger.toCookies(host);
+            cookie = Debugger.toCookies(host);
         }
         if (!TextUtils.isEmpty(cookie)) {
             toast += "\ncookie: " + cookie;

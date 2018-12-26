@@ -3,6 +3,7 @@ package com.su.debugger;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -18,12 +19,12 @@ import java.util.regex.Pattern;
 /**
  * Created by su on 18-1-2.
  */
-
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public abstract class DebuggerSupplier {
     private static final String TAG = DebuggerSupplier.class.getSimpleName();
     private static DebuggerSupplier sSupplier;
 
-    public boolean isLogin() {
+    protected boolean isLogin() {
         return false;
     }
 
@@ -107,17 +108,18 @@ public abstract class DebuggerSupplier {
         return null;
     }
 
-    public static void newInstance() {
-        Class<? extends DebuggerSupplier> clazz = Debugger.getInstance().getConfiguration().getRequestSupplierClass();
+    @SuppressWarnings("unchecked")
+    public static void newInstance(@NonNull String className) {
         try {
+            Class<? extends DebuggerSupplier> clazz = (Class<? extends DebuggerSupplier>) Class.forName(className);
             if (!clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers())) {
                 sSupplier = clazz.newInstance();
                 return;
             } else {
                 Log.e(TAG, "class: " + clazz.getName());
             }
-        } catch (InstantiationException | IllegalAccessException e) {
-            Log.e(TAG, "class: " + clazz.getName(), e);
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            Log.e(TAG, "className: " + className, e);
         }
         throw new IllegalArgumentException("supplier must implements DebuggerSupplier!");
     }
