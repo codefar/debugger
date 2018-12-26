@@ -133,7 +133,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private void initMockPreferences() {
         boolean okHttp3 = ReflectUtil.isUseOkHttp3();
         findPreference("debug_downtime").setVisible(okHttp3);
-        mMockPolicyPreference = (ListPreference) findPreference("mock_policy");
+        mMockPolicyPreference = (ListPreference) findPreference(SpHelper.COLUMN_MOCK_POLICY);
         mMockPolicyPreference.setVisible(okHttp3);
         mMockPolicyPreference.setOnPreferenceChangeListener(this);
         initMockPolicy(mMockPolicyPreference.getValue());
@@ -233,7 +233,7 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             boolean enable = (boolean) newValue;
             enableEntry(mActivity, mEntryClassName, enable);
             return true;
-        } else if (TextUtils.equals(key, "mock_policy")) {
+        } else if (TextUtils.equals(key, SpHelper.COLUMN_MOCK_POLICY)) {
             initMockPolicy(newValue.toString());
             return true;
         }

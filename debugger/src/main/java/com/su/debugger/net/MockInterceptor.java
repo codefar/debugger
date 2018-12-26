@@ -71,7 +71,7 @@ public class MockInterceptor implements Interceptor {
     private Response fakeResponse(Request request) {
         String url = request.url().toString();
         SharedPreferences sp = SpHelper.getDebuggerSharedPreferences();
-        String policy = sp.getString("new_fake_server", "none");
+        String policy = sp.getString(SpHelper.COLUMN_MOCK_POLICY, "none");
         Log.d(TAG, "policy: " + policy);
         if (TextUtils.equals(policy, "none")) {
             return null;
