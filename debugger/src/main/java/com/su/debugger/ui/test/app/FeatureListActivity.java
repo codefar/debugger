@@ -9,6 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LayoutAnimationController;
+import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
 import com.su.debugger.AppHelper;
@@ -28,6 +33,7 @@ public class FeatureListActivity extends BaseAppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutAnimation(getLayoutAnimationController());
         recyclerView.setAdapter(new RecyclerViewAdapter(this));
     }
 
@@ -37,6 +43,22 @@ public class FeatureListActivity extends BaseAppCompatActivity {
         setTitle("Feature需求列表");
     }
 
+    private LayoutAnimationController getLayoutAnimationController() {
+        long duration = 250L;
+        AnimationSet set = new AnimationSet(true);
+        Animation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
+        alphaAnimation.setDuration(duration);
+        set.addAnimation(alphaAnimation);
+
+        Animation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+                                                              Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+                                                              0.1f, Animation.RELATIVE_TO_SELF, 0.0f);
+        translateAnimation.setDuration(duration);
+        set.addAnimation(translateAnimation);
+        LayoutAnimationController controller = new LayoutAnimationController(set, 0.3f);
+        controller.setOrder(LayoutAnimationController.ORDER_NORMAL);
+        return controller;
+    }
 
     private static class RecyclerViewAdapter extends BaseRecyclerAdapter<FeatureInfo> {
 

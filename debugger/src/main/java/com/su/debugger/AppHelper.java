@@ -65,9 +65,32 @@ public final class AppHelper {
     public static List<FeatureInfo> getRequiredFeatures(@NonNull Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
-            if (packageInfo.reqFeatures != null) {
-                return Arrays.asList(packageInfo.reqFeatures);
+            if (packageInfo.reqFeatures == null) {
+                return new ArrayList<>();
             }
+            //需要去重
+            ArrayList<FeatureInfo> list = new ArrayList<>();
+            for (FeatureInfo featureInfo : packageInfo.reqFeatures) {
+                if (list.isEmpty()) {
+                    list.add(featureInfo);
+                    continue;
+                }
+
+                boolean find = false;
+                int size = list.size();
+                for (int i = 0; i < size; i++) {
+                    FeatureInfo fi = list.get(i);
+                    if (TextUtils.equals(fi.name, featureInfo.name)) {
+                        find = true;
+                        continue;
+                    }
+                }
+                if (!find) {
+                    list.add(featureInfo);
+                }
+            }
+
+            return Arrays.asList(packageInfo.reqFeatures);
         } catch (PackageManager.NameNotFoundException e) {
             Log.w(TAG, e);
         }
