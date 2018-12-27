@@ -133,12 +133,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"
             android:windowSoftInputMode="stateHidden"/>
-        <!-- debug相关开源库列表 -->
-        <activity
-            android:name=".ui.test.UtilsListActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/DebuggerSearchViewToolbar"/>
         <!-- mock数据host分组列表 -->
         <activity
             android:name=".ui.test.mock.MockGroupHostActivity"

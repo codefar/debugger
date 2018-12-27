@@ -127,7 +127,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         Preference preference = findPreference("js_rhino");
         preference.setVisible(ReflectUtil.isUseRhino());
         preference.setOnPreferenceClickListener(this);
-        findPreference("open_source_debug").setOnPreferenceClickListener(this);
     }
 
     private void initMockPreferences() {
@@ -416,9 +415,6 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                     return true;
                 }
                 startActivity(new Intent(mActivity, JsListActivity.class));
-                return true;
-            case "open_source_debug":
-                startActivity(new Intent(mActivity, UtilsListActivity.class));
                 return true;
             default:
                 return false;
