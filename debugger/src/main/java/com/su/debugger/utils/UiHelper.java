@@ -290,6 +290,14 @@ public final class UiHelper {
         return (color & 0x00FFFFFF) | alpha;
     }
 
+    public static String color2rgbString(int color) {
+        return String.format("#%06X", color);
+    }
+
+    private static String fillWith0(String s) {
+        return s.length() == 1 ? "0"+ s : s;
+    }
+
     public static void setNavigationBarColor(Window window, int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setNavigationBarColor(color);

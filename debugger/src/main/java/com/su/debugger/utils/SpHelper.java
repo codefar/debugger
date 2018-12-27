@@ -14,12 +14,16 @@ import java.util.List;
  */
 
 public class SpHelper {
+    public static final String SHARED_PREFERENCE_BASE_DIRNAME = "shared_prefs";
     public static final String NAME = "debugger";
     public static final String COLUMN_DEBUG_DOWNTIME = "debug_downtime";
     public static final String COLUMN_MOCK_POLICY = "mock_policy";
     public static final String COLUMN_HOST = "host";
     public static final String COLUMN_WEB_VIEW_HOST = "web_view_host";
-    public static final String SHARED_PREFERENCE_BASE_DIRNAME = "shared_prefs";
+    public static final String COLUMN_GRID_LINE_SIZE = "grid_line_size";
+    public static final String COLUMN_GRID_LINE_UNIT = "grid_line_unit";
+    public static final String COLUMN_GRID_LINE_COLOR_STRING = "grid_line_color";
+    public static final String COLUMN_GRID_LINE_STATUS_BAR = "grid_line_status_bar";
 
     private static SharedPreferences sDefaultSharedPreferences;
 

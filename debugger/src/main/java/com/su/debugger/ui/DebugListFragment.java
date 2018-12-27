@@ -12,6 +12,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -42,6 +43,8 @@ import com.su.debugger.ui.app.SharedPreferenceDetailActivity;
 import com.su.debugger.ui.app.SharedPreferenceListActivity;
 import com.su.debugger.ui.mock.MockGroupHostActivity;
 import com.su.debugger.ui.mock.MockUtil;
+import com.su.debugger.ui.ui.GridLineSettingActivity;
+import com.su.debugger.ui.ui.GridLineView;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.NetworkUtil;
 import com.su.debugger.utils.ReflectUtil;
@@ -75,6 +78,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
     private String mWebViewHost;
     private FragmentActivity mActivity;
     private String mEntryClassName;
+    //ui
+    private GridLineView mGridLineView;
+    private SwitchPreferenceCompat mGridLinePreference;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -126,6 +132,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         Preference preference = findPreference("js_rhino");
         preference.setVisible(ReflectUtil.isUseRhino());
         preference.setOnPreferenceClickListener(this);
+
+        initUiPreference();
     }
 
     private void initMockPreferences() {
@@ -234,6 +242,17 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         } else if (TextUtils.equals(key, SpHelper.COLUMN_MOCK_POLICY)) {
             initMockPolicy(newValue.toString());
             return true;
+        } else if (TextUtils.equals(key, "grid_line")) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if(!Settings.canDrawOverlays(mActivity)) {
+                    mGridLinePreference.setChecked(false);
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                    startActivity(intent);
+                    return false;
+                }
+            }
+            mGridLineView.toggle();
+            return true;
         }
         return false;
     }
@@ -247,6 +266,14 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 break;
             }
         }
+    }
+
+    private void initUiPreference() {
+        mGridLineView = GridLineView.getInstance();
+        mGridLinePreference = (SwitchPreferenceCompat) findPreference("grid_line");
+        mGridLinePreference.setChecked(mGridLineView.isShowing());
+        mGridLinePreference.setOnPreferenceClickListener(this);
+        mGridLinePreference.setOnPreferenceChangeListener(this);
     }
 
     public static void enableEntry(Context context, String className, boolean enabled) {
@@ -278,12 +305,15 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                             | PackageManager.GET_PROVIDERS
                             | PackageManager.GET_DISABLED_COMPONENTS);
                     List<ComponentInfo> components = new ArrayList<>();
-                    if (packageInfo.activities != null)
+                    if (packageInfo.activities != null) {
                         Collections.addAll(components, packageInfo.activities);
-                    if (packageInfo.services != null)
+                    }
+                    if (packageInfo.services != null) {
                         Collections.addAll(components, packageInfo.services);
-                    if (packageInfo.providers != null)
+                    }
+                    if (packageInfo.providers != null) {
                         Collections.addAll(components, packageInfo.providers);
+                    }
 
                     for (ComponentInfo componentInfo : components) {
                         if (componentInfo.name.equals(clsName)) {
@@ -414,6 +444,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                     return true;
                 }
                 startActivity(new Intent(mActivity, JsListActivity.class));
+                return true;
+            case "grid_line":
+                startActivity(new Intent(mActivity, GridLineSettingActivity.class));
                 return true;
             default:
                 return false;

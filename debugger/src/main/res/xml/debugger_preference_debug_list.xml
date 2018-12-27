@@ -112,4 +112,10 @@
             android:summary="利用rhino在app内执行java代码"
             android:title="本地js调用调试" />
     </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
+        android:title="UI相关">
+        <com.su.debugger.ui.preference.SwitchPreference
+            android:key="grid_line"
+            android:title="网格校准" />
+    </android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

@@ -159,6 +159,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"
             android:windowSoftInputMode="stateHidden"/>
+        <!-- grid line -->
+        <activity
+            android:name=".ui.ui.GridLineSettingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/DebuggerListTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <!-- 文本浏览 -->
         <activity
             android:name=".ui.XmlViewerActivity"
