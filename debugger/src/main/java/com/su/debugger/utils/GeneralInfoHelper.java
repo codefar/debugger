@@ -1,5 +1,6 @@
 package com.su.debugger.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -126,6 +127,7 @@ public class GeneralInfoHelper {
         }
     }
 
+    @SuppressLint("HardwareIds")
     private static void initAndroidId() {
         sAndroidId = Settings.Secure.getString(sContext.getContentResolver(), Settings.Secure.ANDROID_ID);
     }

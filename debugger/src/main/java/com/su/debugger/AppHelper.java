@@ -27,7 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.su.debugger.entity.NoteWebViewEntity;
-import com.su.debugger.ui.test.web.WebViewActivity;
+import com.su.debugger.ui.web.WebViewActivity;
 import com.su.debugger.utils.IOUtil;
 
 import java.io.BufferedReader;

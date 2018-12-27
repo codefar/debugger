@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.service.quicksettings.TileService;
 
-import com.su.debugger.ui.test.DebuggerMainActivity;
+import com.su.debugger.ui.DebuggerMainActivity;
 
 /**
  * Created by mahao on 17-7-19.

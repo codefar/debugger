@@ -12,16 +12,16 @@
     <application>
         <!-- Debug调试功能列表 -->
         <activity
-            android:name=".ui.test.DebuggerMainActivity"
+            android:name=".ui.DebuggerMainActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"
             android:launchMode="singleTask"/>
         <!-- Debug调试功能列表入口 -->
         <activity-alias
-            android:name=".ui.test.DebugEntryActivity"
+            android:name=".ui.DebugEntryActivity"
             android:label="Debugger"
-            android:targetActivity=".ui.test.DebuggerMainActivity"
+            android:targetActivity=".ui.DebuggerMainActivity"
             android:exported="true"
             android:enabled="false"
             android:screenOrientation="portrait"
@@ -33,135 +33,135 @@
         </activity-alias>
         <!--App信息列表-->
         <activity
-            android:name=".ui.test.app.AppInfoListActivity"
+            android:name=".ui.app.AppInfoListActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"/>
         <!--应用数据导出-->
         <activity
-            android:name=".ui.test.app.DataExportActivity"
+            android:name=".ui.app.DataExportActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"/>
         <!--切换host弹窗-->
         <activity
-            android:name=".ui.test.HostsActivity"
+            android:name=".ui.HostsActivity"
             android:exported="false"
             android:theme="@style/DebuggerCustomDialog"/>
         <!--js接口列表-->
         <activity
-            android:name=".ui.test.JsInterfaceListActivity"
+            android:name=".ui.JsInterfaceListActivity"
             android:exported="false"
             android:theme="@style/DebuggerSearchViewToolbar"
             android:screenOrientation="portrait"/>
         <!-- Debug调试WebView列表 -->
         <activity
-            android:name=".ui.test.WebViewListActivity"
+            android:name=".ui.WebViewListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerSearchViewToolbar"/>
         <!-- App信息 -->
         <activity
-            android:name=".ui.test.app.AppComponentActivity"
+            android:name=".ui.app.AppComponentActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"/>
         <!-- 组件列表 -->
         <activity
-            android:name=".ui.test.app.ComponentListActivity"
+            android:name=".ui.app.ComponentListActivity"
             android:exported="false"
             android:theme="@style/DebuggerSearchViewToolbar"
             android:screenOrientation="portrait"/>
         <!-- 组件信息 -->
         <activity
-            android:name=".ui.test.app.ComponentActivity"
+            android:name=".ui.app.ComponentActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:screenOrientation="portrait"/>
         <!-- Permission列表 -->
         <activity
-            android:name=".ui.test.app.PermissionListActivity"
+            android:name=".ui.app.PermissionListActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:screenOrientation="portrait"/>
         <!-- Feature列表 -->
         <activity
-            android:name=".ui.test.app.FeatureListActivity"
+            android:name=".ui.app.FeatureListActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:screenOrientation="portrait"/>
         <!-- SharedPreference列表 -->
         <activity
-            android:name=".ui.test.app.SharedPreferenceListActivity"
+            android:name=".ui.app.SharedPreferenceListActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:screenOrientation="portrait"/>
         <!-- SharedPreference详情 -->
         <activity
-            android:name=".ui.test.app.SharedPreferenceDetailActivity"
+            android:name=".ui.app.SharedPreferenceDetailActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:screenOrientation="portrait"/>
         <!-- Database列表 -->
         <activity
-            android:name=".ui.test.app.DatabaseListActivity"
+            android:name=".ui.app.DatabaseListActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:screenOrientation="portrait"/>
         <!-- table信息 -->
         <activity
-            android:name=".ui.test.app.TableInfoActivity"
+            android:name=".ui.app.TableInfoActivity"
             android:exported="false"
             android:theme="@style/DebuggerListTheme"
             android:screenOrientation="portrait"/>
         <!-- 系统信息 -->
         <activity
-            android:name=".ui.test.DeviceInfoActivity"
+            android:name=".ui.DeviceInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"
             android:windowSoftInputMode="stateHidden"/>
         <!-- js文件与函数列表 -->
         <activity
-            android:name=".ui.test.JsListActivity"
+            android:name=".ui.JsListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"/>
         <!-- 调试js -->
         <activity
-            android:name=".ui.test.ExecJsActivity"
+            android:name=".ui.ExecJsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"
             android:windowSoftInputMode="stateHidden"/>
         <!-- mock数据host分组列表 -->
         <activity
-            android:name=".ui.test.mock.MockGroupHostActivity"
+            android:name=".ui.mock.MockGroupHostActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerSearchViewToolbar"/>
         <!-- mock数据列表 -->
         <activity
-            android:name=".ui.test.mock.MockUrlListActivity"
+            android:name=".ui.mock.MockUrlListActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerSearchViewToolbar"/>
         <!--mock数据详情-->
         <activity
-            android:name=".ui.test.mock.MockDetailActivity"
+            android:name=".ui.mock.MockDetailActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerSearchViewToolbar"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <!-- WebView -->
         <activity
-            android:name=".ui.test.web.WebViewActivity"
+            android:name=".ui.web.WebViewActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"
             android:windowSoftInputMode="stateHidden"/>
         <!-- 文本浏览 -->
         <activity
-            android:name=".ui.test.XmlViewerActivity"
+            android:name=".ui.XmlViewerActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"
@@ -178,7 +178,7 @@
         </service>
         <!--mock数据提供者-->
         <provider
-            android:name=".db.MockContentProvider"
+            android:name=".database.MockContentProvider"
             android:authorities="${applicationId}.debugger.provider"
             android:exported="false"/>
     </application>

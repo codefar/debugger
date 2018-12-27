@@ -45,7 +45,7 @@ public class ReflectUtil {
                 }
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Log.e(TAG, "object class: " + clazz.getName(), e);
         }
         return list;
     }
@@ -63,7 +63,7 @@ public class ReflectUtil {
                 }
             }
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Log.e(TAG, "object class: " + clazz.getName(), e);
         }
         return new Pair<>("未知flag", String.valueOf(flag));
     }
