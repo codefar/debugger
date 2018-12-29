@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -159,19 +158,17 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
         private Context mContext;
         private Resources mResources;
         private LayoutInflater mInflater;
-        private DisplayMetrics mDisplayMetrics;
 
         private AppInfoAdapter(Context context) {
             this.mContext = context;
             mResources = mContext.getResources();
-            mDisplayMetrics = mContext.getResources().getDisplayMetrics();
             mInflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
             convertView = new FrameLayout(mContext);
-            AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, UiHelper.dp2px(1, mDisplayMetrics));
+            AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, UiHelper.dp2px(1));
             convertView.setLayoutParams(lp);
             convertView.setBackgroundColor(mResources.getColor(R.color.disabled_text));
             return convertView;

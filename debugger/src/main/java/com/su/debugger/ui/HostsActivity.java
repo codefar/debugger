@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
@@ -73,14 +72,13 @@ public class HostsActivity extends BaseAppCompatActivity implements RecyclerItem
             mHosts = supplier.allWebViewHosts();
         }
         mHosts.add(0, new Pair<>("恢复默认", ""));
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        int padding = UiHelper.dp2px(16, displayMetrics);
+        int padding = UiHelper.dp2px(16);
         lp.width = GeneralInfoHelper.getScreenWidth() - padding * 2;
         int height = GeneralInfoHelper.getAvailableHeight() - padding * 4;
-        int titleHeight = UiHelper.dp2px(16, displayMetrics) + UiHelper.sp2px(20, displayMetrics);
-        int itemHeight = UiHelper.dp2px(24, displayMetrics) + UiHelper.sp2px(28, displayMetrics);
-        int used = mHosts.size() * (itemHeight + 1) + 1 + titleHeight + UiHelper.dp2px(32, displayMetrics) + UiHelper.sp2px(16, displayMetrics);
+        int titleHeight = UiHelper.dp2px(16) + UiHelper.sp2px(20);
+        int itemHeight = UiHelper.dp2px(24) + UiHelper.sp2px(28);
+        int used = mHosts.size() * (itemHeight + 1) + 1 + titleHeight + UiHelper.dp2px(32) + UiHelper.sp2px(16);
         lp.height = Math.min(used + (int) (itemHeight * 1.5) /*对话框阴影留出部分空间*/, height);
         getWindow().setAttributes(lp);
 

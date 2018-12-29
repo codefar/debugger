@@ -2,13 +2,11 @@ package com.su.debugger.ui.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -31,7 +29,7 @@ public class GridLineView extends View {
         mPaint.setAntiAlias(true);
         mPaint.setStrokeWidth(1);
         mPaint.setColor(Color.parseColor("#40000000"));
-        mUnit = UiHelper.dp2px(4, context.getResources().getDisplayMetrics());
+        mUnit = UiHelper.dp2px(4);
     }
 
     public static GridLineView getInstance() {
@@ -42,14 +40,13 @@ public class GridLineView extends View {
     }
 
     private void resetView() {
-        Resources resources = getContext().getResources();
         SharedPreferences sharedPreferences = SpHelper.getDebuggerSharedPreferences();
         String colorString = sharedPreferences.getString(SpHelper.COLUMN_GRID_LINE_COLOR_STRING, "#40000000");
         int size = Integer.parseInt(sharedPreferences.getString(SpHelper.COLUMN_GRID_LINE_SIZE, "4"));
         int unit = Integer.parseInt(sharedPreferences.getString(SpHelper.COLUMN_GRID_LINE_UNIT, "0"));
         mPaint.setColor(Color.parseColor(colorString));
         if (unit == 0) {
-            mUnit = UiHelper.dp2px(size, resources.getDisplayMetrics());
+            mUnit = UiHelper.dp2px(size);
         } else {
             mUnit = size;
         }

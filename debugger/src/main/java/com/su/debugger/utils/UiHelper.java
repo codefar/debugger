@@ -121,17 +121,19 @@ public final class UiHelper {
         if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                actionBarHeight += dp2px(8, context.getResources().getDisplayMetrics());
+                actionBarHeight += dp2px(8);
             }
         }
         return actionBarHeight;
     }
 
-    public static int dp2px(int dpValue, DisplayMetrics displayMetrics) {
+    public static int dp2px(float dpValue) {
+        DisplayMetrics displayMetrics = GeneralInfoHelper.getContext().getResources().getDisplayMetrics();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, displayMetrics);
     }
 
-    public static int sp2px(int spValue, DisplayMetrics displayMetrics) {
+    public static int sp2px(int spValue) {
+        DisplayMetrics displayMetrics = GeneralInfoHelper.getContext().getResources().getDisplayMetrics();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, displayMetrics);
     }
 
