@@ -57,6 +57,7 @@ public class GeneralInfoHelper {
 
     private static int sActionBarHeight;
     private static int sStatusBarHeight;
+    private static int sNavigationBarHeight;
     private static int sTargetSdkVersion;
     private static int sMinSdkVersion;
     private static int sCompileSdkVersion;
@@ -84,6 +85,7 @@ public class GeneralInfoHelper {
         sProcessName = getCurrentProcessName();
         sStatusBarHeight = UiHelper.getStatusBarHeight(sContext);
         sActionBarHeight = UiHelper.getActionBarHeight(sContext);
+        sNavigationBarHeight = UiHelper.getNavigationBarHeight(sContext);
         sViewConfiguration = ViewConfiguration.get(context);
         SharedPreferences sharedPreferences = SpHelper.getDebuggerSharedPreferences();
         long now = System.currentTimeMillis();
@@ -210,6 +212,10 @@ public class GeneralInfoHelper {
         return sAvailableHeight;
     }
 
+    public static int getNavigationBarHeight() {
+        return sNavigationBarHeight;
+    }
+
     public static String getApplicationLabel() {
         return sApplicationLabel;
     }
@@ -302,6 +308,7 @@ public class GeneralInfoHelper {
                 ", screenHeight=" + sScreenHeight +
                 ", statusBarHeight=" + sStatusBarHeight +
                 ", actionBarHeight=" + sActionBarHeight +
+                ", navigationBarHeight=" + sNavigationBarHeight +
                 ", aspectRatio=" + sAspectRatio +
                 ", availableWidth=" + sAvailableWidth +
                 ", availableHeight=" + sAvailableHeight +

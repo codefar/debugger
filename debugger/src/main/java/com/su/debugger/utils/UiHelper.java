@@ -132,9 +132,14 @@ public final class UiHelper {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, displayMetrics);
     }
 
-    public static int sp2px(int spValue) {
+    public static int sp2px(float spValue) {
         DisplayMetrics displayMetrics = GeneralInfoHelper.getContext().getResources().getDisplayMetrics();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, displayMetrics);
+    }
+
+    public static int px2dp(float pxValue) {
+        final float scale =  GeneralInfoHelper.getContext().getResources().getDisplayMetrics().density;
+        return pxValue > 0 ? (int) (pxValue / scale + 0.5f) : -(int) (-pxValue / scale + 0.5f);
     }
 
     public static int getStatusBarHeight(Context context) {

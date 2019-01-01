@@ -24,6 +24,10 @@ public class SpHelper {
     public static final String COLUMN_GRID_LINE_UNIT = "grid_line_unit";
     public static final String COLUMN_GRID_LINE_COLOR_STRING = "grid_line_color";
     public static final String COLUMN_GRID_LINE_STATUS_BAR = "grid_line_status_bar";
+    public static final String COLUMN_MEASURE_COLOR_STRING = "measure_color";
+    public static final String COLUMN_MEASURE_RESULT_COLOR_STRING = "measure_result_color";
+    public static final String COLUMN_MEASURE_STATUS_BAR = "measure_status_bar";
+    public static final String COLUMN_MEASURE_NAVIGATION_BAR = "measure_navigation_bar";
 
     private static SharedPreferences sDefaultSharedPreferences;
 

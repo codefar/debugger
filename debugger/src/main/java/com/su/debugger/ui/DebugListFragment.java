@@ -45,6 +45,7 @@ import com.su.debugger.ui.mock.MockGroupHostActivity;
 import com.su.debugger.ui.mock.MockUtil;
 import com.su.debugger.ui.ui.GridLineSettingActivity;
 import com.su.debugger.ui.ui.GridLineView;
+import com.su.debugger.ui.ui.RulerSettingActivity;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.NetworkUtil;
 import com.su.debugger.utils.ReflectUtil;
@@ -253,6 +254,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
             }
             mGridLineView.toggle();
             return true;
+        } else if (TextUtils.equals(key, "measure")) {
+            return true;
         }
         return false;
     }
@@ -274,6 +277,8 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
         mGridLinePreference.setChecked(mGridLineView.isShowing());
         mGridLinePreference.setOnPreferenceClickListener(this);
         mGridLinePreference.setOnPreferenceChangeListener(this);
+
+        findPreference("measure").setOnPreferenceClickListener(this);
     }
 
     public static void enableEntry(Context context, String className, boolean enabled) {
@@ -447,6 +452,9 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 return true;
             case "grid_line":
                 startActivity(new Intent(mActivity, GridLineSettingActivity.class));
+                return true;
+            case "measure":
+                startActivity(new Intent(mActivity, RulerSettingActivity.class));
                 return true;
             default:
                 return false;

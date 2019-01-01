@@ -114,6 +114,9 @@
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="UI相关">
+        <android.support.v7.preference.Preference
+            android:key="measure"
+            android:title="测距设置" />
         <com.su.debugger.ui.preference.SwitchPreference
             android:key="grid_line"
             android:title="网格校准" />

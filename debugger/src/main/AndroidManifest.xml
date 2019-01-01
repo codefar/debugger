@@ -166,6 +166,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/DebuggerListTheme"
             android:windowSoftInputMode="stateAlwaysHidden"/>
+        <!-- 测距 -->
+        <activity
+            android:name=".ui.ui.RulerActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Transparent"/>
+        <!-- 测距设置 -->
+        <activity
+            android:name=".ui.ui.RulerSettingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/DebuggerListTheme"/>
         <!-- 文本浏览 -->
         <activity
             android:name=".ui.XmlViewerActivity"
@@ -178,6 +190,15 @@
             android:name=".service.QuickSettingService"
             android:icon="@drawable/debugger_ic_quick_setting_white"
             android:label="debugger"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.MeasureService"
+            android:icon="@drawable/debugger_ic_quick_setting_white"
+            android:label="measure"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE"/>
