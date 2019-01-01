@@ -26,7 +26,7 @@ public class AppComponentActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.debugger_activity_debug_list);
+        setContentView(R.layout.debugger_preference_activity_template);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment, new InfoListFragment(), "app_info").commit();
     }

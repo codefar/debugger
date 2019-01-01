@@ -32,7 +32,7 @@ public class GridLineSettingActivity extends BaseAppCompatActivity implements Pr
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.debugger_activity_grid_line_settings);
+        setContentView(R.layout.debugger_preference_activity_template);
         mGridLineFragment = new GridLineFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment, mGridLineFragment, "grid_line").commit();

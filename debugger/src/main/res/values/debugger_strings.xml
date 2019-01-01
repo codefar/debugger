@@ -16,15 +16,10 @@
     <string name="quit">退出</string>
     <string name="back">返回</string>
     <string name="add">添加</string>
-    <string name="current_version">当前版本为
-        <xliff:g id="version">%s</xliff:g>
-    </string>
-    <string name="next_step">下一步</string>
     <string name="commit">提交</string>
     <string name="loading">加载中</string>
     <string name="save">保存</string>
     <string name="edit">编辑</string>
     <string name="cancel">取消</string>
     <string name="verify">验证</string>
-    <string name="already_copy_to_clipboard">已将“%1$s”复制到粘贴板中</string>
 </resources>

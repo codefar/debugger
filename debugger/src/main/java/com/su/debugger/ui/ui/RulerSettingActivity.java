@@ -27,7 +27,7 @@ public class RulerSettingActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.debugger_activity_grid_line_settings);
+        setContentView(R.layout.debugger_preference_activity_template);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment, new MeasureFragment(), "measure").commit();
     }

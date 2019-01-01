@@ -44,7 +44,7 @@ public class DataExportActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.debugger_data_export);
+        setContentView(R.layout.debugger_preference_activity_template);
         EXPORTED_SHARED_PRIVATE_DIR_FILE = new File(Debugger.getDebuggerSdcardDir(), getPackageName());
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment, new ItemListFragment(), "app_data_export").commit();

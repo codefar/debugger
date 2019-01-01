@@ -166,14 +166,6 @@ public final class UiHelper {
         return 0;
     }
 
-    public static int getToolBarHeight(Context context) {
-        TypedValue tv = new TypedValue();
-        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
-        }
-        return 0;
-    }
-
     //https://stackoverflow.com/questions/20264268/how-to-get-height-and-width-of-navigation-bar-programmatically
     public static Point getNavigationBarSize(Context context) {
         Point appUsableSize = getAppUsableScreenSize(context);
@@ -299,10 +291,6 @@ public final class UiHelper {
 
     public static String color2rgbString(int color) {
         return String.format("#%06X", color);
-    }
-
-    private static String fillWith0(String s) {
-        return s.length() == 1 ? "0"+ s : s;
     }
 
     public static void setNavigationBarColor(Window window, int color) {
