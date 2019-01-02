@@ -35,6 +35,6 @@
         android:layout_marginTop="4dip"
         android:layout_marginBottom="4dip"
         android:padding="0dip"
-        android:src="@drawable/icon_button_add"
+        android:src="@drawable/debugger_icon_button_add"
         android:scaleType="fitXY" />
 </LinearLayout>

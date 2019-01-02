@@ -334,7 +334,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
             holder.textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
             holder.textView.setTextColor(mFirstColor);
             holder.actionView.clearColorFilter();
-            holder.actionView.setImageDrawable(mResources.getDrawable(R.drawable.icon_button_add));
+            holder.actionView.setImageDrawable(mResources.getDrawable(R.drawable.debugger_icon_button_add));
             holder.arrowView.setSelected(isExpanded);
             holder.arrowView.setVisibility(View.VISIBLE);
             //检查是否为单一元素类型
@@ -376,7 +376,7 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
             holder.arrowView.setVisibility(View.GONE);
             holder.textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
             holder.textView.setTextColor(mSecondColor);
-            holder.actionView.setImageDrawable(mResources.getDrawable(R.drawable.icon_button_delete));
+            holder.actionView.setImageDrawable(mResources.getDrawable(R.drawable.debugger_icon_button_delete));
             holder.actionView.setOnClickListener(v -> {
                 String action = "remove";
                 int rowsUpdated = 0;

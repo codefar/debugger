@@ -56,7 +56,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/actionBarItemBackground"
                 android:scaleType="centerInside"
-                android:src="@drawable/debugger_menu_delete"/>
+                android:src="@drawable/debugger_menu_dark_delete"/>
         </LinearLayout>
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
