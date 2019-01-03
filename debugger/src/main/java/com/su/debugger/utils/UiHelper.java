@@ -52,14 +52,14 @@ public final class UiHelper {
         }
         return new AlertDialog.Builder(context)
                 .setMessage(tip)
-                .setPositiveButton(R.string.known, null)
+                .setPositiveButton(R.string.debugger_known, null)
                 .show();
     }
 
     public static AlertDialog showConfirm(Context context, String tip) {
         return new AlertDialog.Builder(context)
                 .setMessage(tip)
-                .setPositiveButton(R.string.confirm, null)
+                .setPositiveButton(R.string.debugger_confirm, null)
                 .show();
     }
 

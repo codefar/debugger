@@ -113,7 +113,7 @@ public class TableInfoActivity extends BaseAppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("索引列表")
                 .setMessage(indexInfoString(indexList))
-                .setPositiveButton(R.string.confirm, null)
+                .setPositiveButton(R.string.debugger_confirm, null)
                 .show();
     }
 

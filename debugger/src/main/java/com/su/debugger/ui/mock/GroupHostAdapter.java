@@ -60,10 +60,10 @@ public class GroupHostAdapter extends CursorAdapter implements AdapterView.OnIte
         final String host = cursor.getString(1);
         new AlertDialog.Builder(mActivity)
                 .setMessage("确定要将" + host + "下的所有数据删除吗？")
-                .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                .setPositiveButton(R.string.debugger_confirm, (dialog, which) -> {
                     deleteByHost(host);
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.debugger_cancel, null)
                 .show();
         return true;
     }

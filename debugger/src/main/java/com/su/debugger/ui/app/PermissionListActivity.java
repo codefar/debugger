@@ -182,9 +182,9 @@ public class PermissionListActivity extends BaseAppCompatActivity implements Rec
         return new AlertDialog.Builder(this)
                 .setTitle("权限申请")
                 .setMessage(wrapper.name + "\n" + wrapper.loadDescription(mPm))
-                .setPositiveButton(R.string.set_permission, (dialog, which) ->
+                .setPositiveButton(R.string.debugger_set_permission, (dialog, which) ->
                         startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", getPackageName(), null))))
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.debugger_cancel, null)
                 .show();
     }
 

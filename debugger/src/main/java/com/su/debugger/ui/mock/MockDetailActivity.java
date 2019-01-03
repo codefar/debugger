@@ -211,13 +211,13 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         new AlertDialog.Builder(this)
                 .setTitle("Description")
                 .setView(inputView)
-                .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                .setPositiveButton(R.string.debugger_confirm, (dialog, which) -> {
                     String newDescription = inputView.getText().toString();
                     MockUtil.updateDescription(MockDetailActivity.this, mEntity, newDescription);
                     mEntity.setDescription(newDescription);
                     mDescView.setText(newDescription);
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.debugger_cancel, null)
                 .show();
     }
 
@@ -257,13 +257,13 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
         new AlertDialog.Builder(this)
                 .setTitle("Content Type")
                 .setView(inputView)
-                .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                .setPositiveButton(R.string.debugger_confirm, (dialog, which) -> {
                     String newContentType = inputView.getText().toString();
                     MockUtil.updateContentType(MockDetailActivity.this, mEntity, newContentType);
                     mEntity.setContentType(newContentType);
                     mContentTypeView.setText(newContentType);
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.debugger_cancel, null)
                 .show();
     }
 
@@ -497,14 +497,14 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
             }
         }
         builder.setView(inputView)
-                .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                .setPositiveButton(R.string.debugger_confirm, (dialog, which) -> {
                     if (keyDialog) {
                         addKey(groupPosition, type, inputView.getText().toString(), item);
                     } else {
                         updateValue(groupPosition, type, key, inputView.getText().toString());
                     }
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.debugger_cancel, null)
                 .show();
     }
 
@@ -619,8 +619,8 @@ public class MockDetailActivity extends BaseAppCompatActivity implements View.On
     public void delete(@NonNull MenuItem item) {
         new AlertDialog.Builder(this)
                 .setMessage("确认删除此条数据？")
-                .setPositiveButton(R.string.delete, (dialog, which) -> delete())
-                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.debugger_delete, (dialog, which) -> delete())
+                .setNegativeButton(R.string.debugger_cancel, null)
                 .show();
     }
 

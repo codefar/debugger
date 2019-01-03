@@ -370,10 +370,10 @@ public class DebugListFragment extends PreferenceFragmentCompat implements Prefe
                 new AlertDialog.Builder(mActivity)
                         .setCancelable(false)
                         .setMessage("是否重启应用？")
-                        .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                        .setPositiveButton(R.string.debugger_confirm, (dialog, which) -> {
                             AppHelper.restartApp(mActivity);
                         })
-                        .setNegativeButton(R.string.cancel, null)
+                        .setNegativeButton(R.string.debugger_cancel, null)
                         .show();
             }
         }

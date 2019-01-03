@@ -87,8 +87,8 @@
             android:dialogTitle="模拟数据策略"
             android:defaultValue="none"
             android:summary="无"
-            android:entries="@array/mock_names"
-            android:entryValues="@array/mock_values"/>
+            android:entries="@array/debugger_mock_names"
+            android:entryValues="@array/debugger_mock_values"/>
         <android.support.v7.preference.Preference
             android:key="import_mock_data"
             android:title="导入mock数据"

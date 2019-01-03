@@ -1,16 +1,16 @@
 <resources>
-    <string-array name="mock_values">
+    <string-array name="debugger_mock_values">
         <item>manual</item>
         <item>all</item>
         <item>none</item>
     </string-array>
-    <string-array name="mock_names">
+    <string-array name="debugger_mock_names">
         <item>手动（代码配置或手动编辑）</item>
         <item>手动 + 自动</item>
         <item>无</item>
     </string-array>
 
-    <string-array name="sp_class">
+    <string-array name="debugger_sp_class">
         <item>java.lang.Integer</item>
         <item>java.lang.Long</item>
         <item>java.lang.Boolean</item>
@@ -19,11 +19,11 @@
         <item>java.util.Set</item>
     </string-array>
 
-    <string-array name="unit_name">
+    <string-array name="debugger_unit_name">
         <item>dip</item>
         <item>px</item>
     </string-array>
-    <string-array name="unit_values">
+    <string-array name="debugger_unit_values">
         <item>0</item>
         <item>1</item>
     </string-array>

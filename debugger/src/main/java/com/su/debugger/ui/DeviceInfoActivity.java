@@ -93,8 +93,8 @@ public class DeviceInfoActivity extends BaseAppCompatActivity {
                     new AlertDialog.Builder(DeviceInfoActivity.this)
                             .setTitle(getData().get(position).getTitle())
                             .setMessage(getData().get(position).getDesc())
-                            .setNegativeButton(R.string.close, null)
-                            .setPositiveButton(R.string.share, (dialog, which) -> {
+                            .setNegativeButton(R.string.debugger_close, null)
+                            .setPositiveButton(R.string.debugger_share, (dialog, which) -> {
                                 Intent intent = new Intent(Intent.ACTION_SEND);
                                 intent.putExtra(Intent.EXTRA_TEXT, getData().get(position).getDesc());
                                 intent.setType("text/plain");

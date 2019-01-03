@@ -195,7 +195,7 @@ public class DatabaseListActivity extends BaseAppCompatActivity {
             new AlertDialog.Builder(mContext)
                     .setTitle("triggers")
                     .setMessage(stringBuilder)
-                    .setPositiveButton(R.string.confirm, null)
+                    .setPositiveButton(R.string.debugger_confirm, null)
                     .show();
         }
 

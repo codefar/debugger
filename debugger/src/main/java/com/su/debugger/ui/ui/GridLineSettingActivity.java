@@ -129,7 +129,7 @@ public class GridLineSettingActivity extends BaseAppCompatActivity implements Pr
             });
             new AlertDialog.Builder(mActivity)
                     .setView(view)
-                    .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                    .setPositiveButton(R.string.debugger_confirm, (dialog, which) -> {
                         int color = pickerView.getColor();
                         String colorString = UiHelper.color2rgbString(color);
                         sp.edit().putString(SpHelper.COLUMN_GRID_LINE_COLOR_STRING, colorString).apply();

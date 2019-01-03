@@ -33,6 +33,7 @@ public class RequestActivity extends BaseAppCompatActivity implements SwipeRefre
         setContentView(R.layout.activity_sample_main);
         TextView textView = findViewById(R.id.text);
         textView.setText("开启数据模拟或者停机维护后，此页面数据返回结果则变为相应模拟数据");
+        textView.setText(R.string.debugger_name);
         mSwipeRefreshLayout = findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.post(() -> {

@@ -109,17 +109,17 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
     private void classDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("类型")
-                .setSingleChoiceItems(R.array.sp_class, 0, (dialog, which) -> mSelected = which)
-                .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                .setSingleChoiceItems(R.array.debugger_sp_class, 0, (dialog, which) -> mSelected = which)
+                .setPositiveButton(R.string.debugger_confirm, (dialog, which) -> {
                     Item item = new Item();
                     try {
-                        item.setValueClass(Class.forName(mResources.getStringArray(R.array.sp_class)[mSelected]));
+                        item.setValueClass(Class.forName(mResources.getStringArray(R.array.debugger_sp_class)[mSelected]));
                         keyDialog(item);
                     } catch (ClassNotFoundException e) {
                         Log.w(TAG, e);
                     }
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.debugger_cancel, null)
                 .show();
     }
 
@@ -129,7 +129,7 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
         new AlertDialog.Builder(this)
                 .setTitle("key")
                 .setView(inputView)
-                .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                .setPositiveButton(R.string.debugger_confirm, (dialog, which) -> {
                     String key = inputView.getText().toString();
                     if (TextUtils.isEmpty(key)) {
                         Toast.makeText(SharedPreferenceDetailActivity.this, "key不可以为空", Toast.LENGTH_SHORT).show();
@@ -139,7 +139,7 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
                     item.setKey(key);
                     valueDialog(item);
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.debugger_cancel, null)
                 .show();
     }
 
@@ -149,11 +149,11 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
         new AlertDialog.Builder(this)
                 .setTitle("key: " + item.getKey())
                 .setView(inputView)
-                .setPositiveButton(R.string.confirm, (dialog, which) -> {
+                .setPositiveButton(R.string.debugger_confirm, (dialog, which) -> {
                     createOrUpdate(item, inputView.getText().toString());
                     loadData();
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.debugger_cancel, null)
                 .show();
     }
 

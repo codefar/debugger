@@ -171,7 +171,7 @@
             android:name=".ui.ui.RulerActivity"
             android:exported="false"
             android:launchMode="singleTop"
-            android:theme="@style/Transparent"/>
+            android:theme="@style/DebuggerTransparent"/>
         <!-- 测距设置 -->
         <activity
             android:name=".ui.ui.RulerSettingActivity"

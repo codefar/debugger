@@ -166,7 +166,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Transparent" parent="DebuggerToolbarThemeBase">
+    <style name="DebuggerTransparent" parent="DebuggerToolbarThemeBase">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:colorBackgroundCacheHint">@null</item>

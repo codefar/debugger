@@ -11,7 +11,7 @@
         android:layout_width="16dip"
         android:layout_height="16dip"
         android:layout_marginStart="13dip"
-        android:src="@drawable/expandable_arrow_selector"
+        android:src="@drawable/debugger_expandable_arrow_selector"
         android:scaleType="fitXY"
         android:visibility="gone" />
     <TextView
