@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.su.sample"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [MODULE_NAME: project.getName()]
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    debugAnnotationProcessor project(':compiler')
+    debugApi project(':debugger')
+    releaseApi project(':debugger-no-op')
+    api project(':annotations')
+//    debugApi 'com.su:debugger.annotations:0.9.2'
+//    debugAnnotationProcessor 'com.su:debugger.compiler:0.9.2'
+//    debugImplementation 'com.su:debugger:0.9.2'
+//    releaseImplementation 'com.su:debugger-no-op:0.9.2'
+    api 'com.android.support:appcompat-v7:' + rootProject.ext.supportVersion
+    api 'com.android.support:preference-v7:' + rootProject.ext.supportVersion
+    api 'com.alibaba:fastjson:' + rootProject.ext.fastjson
+    //OkHttp
+    api 'com.squareup.okhttp3:okhttp:' + rootProject.ext.okhttp
+    api 'com.squareup.okhttp3:logging-interceptor:' + rootProject.ext.okhttp
+    api 'org.mozilla:rhino:1.7.9'
+}
