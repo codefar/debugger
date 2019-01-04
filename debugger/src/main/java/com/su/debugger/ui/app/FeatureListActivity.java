@@ -40,7 +40,7 @@ public class FeatureListActivity extends BaseAppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        setTitle("Feature需求列表");
+        setTitle("Feature列表");
     }
 
     private LayoutAnimationController getLayoutAnimationController() {

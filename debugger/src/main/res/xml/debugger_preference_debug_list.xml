@@ -26,7 +26,7 @@
             android:summary="应用所需权限与用户授权情况"
             android:key="permission"/>
         <android.support.v7.preference.Preference
-            android:title="Feature需求列表"
+            android:title="Feature列表"
             android:summary="app所必须的feature列表"
             android:key="feature"/>
         <android.support.v7.preference.Preference
@@ -119,6 +119,6 @@
             android:title="测距设置" />
         <com.su.debugger.ui.preference.SwitchPreference
             android:key="grid_line"
-            android:title="网格校准" />
+            android:title="网格线" />
     </android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

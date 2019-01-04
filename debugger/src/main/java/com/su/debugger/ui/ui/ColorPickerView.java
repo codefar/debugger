@@ -12,12 +12,14 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class ColorPickerView extends View {
 
+    private static final float HUE_WIDTH_RATE = 1.0f / 12;
+    private static final float HUE_HEIGHT_RATE = 5.0f / 6;
+    private static final float DIVIDER_WIDTH_RATE = 1.0f / 16;
     private int[] mColors = new int[]{
             0xFFFF0000,// red
             0xFFFF00FF,// magenta
@@ -52,9 +54,6 @@ public class ColorPickerView extends View {
     private RectF mSatValRectF;
     private RectF mAlphaRectF;
 
-    private float mHueWidthRate = 1.0f / 12;
-    private float mHueHeightRate = 5.0f / 6;
-    private float mDividerWidthRate = 1.0f / 16;
     private Point mDownPoint;
     private OnColorChangedListener mOnColorChangedListener;
     private LinearGradient mValShader;
@@ -89,11 +88,11 @@ public class ColorPickerView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         if (w != oldw || h != oldh) {
-            mHueRectF = new RectF(w * (1 - mHueWidthRate), 0, w, h * mHueHeightRate);
-            mSatValRectF = new RectF(0, 0, w * (1 - mHueWidthRate - mDividerWidthRate), h * mHueHeightRate);
-            mAlphaRectF = new RectF(0, h * (mHueHeightRate + mDividerWidthRate), w, h);
+            mHueRectF = new RectF(w * (1 - HUE_WIDTH_RATE), 0, w, h * HUE_HEIGHT_RATE);
+            mSatValRectF = new RectF(0, 0, w * (1 - HUE_WIDTH_RATE - DIVIDER_WIDTH_RATE), h * HUE_HEIGHT_RATE);
+            mAlphaRectF = new RectF(0, h * (HUE_HEIGHT_RATE + DIVIDER_WIDTH_RATE), w, h);
 
-            Shader colorShader = new LinearGradient(w * (1 - mHueWidthRate / 2), 0, w * (1 - mHueWidthRate / 2), h * mHueHeightRate, mColors, null,
+            Shader colorShader = new LinearGradient(w * (1 - HUE_WIDTH_RATE / 2), 0, w * (1 - HUE_WIDTH_RATE / 2), h * HUE_HEIGHT_RATE, mColors, null,
                                                     Shader.TileMode.CLAMP);
             mHuePaint.setShader(colorShader);
             mValShader = new LinearGradient(mSatValRectF.left, mSatValRectF.top, mSatValRectF.left, mSatValRectF.bottom, 0xFFFFFFFF, 0xFF000000,
@@ -211,7 +210,6 @@ public class ColorPickerView extends View {
             x = x - mAlphaRectF.left;
         }
         mAlpha = (int) (0xFF - x * 0xFF / width);
-        Log.d("ColorPickerView", "alpha: " + mAlpha);
     }
 
     private void onHueChanged() {
@@ -268,7 +266,6 @@ public class ColorPickerView extends View {
         mOnColorChangedListener = onColorChangedListener;
     }
 
-    @FunctionalInterface
     public interface OnColorChangedListener {
         void onColorChanged(int newColor);
     }
