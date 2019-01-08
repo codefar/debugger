@@ -1,10 +1,10 @@
 ## debugger
 
 ```groovy
-debugApi 'com.su:debugger.annotations:0.9.7'
-debugAnnotationProcessor 'com.su:debugger.compiler:0.9.7'
-debugImplementation 'com.su:debugger:0.9.7'
-releaseImplementation 'com.su:debugger-no-op:0.9.7'
+debugApi 'com.su:debugger.annotations:0.9.8'
+debugAnnotationProcessor 'com.su:debugger.compiler:0.9.8'
+debugImplementation 'com.su:debugger:0.9.8'
+releaseImplementation 'com.su:debugger-no-op:0.9.8'
 ```
 
 需要将module名称传给compiler
@@ -108,10 +108,7 @@ if (dataCollectorInterceptor != null) {
 ```java
 String host = Debugger.getWebViewHost();
 if (!TextUtils.isEmpty(host)) {
-    DebuggerSupplier supplier = DebuggerSupplier.getInstance();
-    if (supplier != null) {
-        mUrl = supplier.urlMapping(mUrl, host);
-    }
+    mUrl = Debugger.urlMapping(mUrl, host);
 }
 ```
 
