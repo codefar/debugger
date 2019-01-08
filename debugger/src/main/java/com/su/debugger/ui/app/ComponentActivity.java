@@ -1,10 +1,13 @@
 package com.su.debugger.ui.app;
 
+import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ComponentInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.service.quicksettings.TileService;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +47,7 @@ public class ComponentActivity extends BaseAppCompatActivity {
     private ComponentFlagsFragment mComponentFlagsFragment;
     private ViewPager mPager;
     private TabLayout mTabLayout;
+    private boolean mCanBeLaunched;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +74,8 @@ public class ComponentActivity extends BaseAppCompatActivity {
         } else {
             mTabLayout.setVisibility(View.VISIBLE);
         }
+
+        mCanBeLaunched = canBeLaunched();
     }
 
     private TabLayout.Tab makeTab(String title) {
@@ -88,7 +95,7 @@ public class ComponentActivity extends BaseAppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
                 mPager.setCurrentItem(position);
-                if (!"activity".equalsIgnoreCase(mType) && !"service".equalsIgnoreCase(mType)) {
+                if (!showMenu()) {
                     return;
                 }
                 Menu menu = mToolbar.getMenu();
@@ -104,18 +111,41 @@ public class ComponentActivity extends BaseAppCompatActivity {
         });
 
         mTabLayout.addTab(makeTab("Info"));
-        if (!mNoteComponent.getParameters().isEmpty()) {
-            mTabLayout.addTab(makeTab("Extras"));
-            mExtrasTabIndex = 1;
-            mTabSize += 1;
-        }
-        if ("activity".equalsIgnoreCase(mType)) {
-            mTabLayout.addTab(makeTab("Flags"));
-            mFlagsTabIndex = mExtrasTabIndex + 1;
-            mTabSize += 1;
+        if (mCanBeLaunched) {
+            if (!mNoteComponent.getParameters().isEmpty()) {
+                mTabLayout.addTab(makeTab("Extras"));
+                mExtrasTabIndex = 1;
+                mTabSize += 1;
+            }
+            if ("activity".equalsIgnoreCase(mType)) {
+                mTabLayout.addTab(makeTab("Flags"));
+                mFlagsTabIndex = mExtrasTabIndex + 1;
+                mTabSize += 1;
+            }
         }
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
         mPager.setAdapter(new InfoPagerAdapter(getSupportFragmentManager()));
+    }
+
+    private boolean canBeLaunched() {
+        if ("service".equalsIgnoreCase(mType)) {
+            String className = mComponentInfo.name;
+            try {
+                Class<?> clazz = Class.forName(className);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                        && TileService.class.isAssignableFrom(clazz)) {
+                    return false;
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                        && JobService.class.isAssignableFrom(clazz)) {
+                    return false;
+                }
+            } catch (ClassNotFoundException e) {
+                Log.w(TAG, e);
+            }
+        }
+        return true;
     }
 
     private class InfoPagerAdapter extends FragmentPagerAdapter {
@@ -161,10 +191,14 @@ public class ComponentActivity extends BaseAppCompatActivity {
         }
     }
 
+    private boolean showMenu() {
+        return ("activity".equalsIgnoreCase(mType) || "service".equalsIgnoreCase(mType)) && mCanBeLaunched;
+    }
+
     @MenuRes
     @Override
     public int menuRes() {
-        if ("activity".equalsIgnoreCase(mType) || "service".equalsIgnoreCase(mType)) {
+        if (showMenu()) {
             return R.menu.debugger_activity_parameters_menu;
         }
         return 0;
