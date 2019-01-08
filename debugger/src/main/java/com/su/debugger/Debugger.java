@@ -21,6 +21,7 @@ import com.su.debugger.ui.app.DataExportActivity;
 import com.su.debugger.ui.app.DatabaseListActivity;
 import com.su.debugger.ui.app.PermissionListActivity;
 import com.su.debugger.ui.mock.MockGroupHostActivity;
+import com.su.debugger.ui.ui.RulerActivity;
 import com.su.debugger.utils.GeneralInfoHelper;
 import com.su.debugger.utils.SpHelper;
 
@@ -117,6 +118,10 @@ public class Debugger {
 
     public static void startHostsActivity(@NonNull Context context, int type) {
         HostsActivity.startActivity(context, type);
+    }
+
+    public static void startRulerActivity(@NonNull Context context) {
+        RulerActivity.startActivity(context);
     }
 
     @Nullable

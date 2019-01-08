@@ -65,6 +65,8 @@ public class Debugger {
 
     public static void startHostsActivity(@NonNull Context context, int type) {}
 
+    public static void startRulerActivity(@NonNull Context context) {}
+
     @Nullable
     public static byte[] toPostData(@Nullable String content) {
         return null;
