@@ -65,7 +65,6 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
 
         initWebViewSettings();
         mWebView.addJavascriptInterface(new JsCommunication(this), "JsCommunication");
-        removeAdditionalJavascriptInterface();
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeSessionCookie();
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
@@ -113,8 +112,6 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
             mSwipeRefreshLayout.setRefreshing(true);
             mWebView.loadUrl(mUrl);
         });
-
-        initDebug();
     }
 
     @Override
@@ -130,14 +127,6 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
         outState.putString("title", mTitle);
     }
 
-    private void removeAdditionalJavascriptInterface() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            mWebView.removeJavascriptInterface("searchBoxJavaBridge_");
-            mWebView.removeJavascriptInterface("accessibility");
-            mWebView.removeJavascriptInterface("accessibilityTraversal");
-        }
-    }
-
     @Override
     public void onRefresh() {
         mWebView.reload();
@@ -150,12 +139,6 @@ public class WebViewActivity extends BaseAppCompatActivity implements SwipeRefre
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setBuiltInZoomControls(true);
-    }
-
-    private void initDebug() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true);
-        }
     }
 
     @Override
