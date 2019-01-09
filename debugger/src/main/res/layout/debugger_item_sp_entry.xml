@@ -5,6 +5,9 @@
               android:layout_height="wrap_content"
               android:paddingStart="13dip"
               android:paddingEnd="13dip"
+              android:background="@drawable/debugger_item_selector"
+              android:clickable="true"
+              android:focusable="true"
               android:orientation="vertical"
               android:gravity="center_vertical">
     <LinearLayout

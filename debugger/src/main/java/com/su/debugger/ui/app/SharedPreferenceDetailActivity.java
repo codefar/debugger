@@ -7,16 +7,13 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +21,9 @@ import com.alibaba.fastjson.JSON;
 import com.su.debugger.R;
 import com.su.debugger.ui.BaseAppCompatActivity;
 import com.su.debugger.utils.SpHelper;
+import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
+import com.su.debugger.widget.recycler.PreferenceItemDecoration;
+import com.su.debugger.widget.recycler.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,24 +31,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implements AdapterView.OnItemClickListener {
+public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implements RecyclerItemClickListener.OnItemClickListener {
 
     public static final String TAG = SharedPreferenceDetailActivity.class.getSimpleName();
     private Resources mResources;
     private String mSharedPreferenceName;
-    private ItemAdapter mAdapter;
+    private RecyclerViewAdapter mAdapter;
     private int mSelected;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.debugger_template_page_list_view);
+        setContentView(R.layout.debugger_template_recycler_list);
         mResources = getResources();
         mSharedPreferenceName = getIntent().getStringExtra("name");
-        mAdapter = new ItemAdapter(this);
-        ListView listView = findViewById(R.id.list_view);
-        listView.setAdapter(mAdapter);
-        listView.setOnItemClickListener(this);
+        mAdapter = new RecyclerViewAdapter();
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new PreferenceItemDecoration(this, 0, 0));
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -158,70 +162,32 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(View view, int position) {
         if (TextUtils.equals(SpHelper.NAME, mSharedPreferenceName)) {
             Toast.makeText(this, "禁止修改debugger自身的shared preference文件", Toast.LENGTH_LONG).show();
             return;
         }
-        Item item = (Item) mAdapter.getItem(position);
+        Item item = mAdapter.getData().get(position);
         valueDialog(item);
     }
 
-    private static class ItemAdapter extends BaseAdapter {
-        private List<Item> mList = new ArrayList<>();
-        private LayoutInflater mInflater;
+    private static class RecyclerViewAdapter extends BaseRecyclerAdapter<Item> {
 
-        ItemAdapter(Context context) {
-            mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        private RecyclerViewAdapter() {
+            super(new ArrayList<>());
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.debugger_item_sp_entry, parent, false);
-                holder = new ViewHolder(convertView);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-            Item item = mList.get(position);
-            holder.keyView.setText(item.getKey());
-            holder.valueView.setText(item.getValue());
-            holder.valueClassView.setText(item.getValueClass().getName());
-            return convertView;
+        public int getLayoutId(int itemType) {
+            return R.layout.debugger_item_sp_entry;
         }
 
         @Override
-        public int getCount() {
-            return mList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        void updateData(@NonNull List<Item> list) {
-            mList = new ArrayList<>(list);
-            notifyDataSetChanged();
-        }
-    }
-
-    private static class ViewHolder {
-        private TextView keyView;
-        private TextView valueView;
-        private TextView valueClassView;
-
-        ViewHolder(View convertView) {
-            keyView = convertView.findViewById(R.id.key);
-            valueView = convertView.findViewById(R.id.value);
-            valueClassView = convertView.findViewById(R.id.value_class);
+        protected void bindData(@NonNull BaseViewHolder holder, int position, int itemType) {
+            Item item = getData().get(position);
+            ((TextView) holder.getView(R.id.key)).setText(item.getKey());
+            ((TextView) holder.getView(R.id.value)).setText(item.getValue());
+            ((TextView) holder.getView(R.id.value_class)).setText(item.getValueClass().getName());
         }
     }
 
