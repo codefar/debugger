@@ -48,7 +48,7 @@ public class AppInfoListActivity extends BaseAppCompatActivity implements Expand
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.debugger_app_info_list);
+        setContentView(R.layout.debugger_activity_app_info_list);
         mListView = findViewById(R.id.expandable_list);
         mAdapter = new AppInfoAdapter(this);
         mListView.setAdapter(mAdapter);

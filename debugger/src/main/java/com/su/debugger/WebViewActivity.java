@@ -1,4 +1,4 @@
-package com.su.debugger.ui.web;
+package com.su.debugger;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -24,10 +24,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.su.debugger.AppHelper;
-import com.su.debugger.BuildConfig;
-import com.su.debugger.Debugger;
-import com.su.debugger.R;
 import com.su.debugger.entity.NoteWebViewEntity;
 import com.su.debugger.entity.SimpleParameter;
 import com.su.debugger.ui.BaseAppCompatActivity;

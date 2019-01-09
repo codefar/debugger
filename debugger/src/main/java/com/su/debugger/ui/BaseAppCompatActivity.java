@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 
 import com.su.debugger.R;
-import com.su.debugger.ui.web.WebViewActivity;
+import com.su.debugger.WebViewActivity;
 import com.su.debugger.utils.UiHelper;
 
 /**
