@@ -7,8 +7,10 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,6 +26,7 @@ import com.su.debugger.utils.SpHelper;
 import com.su.debugger.widget.recycler.BaseRecyclerAdapter;
 import com.su.debugger.widget.recycler.PreferenceItemDecoration;
 import com.su.debugger.widget.recycler.RecyclerItemClickListener;
+import com.su.debugger.widget.recycler.SwipeController;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,14 +48,19 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
         setContentView(R.layout.debugger_template_recycler_list);
         mResources = getResources();
         mSharedPreferenceName = getIntent().getStringExtra("name");
-        mAdapter = new RecyclerViewAdapter();
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        mAdapter = new RecyclerViewAdapter(this, recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.addItemDecoration(new PreferenceItemDecoration(this, 0, 0));
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
+        RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerItemClickListener(this, this);
+        recyclerView.addOnItemTouchListener(onItemTouchListener);
         recyclerView.setAdapter(mAdapter);
+
+        SwipeController swipeController = new SwipeController(mAdapter);
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -87,7 +95,11 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
         mAdapter.updateData(list);
     }
 
-    private void createOrUpdate(Item item, String newValue) {
+    public void add(@NonNull MenuItem item) {
+        classDialog();
+    }
+
+    private void createOrUpdate(@NonNull Item item, String newValue) {
         SharedPreferences sp = getSharedPreferences(mSharedPreferenceName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         Class<?> clazz = item.getValueClass();
@@ -108,6 +120,11 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
             editor.putStringSet(key, set);
         }
         editor.commit();
+    }
+
+    private void remove(@NonNull String key) {
+        SharedPreferences sp = getSharedPreferences(mSharedPreferenceName, Context.MODE_PRIVATE);
+        sp.edit().remove(key).commit();
     }
 
     private void classDialog() {
@@ -171,10 +188,17 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
         valueDialog(item);
     }
 
-    private static class RecyclerViewAdapter extends BaseRecyclerAdapter<Item> {
+    private static class RecyclerViewAdapter extends BaseRecyclerAdapter<Item> implements SwipeController.OnSwipeListener {
 
-        private RecyclerViewAdapter() {
+        private SharedPreferenceDetailActivity mActivity;
+        private RecyclerView mRecyclerView;
+        private Item mRecentlyDeletedItem;
+        private int mRecentlyDeletedItemPosition;
+
+        private RecyclerViewAdapter(@NonNull SharedPreferenceDetailActivity activity, @NonNull RecyclerView recyclerView) {
             super(new ArrayList<>());
+            mActivity = activity;
+            mRecyclerView = recyclerView;
         }
 
         @Override
@@ -188,6 +212,31 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
             ((TextView) holder.getView(R.id.key)).setText(item.getKey());
             ((TextView) holder.getView(R.id.value)).setText(item.getValue());
             ((TextView) holder.getView(R.id.value_class)).setText(item.getValueClass().getName());
+        }
+
+        @Override
+        public void onDelete(@NonNull RecyclerView.ViewHolder viewHolder) {
+            List<Item> list = getData();
+            int position = viewHolder.getAdapterPosition();
+            mRecentlyDeletedItem = list.get(position);
+            mRecentlyDeletedItemPosition = position;
+            list.remove(mRecentlyDeletedItem);
+            notifyItemRemoved(mRecentlyDeletedItemPosition);
+            mActivity.remove(mRecentlyDeletedItem.key);
+            Snackbar.make(mRecyclerView, "已将" + mRecentlyDeletedItem.key + "删除", Snackbar.LENGTH_LONG)
+                    .setAction("UNDO", v -> onUndo())
+                    .show();
+        }
+
+        @Override
+        public void onUndo() {
+            if (mRecentlyDeletedItem == null) {
+                return;
+            }
+            mActivity.createOrUpdate(mRecentlyDeletedItem, mRecentlyDeletedItem.value);
+            List<Item> list = getData();
+            list.add(mRecentlyDeletedItemPosition, mRecentlyDeletedItem);
+            notifyItemInserted(mRecentlyDeletedItemPosition);
         }
     }
 
@@ -219,10 +268,6 @@ public class SharedPreferenceDetailActivity extends BaseAppCompatActivity implem
         public void setValueClass(Class<?> valueClass) {
             this.valueClass = valueClass;
         }
-    }
-
-    public void add(@NonNull MenuItem item) {
-        classDialog();
     }
 
     @Override
