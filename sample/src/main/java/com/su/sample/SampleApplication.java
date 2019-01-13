@@ -3,6 +3,7 @@ package com.su.sample;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
 import com.su.debugger.Debugger;
@@ -25,6 +26,12 @@ public class SampleApplication extends Application {
         sContext = this;
         initDebugger(this);
         initSharedPreference();
+
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectAll()
+                .penaltyDeath()
+                .penaltyLog()
+                .build());
     }
 
     private static void initDebugger(Application application) {
