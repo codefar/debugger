@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -48,17 +50,13 @@ public class DeviceInfoActivity extends BaseAppCompatActivity {
 
     private static final String TAG = DeviceInfoActivity.class.getSimpleName();
     private List<SystemInfo> mData = new ArrayList<>();
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        setTitle("设备信息");
-    }
+    private Resources mResources;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debugger_activity_system_info);
+        mResources = getResources();
         RecyclerView recyclerView = findViewById(R.id.recycler);
         initData();
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
@@ -73,6 +71,12 @@ public class DeviceInfoActivity extends BaseAppCompatActivity {
         recyclerView.setLayoutAnimation(controller);
         MyAdapter adapter = new MyAdapter(mData);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        setTitle("设备信息");
     }
 
     private class MyAdapter extends BaseRecyclerAdapter<SystemInfo> {
@@ -199,22 +203,28 @@ public class DeviceInfoActivity extends BaseAppCompatActivity {
     public SystemInfo getScreenInfo() {
         SystemInfo info = new SystemInfo();
         info.setTitle("屏幕信息");
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        Configuration config = mResources.getConfiguration();
+        DisplayMetrics metrics = mResources.getDisplayMetrics();
         int widthPixels = GeneralInfoHelper.getScreenWidth();
         int heightPixels = GeneralInfoHelper.getScreenHeight();
-        String desc = "屏幕分辨率: " + widthPixels + " x " + heightPixels + " px";
+        String desc = "分辨率: " + widthPixels + " x " + heightPixels + " px"
+                + " / " + UiHelper.px2dp(widthPixels) + " x " + UiHelper.px2dp(heightPixels) + " dp";
+        desc += "\n\nsmallestWidth: " + config.smallestScreenWidthDp + " dp";
         desc += "\n\n状态栏高度: " + GeneralInfoHelper.getStatusBarHeight() + " px";
         int navigationBarHeight = UiHelper.getNavigationBarHeight(this);
         if (navigationBarHeight > 0) {
             desc += "\n\n导航栏高度: " + navigationBarHeight + " px";
         }
-        desc += "\n\n" + "密度: " + metrics.densityDpi + "dp" + " / " + SystemInfoHelper.getDpiInfo(metrics.densityDpi) + " / " + metrics.density + "x";
-        desc += "\n\n" + "精确密度: " + metrics.xdpi + " x " + metrics.ydpi + " dp";
 
         Point point = UiHelper.getRealScreenSize(this);
-        double screenDiagonalSize = UiHelper.getScreenDiagonalSize(metrics, point);
+        desc += "\n\n" + "density: " + metrics.density;
+        desc += "\n\n" + "scaledDensity: " + metrics.scaledDensity;
         float width = point.x / metrics.xdpi;
         float height = point.y / metrics.ydpi;
+        desc += "\n\n" + "ppi: " + Math.round(Math.sqrt(widthPixels * widthPixels + heightPixels * heightPixels) / Math.sqrt(width * width + height * height));
+        desc += "\n\n" + "密度: " + metrics.densityDpi + "dp" + " / " + SystemInfoHelper.getDpiInfo(metrics.densityDpi) + " / " + metrics.density + "x";
+        desc += "\n\n" + "精确密度: " + metrics.xdpi + " x " + metrics.ydpi + " dp";
+        double screenDiagonalSize = UiHelper.getScreenDiagonalSize(metrics, point);
         DecimalFormat format = new DecimalFormat("0.0");
         desc += "\n\n" + "屏幕尺寸: " + format.format(width) + "''" + " x " + format.format(height) + "''" + " / " + format.format(screenDiagonalSize) + "英寸";
         info.setDesc(desc);
