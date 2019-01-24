@@ -197,7 +197,13 @@ public class DataCollectorInterceptor implements Interceptor {
             if (responseBodyString == null) {
                 entity.setResponse(null);
             } else {
-                entity.setResponse(toJSONString(responseBodyString));
+                String bodyContent;
+                try {
+                    bodyContent = toJSONString(responseBodyString);
+                } catch (JSONException e) {
+                    bodyContent = responseBodyString;
+                }
+                entity.setResponse(bodyContent);
             }
         } else {
             if (sDebug) {
